@@ -16,3 +16,5 @@ which implements a Datagram Transport. It also assumes a consumer of open SCTP S
 The stack tries to keep the details of concurrency in a single package, so that the current pure thread model could be replaced with Akka actors or NIO-like async mechanisms.
 
 This port was made to implement WebRTC with datachannels in another library that will link this one.
+
+Some tests files in the tests project are under GPLv2.
