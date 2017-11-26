@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{022A1F0B-3832-467F-A155-6994330E52A5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>webrtclib</RootNamespace>
+    <AssemblyName>webrtclib</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="JavaExtras\BlockingQueue.cs" />
+    <Compile Include="JavaExtras\Crc32.cs" />
+    <Compile Include="JavaExtras\ExtensionMethods.cs" />
+    <Compile Include="JavaExtras\IllegalArgumentException.cs" />
+    <Compile Include="JavaExtras\InterruptedException.cs" />
+    <Compile Include="JavaExtras\Iterator.cs" />
+    <Compile Include="JavaExtras\Log.cs" />
+    <Compile Include="JavaExtras\NullPointerException.cs" />
+    <Compile Include="JavaExtras\RequestListener.cs" />
+    <Compile Include="JavaExtras\Runnable.cs" />
+    <Compile Include="JavaExtras\ServerSocketChannel.cs" />
+    <Compile Include="JavaExtras\Time.cs" />
+    <Compile Include="Utils\FastBitConverter.cs" />
+    <Compile Include="Utils\ByteBuffer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\FailChunk.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="sctp4j\src\main\java\io\netty\handler\codec\compression\Crc32c.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\Association.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\AssociationListener.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\behave\DCEPStreamBehaviour.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\behave\OrderedStreamBehaviour.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\behave\SCTPStreamBehaviour.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\behave\UnorderedStreamBehaviour.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\dataChannel\DECP\DCOpen.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\leakey\LeakyAssociation.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\leakey\LeakyTransport.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\MessageCompleteHandler.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\AbortChunk.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\Chunk.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\CookieAckChunk.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\CookieEchoChunk.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\DataChunk.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\ErrorChunk.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\exceptions\ChecksumException.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\exceptions\InvalidDataChunkException.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\exceptions\InvalidSCTPPacketException.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\exceptions\MessageException.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\exceptions\SctpPacketFormatException.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\exceptions\StaleCookieException.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\exceptions\UnreadyAssociationException.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\HeartBeatAckChunk.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\HeartBeatChunk.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\InitAckChunk.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\InitChunk.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\Packet.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\AddIncomingStreamsRequestParameter.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\AddOutgoingStreamsRequestParameter.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\AddStreamsRequestParameter.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\CookiePreservative.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\HostNameAddress.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\IncomingSSNResetRequestParameter.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\IPv4Address.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\IPv6Address.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\KnownError.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\KnownParam.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\OutgoingSSNResetRequestParameter.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\ProtocolViolationError.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\ReconfigurationResponseParameter.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\RequestedHMACAlgorithmParameter.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\SSNTSNResetRequestParameter.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\StaleCookieError.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\StateCookie.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\SupportedAddressTypes.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\Unknown.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\UnrecognizedParameters.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\params\VariableParam.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\ReConfigChunk.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\SackChunk.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\ReconfigState.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\SCTPByteStreamListener.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\SCTPMessage.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\SCTPStream.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\SCTPStreamListener.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\SCTPTimer.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\small\BlockingSCTPStream.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\small\MessageSizeExceededException.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\small\SimpleSCTPTimer.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\small\ThreadedAssociation.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\small\UDPForwardingStream.cs" />
+    <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\StreamNumberInUseException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
