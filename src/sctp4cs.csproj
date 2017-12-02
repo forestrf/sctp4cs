@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>sctp4cs</RootNamespace>
     <AssemblyName>sctp4cs</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -31,9 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+    <Reference Include="BouncyCastle.Crypto">
       <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -59,6 +58,7 @@
     <Compile Include="Utils\ByteBuffer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="sctp4j\src\main\java\pe\pi\sctp4j\sctp\messages\FailChunk.cs" />
+    <Compile Include="Utils\SortedArray.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="sctp4j\src\main\java\io\netty\handler\codec\compression\Crc32c.cs" />

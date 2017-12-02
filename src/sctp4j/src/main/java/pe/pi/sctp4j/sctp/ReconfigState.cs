@@ -19,7 +19,6 @@
 
 using pe.pi.sctp4j.sctp.messages;
 using pe.pi.sctp4j.sctp.messages.Params;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 /**
@@ -35,13 +34,13 @@ namespace pe.pi.sctp4j.sctp {
 		uint nearSeqno = 0;
 		uint farSeqno = 0;
 		Association assoc;
-		ConcurrentQueue<SCTPStream> listOfStreamsToReset;
+		Queue<SCTPStream> listOfStreamsToReset;
 
 		public ReconfigState(Association a, uint farTSN) {
 			nearSeqno = a.getNearTSN();
 			farSeqno = farTSN;
 			assoc = a;
-			listOfStreamsToReset = new ConcurrentQueue<SCTPStream>();
+			listOfStreamsToReset = new Queue<SCTPStream>();
 		}
 
 		private bool haveSeen(ReConfigChunk rconf) {
@@ -170,7 +169,9 @@ namespace pe.pi.sctp4j.sctp {
 			ReConfigChunk ret = null;
 			Log.debug("building reconfig so close stream " + st);
 			st.setClosing(true);
-			listOfStreamsToReset.Enqueue(st);
+			lock (listOfStreamsToReset) {
+				listOfStreamsToReset.Enqueue(st);
+			}
 			if (!timerIsRunning()) {
 				ret = makeSSNResets();
 			}
@@ -181,7 +182,9 @@ namespace pe.pi.sctp4j.sctp {
 			ReConfigChunk reply = new ReConfigChunk(); // create a new thing
 			Log.debug("closing streams n=" + listOfStreamsToReset.Count);
 			List<int> streamsL = new List<int>();
-			foreach (var s in listOfStreamsToReset) if (s.InboundIsOpen()) streamsL.Add(s.getNum());
+			lock (listOfStreamsToReset) {
+				foreach (var s in listOfStreamsToReset) if (s.InboundIsOpen()) streamsL.Add(s.getNum());
+			}
 			int[] streams = streamsL.ToArray();
 			if (streams.Length > 0) {
 				OutgoingSSNResetRequestParameter rep = new OutgoingSSNResetRequestParameter(nextNearNo(), farSeqno - 1, assoc.getNearTSN());
@@ -189,7 +192,9 @@ namespace pe.pi.sctp4j.sctp {
 				reply.addParam(rep);
 			}
 			streamsL.Clear();
-			foreach (var s in listOfStreamsToReset) if (s.OutboundIsOpen()) streamsL.Add(s.getNum());
+			lock (listOfStreamsToReset) {
+				foreach (var s in listOfStreamsToReset) if (s.OutboundIsOpen()) streamsL.Add(s.getNum());
+			}
 			streams = streamsL.ToArray();
 			if (streams.Length > 0) {
 				IncomingSSNResetRequestParameter rep = new IncomingSSNResetRequestParameter(nextNearNo());

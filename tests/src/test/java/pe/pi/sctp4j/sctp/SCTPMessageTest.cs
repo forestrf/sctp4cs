@@ -157,14 +157,14 @@ namespace pe.pi.sctp4j.sctp {
 			Console.WriteLine("--> fill short string ");
 			string teststring = "This is a short test";
 			SCTPMessage instance = new SCTPMessage(teststring, _fakeStream);
-			SortedSet<DataChunk> chunks = new SortedSet<DataChunk>();
+			SortedArray<DataChunk> chunks = new SortedArray<DataChunk>();
 			while (instance.hasMoreData()) {
 				DataChunk dc = new DataChunk();
 				instance.fill(dc);
 				chunks.Add(dc);
 			}
 			Assert.AreEqual(chunks.Count, 1);
-			int ppid = ((DataChunk)chunks.Min).getPpid();
+			int ppid = ((DataChunk)chunks.First).getPpid();
 			Assert.AreEqual(ppid,DataChunk.WEBRTCstring);
 		}
 		[TestMethod]
@@ -173,14 +173,14 @@ namespace pe.pi.sctp4j.sctp {
 			byte [] testBlob = new byte[21];
 			_rand.NextBytes(testBlob);
 			SCTPMessage instance = new SCTPMessage(testBlob, _fakeStream);
-			SortedSet<DataChunk> chunks = new SortedSet<DataChunk>();
+			SortedArray<DataChunk> chunks = new SortedArray<DataChunk>();
 			while (instance.hasMoreData()) {
 				DataChunk dc = new DataChunk();
 				instance.fill(dc);
 				chunks.Add(dc);
 			}
 			Assert.AreEqual(chunks.Count, 1);
-			int ppid = ((DataChunk)chunks.Min).getPpid();
+			int ppid = ((DataChunk)chunks.First).getPpid();
 			Assert.AreEqual(ppid,DataChunk.WEBRTCBINARY);
 		}
 		[TestMethod]
@@ -193,7 +193,7 @@ namespace pe.pi.sctp4j.sctp {
 			sb.Append(" test.");
 			string teststring = sb.ToString();
 			SCTPMessage instance = new SCTPMessage(teststring, _fakeStream);
-			SortedSet<DataChunk> chunks = new SortedSet<DataChunk>();
+			SortedArray<DataChunk> chunks = new SortedArray<DataChunk>();
 			long tsn = 111;
 
 			while (instance.hasMoreData()) {
@@ -202,7 +202,7 @@ namespace pe.pi.sctp4j.sctp {
 				instance.fill(dc);
 				chunks.Add(dc);
 			}
-			double pktsz = chunks.Min.getDataSize();
+			double pktsz = chunks.First.getDataSize();
 			int estimate = (int) Math.Ceiling(teststring.Length / pktsz);
 			Assert.AreEqual(chunks.Count, estimate);
 		}
@@ -213,7 +213,7 @@ namespace pe.pi.sctp4j.sctp {
 			StringBuilder sb = new StringBuilder("");
 			string teststring = sb.ToString();
 			SCTPMessage instance = new SCTPMessage(teststring, _fakeStream);
-			SortedSet<DataChunk> chunks = new SortedSet<DataChunk>();
+			SortedArray<DataChunk> chunks = new SortedArray<DataChunk>();
 			long tsn = 111;
 
 			while (instance.hasMoreData()) {
@@ -222,10 +222,10 @@ namespace pe.pi.sctp4j.sctp {
 				instance.fill(dc);
 				chunks.Add(dc);
 			}
-			int pktsz = chunks.Min.getDataSize();
+			int pktsz = chunks.First.getDataSize();
 			Assert.AreEqual(chunks.Count, 1);
 			Assert.AreEqual(pktsz,1);
-			int ppid = ((DataChunk)chunks.Min).getPpid();
+			int ppid = ((DataChunk)chunks.First).getPpid();
 			Assert.AreEqual(ppid,DataChunk.WEBRTCstringEMPTY);
 		}
 
@@ -234,7 +234,7 @@ namespace pe.pi.sctp4j.sctp {
 			Console.WriteLine("--> fill empty blob");
 			byte [] testBlob = new byte[0];
 			SCTPMessage instance = new SCTPMessage(testBlob, _fakeStream);
-			SortedSet<DataChunk> chunks = new SortedSet<DataChunk>();
+			SortedArray<DataChunk> chunks = new SortedArray<DataChunk>();
 			long tsn = 111;
 
 			while (instance.hasMoreData()) {
@@ -244,9 +244,9 @@ namespace pe.pi.sctp4j.sctp {
 				chunks.Add(dc);
 			}
 			Assert.AreEqual(chunks.Count, 1);
-			int pktsz = chunks.Min.getDataSize();
+			int pktsz = chunks.First.getDataSize();
 			Assert.AreEqual(pktsz,1);
-			int ppid = ((DataChunk)chunks.Min).getPpid();
+			int ppid = ((DataChunk)chunks.First).getPpid();
 			Assert.AreEqual(ppid,DataChunk.WEBRTCBINARYEMPTY);
 		}
     

@@ -20,7 +20,6 @@
 using Org.BouncyCastle.Crypto.Tls;
 using pe.pi.sctp4j.sctp.messages;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -33,7 +32,7 @@ using System.Threading;
 namespace pe.pi.sctp4j.sctp.small {
 	public class ThreadedAssociation : Association {
 		static int MAXBLOCKS = 10; // some number....
-		private ConcurrentQueue<DataChunk> _freeBlocks;
+		private Queue<DataChunk> _freeBlocks;
 		private Dictionary<long, DataChunk> _inFlight;
 		private long _lastCumuTSNAck;
 		static int MAX_INIT_RETRANS = 8;
@@ -137,12 +136,14 @@ namespace pe.pi.sctp4j.sctp.small {
 				Log.warn("Failed to get suitable transport mtu ");
 				Console.WriteLine(x.ToString());
 			}
-			_freeBlocks = new ConcurrentQueue<DataChunk>(/*MAXBLOCKS*/);
+			_freeBlocks = new Queue<DataChunk>(/*MAXBLOCKS*/);
 			_inFlight = new Dictionary<long, DataChunk>(MAXBLOCKS);
 
 			for (int i = 0; i < MAXBLOCKS; i++) {
 				DataChunk dc = new DataChunk();
-				_freeBlocks.Enqueue(dc);
+				lock (_freeBlocks) {
+					_freeBlocks.Enqueue(dc);
+				}
 			}
 			resetCwnd();
 		}
@@ -257,8 +258,8 @@ namespace pe.pi.sctp4j.sctp.small {
 		public override void sendAndBlock(SCTPMessage m) {
 			while (m.hasMoreData()) {
 				DataChunk dc;
-				if (!_freeBlocks.TryDequeue(out dc)) {
-					dc = new DataChunk();
+				lock (_freeBlocks) {
+					dc = _freeBlocks.Count > 0 ? _freeBlocks.Dequeue() : new DataChunk();
 				}
 				m.fill(dc);
 				Log.verb("thinking about waiting for congestion " + dc.getTsn());
@@ -459,8 +460,10 @@ namespace pe.pi.sctp4j.sctp.small {
 						try {
 							int sid = d.getStreamId();
 							SCTPStream stream = getStream(sid);
-							if(stream != null) {stream.delivered(d);}
-							_freeBlocks.Enqueue(d);
+							if(stream != null) { stream.delivered(d); }
+							lock (_freeBlocks) {
+								_freeBlocks.Enqueue(d);
+							}
 						} catch (Exception ex) {
 							Log.error("eek - can't replace free block on list!?!");
 							Console.WriteLine(ex.ToString());

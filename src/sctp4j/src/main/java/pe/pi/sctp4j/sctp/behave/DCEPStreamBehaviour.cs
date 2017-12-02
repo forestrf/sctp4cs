@@ -17,8 +17,6 @@
  // Modified by Andrés Leone Gámez
 
 using pe.pi.sctp4j.sctp.messages;
-using System.Collections.Generic;
-
 /**
  *
  * @author tim
@@ -32,7 +30,7 @@ namespace pe.pi.sctp4j.sctp.behave {
 			return null;
 		}
 		
-		public void deliver(SCTPStream s, SortedSet<DataChunk> a, SCTPStreamListener l) {
+		public void deliver(SCTPStream s, SortedArray<DataChunk> a, SCTPStreamListener l) {
 			Log.debug("in deliver() for stream " + s.getLabel() + " with " + a.Count + " chunks. ");
 			// strictly this should be looking at flags etc, and bundling the result into a message
 			foreach (DataChunk dc in a) {

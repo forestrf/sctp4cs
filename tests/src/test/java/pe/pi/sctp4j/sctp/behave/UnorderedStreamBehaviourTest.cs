@@ -100,7 +100,7 @@ namespace pe.pi.sctp4j.sctp.behave {
 		public void testDeliverSingle() {
 			Console.WriteLine("--> deliver single");
 			SCTPStream s = mockStream();
-			SortedSet<DataChunk> stash = new SortedSet<DataChunk>();
+			SortedArray<DataChunk> stash = new SortedArray<DataChunk>();
 			DataChunk single = new DataChunk();
 			string teststring = "Test string";
 			single.setData(teststring.getBytes());
@@ -141,7 +141,7 @@ namespace pe.pi.sctp4j.sctp.behave {
 
 		void dontDeliverOnePart(int flag) {
 			SCTPStream s = mockStream();
-			SortedSet<DataChunk> stash = new SortedSet<DataChunk>();
+			SortedArray<DataChunk> stash = new SortedArray<DataChunk>();
 			DataChunk single = new DataChunk();
 			string teststring = "Test string";
 			single.setData(teststring.getBytes());
@@ -163,7 +163,7 @@ namespace pe.pi.sctp4j.sctp.behave {
 		public void testDeliverTwo() {
 			Console.WriteLine("--> deliver two");
 			SCTPStream s = mockStream();
-			SortedSet<DataChunk> stash = new SortedSet<DataChunk>();
+			SortedArray<DataChunk> stash = new SortedArray<DataChunk>();
 			string[] teststrings = {"Test string A", "Test string B"};
 			List<string> result = new List<string>();
 			int n = 0;
@@ -211,7 +211,7 @@ namespace pe.pi.sctp4j.sctp.behave {
 
 		void multiPartMessage(string[] teststrings) {
 			SCTPStream s = mockStream();
-			SortedSet<DataChunk> stash = new SortedSet<DataChunk>();
+			SortedArray<DataChunk> stash = new SortedArray<DataChunk>();
 			List<string> result = new List<string>();
 			int n = 0;
 			StringBuilder bs = new StringBuilder();
@@ -241,7 +241,7 @@ namespace pe.pi.sctp4j.sctp.behave {
 
 		void oneMissingPartMessages(string[] teststrings, string es, int ec) {
 			SCTPStream s = mockStream();
-			SortedSet<DataChunk> stash = new SortedSet<DataChunk>();
+			SortedArray<DataChunk> stash = new SortedArray<DataChunk>();
 			List<string> result = new List<string>();
 			int n = 0;
 			int expectedToRemain = 0;
@@ -340,7 +340,7 @@ namespace pe.pi.sctp4j.sctp.behave {
 
 			SCTPStreamListener l = new CheckingStreamListener(result);
 			UnorderedStreamBehaviour instance = new UnorderedStreamBehaviour();
-			SortedSet<DataChunk> stash = new SortedSet<DataChunk>();
+			SortedArray<DataChunk> stash = new SortedArray<DataChunk>();
 			while (all.Count > 0) {
 				int v = rand.Next(all.Count);
 				stash.Add(all[v]);

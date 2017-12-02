@@ -54,16 +54,16 @@ namespace pe.pi.sctp4j.sctp {
 			_pPid = (data.Length > 0) ? DataChunk.WEBRTCstring : DataChunk.WEBRTCstringEMPTY;
 		}
 
-		public SCTPMessage(SCTPStream s, SortedSet<DataChunk> chunks) {
+		public SCTPMessage(SCTPStream s, SortedArray<DataChunk> chunks) {
 			_stream = s;
 			int tot = 0;
-			if ((chunks.Min.getFlags() & DataChunk.BEGINFLAG) == 0) {
+			if ((chunks.First.getFlags() & DataChunk.BEGINFLAG) == 0) {
 				throw new Exception("[IllegalArgumentException] must start with 'start' chunk");
 			}
-			if ((chunks.Max.getFlags() & DataChunk.ENDFLAG) == 0) {
+			if ((chunks.Last.getFlags() & DataChunk.ENDFLAG) == 0) {
 				throw new Exception("[IllegalArgumentException] must end with 'end' chunk");
 			}
-			_pPid = chunks.Min.getPpid();
+			_pPid = chunks.First.getPpid();
 			foreach (DataChunk dc in chunks) {
 				tot += dc.getDataSize();
 				if (_pPid != dc.getPpid()) {

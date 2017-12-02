@@ -37,7 +37,7 @@ namespace pe.pi.sctp4j.sctp {
 		protected Association _ass;
 		private int _sno;
 		private string _label;
-		private SortedSet<DataChunk> _stash;
+		private SortedArray<DataChunk> _stash;
 		private SCTPStreamListener _sl;
 		private int _nextMessageSeqIn;
 		private int _nextMessageSeqOut;
@@ -71,7 +71,7 @@ namespace pe.pi.sctp4j.sctp {
 		public SCTPStream(Association a, int id) {
 			_ass = a;
 			_sno = id;
-			_stash = new SortedSet<DataChunk>(); // sort bt tsn
+			_stash = new SortedArray<DataChunk>(); // sort bt tsn
 			_behave = new OrderedStreamBehaviour(); // default 'till we know different
 		}
 

@@ -17,7 +17,6 @@
  // Modified by Andrés Leone Gámez
 
 using pe.pi.sctp4j.sctp.messages;
-using System.Collections.Generic;
 
 /**
  *
@@ -32,6 +31,6 @@ namespace pe.pi.sctp4j.sctp.behave {
 
 		// we have a sorted queue of datachunks for this stream to deliver
 		// according to the appropriate behaviour.
-		void deliver(SCTPStream s, SortedSet<DataChunk> a, SCTPStreamListener l);
+		void deliver(SCTPStream s, SortedArray<DataChunk> a, SCTPStreamListener l);
 	}
 }
