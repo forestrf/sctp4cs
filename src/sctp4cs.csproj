@@ -31,8 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BouncyCastle.Crypto">
-      <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
+    <Reference Include="BouncyCastle">
+      <HintPath>..\libs\BouncyCastle\BouncyCastle.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -42,18 +43,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Logger\ILogger.cs" />
+    <Compile Include="Logger\InternalLogger.cs" />
     <Compile Include="JavaExtras\BlockingQueue.cs" />
     <Compile Include="JavaExtras\Crc32.cs" />
     <Compile Include="JavaExtras\ExtensionMethods.cs" />
     <Compile Include="JavaExtras\IllegalArgumentException.cs" />
     <Compile Include="JavaExtras\InterruptedException.cs" />
     <Compile Include="JavaExtras\Iterator.cs" />
-    <Compile Include="JavaExtras\Log.cs" />
     <Compile Include="JavaExtras\NullPointerException.cs" />
     <Compile Include="JavaExtras\RequestListener.cs" />
     <Compile Include="JavaExtras\Runnable.cs" />
     <Compile Include="JavaExtras\ServerSocketChannel.cs" />
     <Compile Include="JavaExtras\Time.cs" />
+    <Compile Include="Logger\Logger.cs" />
     <Compile Include="Utils\FastBitConverter.cs" />
     <Compile Include="Utils\ByteBuffer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

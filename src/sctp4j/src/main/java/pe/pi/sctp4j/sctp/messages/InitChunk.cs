@@ -14,9 +14,10 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
+using SCTP4CS;
 using LiteNetLib.Utils;
 using pe.pi.sctp4j.sctp.messages.Params;
 
@@ -68,14 +69,14 @@ namespace pe.pi.sctp4j.sctp.messages {
 				_numOutStreams = _body.GetUShort();
 				_numInStreams = _body.GetUShort();
 				_initialTSN = _body.GetUInt();
-				Log.verb("Init " + this.ToString());
+				Logger.logger.Trace("Init " + this.ToString());
 				while (_body.hasRemaining()) {
 					VariableParam v = readVariable();
 					_varList.Add(v);
 				}
 				foreach (VariableParam v in _varList){
 					// now look for variables we are expecting...
-					Log.verb("variable of type: "+v.getName()+" "+ v.ToString());
+					Logger.logger.Trace("variable of type: "+v.getName()+" "+ v.ToString());
 					if (typeof(SupportedExtensions).IsAssignableFrom(v.GetType())){
 						_farSupportedExtensions = ((SupportedExtensions)v).getData();
 					} else if (typeof(RandomParam).IsAssignableFrom(v.GetType())){
@@ -87,7 +88,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 					} else if (typeof(ChunkListParam).IsAssignableFrom(v.GetType())) {
 						_farChunks = ((ChunkListParam)v).getData();
 					} else {
-						Log.verb("unexpected variable of type: "+v.getName());
+						Logger.logger.Trace("unexpected variable of type: "+v.getName());
 					}
 				}
 			}

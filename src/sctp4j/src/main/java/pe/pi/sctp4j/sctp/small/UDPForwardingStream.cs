@@ -14,9 +14,10 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
+using SCTP4CS;
 using pe.pi.sctp4j.sctp.behave;
 using System;
 using System.Net.Sockets;
@@ -49,7 +50,7 @@ namespace pe.pi.sctp4j.sctp.small {
 					try {
 						int l = _udpSock.Receive(buff);
 						if (l > buff.Length) {
-							Log.warn("truncated packet from " + _udpSock.RemoteEndPoint.ToString());
+							Logger.logger.Warn("truncated packet from " + _udpSock.RemoteEndPoint.ToString());
 							l = buff.Length;
 						}
 						byte[] pkt = new byte[l];

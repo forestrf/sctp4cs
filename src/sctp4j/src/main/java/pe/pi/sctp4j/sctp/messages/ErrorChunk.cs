@@ -14,8 +14,9 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
+using SCTP4CS;
 using LiteNetLib.Utils;
 using pe.pi.sctp4j.sctp.messages.Params;
 
@@ -69,7 +70,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 
 		public ErrorChunk(CType type, byte flags, int length, ByteBuffer pkt) : base(type, flags, length, pkt) {
 			if (_body.remaining() >= 4) {
-				Log.verb("Error" + this.ToString());
+				Logger.logger.Trace("Error" + this.ToString());
 				while (_body.hasRemaining()) {
 					VariableParam v = readErrorParam();
 					_varList.Add(v);

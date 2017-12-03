@@ -14,9 +14,10 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
+using SCTP4CS;
 using LiteNetLib.Utils;
 
 /**
@@ -100,7 +101,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		}
 
 		protected override void putFixedParams(ByteBuffer ret) {
-			Log.debug("cookie is "+_cookieData +"and buffer is "+ret);
+			Logger.logger.Debug("cookie is "+_cookieData +"and buffer is "+ret);
 			ret.Put(_cookieData);
 		}
 	}

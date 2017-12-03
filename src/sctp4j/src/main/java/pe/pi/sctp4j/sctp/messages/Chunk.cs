@@ -14,9 +14,10 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
+using SCTP4CS;
 using LiteNetLib.Utils;
 using pe.pi.sctp4j.sctp.messages.Params;
 using System;
@@ -167,7 +168,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 						ret = new ReConfigChunk(type, flags, length, pkt);
 						break;
 					default:
-						Log.warn("Default chunk type "+type+" read in ");
+						Logger.logger.Warn("Default chunk type "+type+" read in ");
 						ret = new FailChunk(type, flags, length, pkt);
 						break;
 				}
@@ -271,17 +272,17 @@ namespace pe.pi.sctp4j.sctp.messages {
 			int pad = 0;
 			if (_varList != null) {
 				foreach (VariableParam v in this._varList) {
-					Log.debug("var " + v.getName() + " at " + ret.Position);
+					Logger.logger.Debug("var " + v.getName() + " at " + ret.Position);
 
 					ByteBuffer var = ret.slice();
 					var.Put((ushort) v.getType());
 					var.Put((ushort) 4); // length holder.
 					v.writeBody(var);
 					var.Put(2, (ushort) var.Position);
-					Log.verb("setting var length to " + var.Position);
+					Logger.logger.Trace("setting var length to " + var.Position);
 					pad = var.Position % 4;
 					pad = (pad != 0) ? 4 - pad : 0;
-					Log.verb("padding by " + pad);
+					Logger.logger.Trace("padding by " + pad);
 					ret.Position += var.Position + pad;
 				}
 			}
@@ -457,9 +458,9 @@ namespace pe.pi.sctp4j.sctp.messages {
 			}
 			try {
 				var.readBody(_body, blen);
-				Log.debug("variable type " + var.getType() + " name " + var.getName());
+				Logger.logger.Debug("variable type " + var.getType() + " name " + var.getName());
 			} catch (SctpPacketFormatException ex) {
-				Log.error(ex.ToString());
+				Logger.logger.Error(ex.ToString());
 			}
 			if (_body.hasRemaining()) {
 				int mod = blen % 4;
@@ -542,10 +543,10 @@ namespace pe.pi.sctp4j.sctp.messages {
 			}
 			try {
 				var.readBody(_body, blen);
-				Log.verb("variable type " + var.getType() + " name " + var.getName());
-				Log.verb("additional info " + var.ToString());
+				Logger.logger.Trace("variable type " + var.getType() + " name " + var.getName());
+				Logger.logger.Trace("additional info " + var.ToString());
 			} catch (SctpPacketFormatException ex) {
-				Log.error(ex.ToString());
+				Logger.logger.Error(ex.ToString());
 			}
 			if (_body.hasRemaining()) {
 				int mod = blen % 4;

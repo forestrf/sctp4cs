@@ -14,8 +14,9 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
+using SCTP4CS;
 using Org.BouncyCastle.Crypto.Tls;
 using System;
 using System.Net;
@@ -49,12 +50,12 @@ namespace pe.pi.sctp4j.sctp.leakey {
 				remoteEndPoint_logsend = new IPEndPoint(me, SCTP);
 				/*
 				InetSocketAddress s = (InetSocketAddress) _logsend.getLocalSocketAddress();
-				Log.warn("Leaking to send address " + s.getHoststring() + ":" + s.getPort());
+				Log.logger.warn("Leaking to send address " + s.getHoststring() + ":" + s.getPort());
 				InetSocketAddress r = (InetSocketAddress) _logrec.getLocalSocketAddress();
-				Log.warn("Leaking to recv address " + r.getHoststring() + ":" + r.getPort());
+				Log.logger.warn("Leaking to recv address " + r.getHoststring() + ":" + r.getPort());
 				*/
 			} catch (Exception ex) {
-				Log.error("exception in making Leaky socket");
+				Logger.logger.Error("exception in making Leaky socket");
 			}
 		}
 		
@@ -76,19 +77,19 @@ namespace pe.pi.sctp4j.sctp.leakey {
 		
 		public void Send(byte[] bytes, int offs, int len) {
 			if ((bytes == null) || (bytes.Length < offs + len) || (bytes.Length < 1)) {
-				Log.error("Implausible packet for encryption ");
+				Logger.logger.Error("Implausible packet for encryption ");
 				if (bytes == null) {
-					Log.error("null buffer");
+					Logger.logger.Error("null buffer");
 				} else {
-					Log.error("Length =" + bytes.Length + " len =" + len + " offs=" + offs);
+					Logger.logger.Error("Length =" + bytes.Length + " len =" + len + " offs=" + offs);
 				}
 				return;
 			}
 			try {
 				_logsend.SendTo(bytes, offs, len, SocketFlags.None, remoteEndPoint_logsend);
 			} catch (Exception x) {
-				Log.error("can't leak to " + remoteEndPoint_logsend);
-				Log.error(x.StackTrace);
+				Logger.logger.Error("can't leak to " + remoteEndPoint_logsend);
+				Logger.logger.Error(x.StackTrace);
 			}
 			_dtls.Send(bytes, offs, len);
 		}

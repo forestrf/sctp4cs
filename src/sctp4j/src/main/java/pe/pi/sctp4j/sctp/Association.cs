@@ -30,6 +30,7 @@ using pe.pi.sctp4j.sctp.behave;
 using pe.pi.sctp4j.sctp.messages.Params;
 using System.IO;
 using System.Net.Sockets;
+using SCTP4CS;
 
 /**
  *
@@ -154,11 +155,11 @@ namespace pe.pi.sctp4j.sctp {
 		byte[] getUnionSupportedExtensions(byte[] far) {
 			ByteBuffer unionbb = new ByteBuffer(new byte[far.Length]);
 			for (int f = 0; f < far.Length; f++) {
-				Log.verb("offered extension " + Chunk.typeLookup((Chunk.CType) far[f]));
+				Logger.logger.Trace("offered extension " + Chunk.typeLookup((Chunk.CType) far[f]));
 				for (int n = 0; n < _supportedExtensions.Length; n++) {
-					Log.verb("supported extension " + Chunk.typeLookup((Chunk.CType) _supportedExtensions[n]));
+					Logger.logger.Trace("supported extension " + Chunk.typeLookup((Chunk.CType) _supportedExtensions[n]));
 					if (_supportedExtensions[n] == far[f]) {
-						Log.verb("matching extension " + Chunk.typeLookup((Chunk.CType) _supportedExtensions[n]));
+						Logger.logger.Trace("matching extension " + Chunk.typeLookup((Chunk.CType) _supportedExtensions[n]));
 						unionbb.Put(far[f]);
 					}
 				}
@@ -166,7 +167,7 @@ namespace pe.pi.sctp4j.sctp {
 			byte[] res = new byte[unionbb.Position];
 			unionbb.Position = 0;
 			unionbb.GetBytes(res, res.Length);
-			Log.verb("union of extensions contains :" + Chunk.chunksToNames(res));
+			Logger.logger.Trace("union of extensions contains :" + Chunk.chunksToNames(res));
 			return res;
 		}
 
@@ -207,7 +208,7 @@ namespace pe.pi.sctp4j.sctp {
 				send(replies.ToArray());
 			} catch (Exception end) {
 				unexpectedClose(end);
-				Console.WriteLine(end.ToString());
+				Logger.logger.Error(end.ToString());
 			}
 		}
 
@@ -220,38 +221,38 @@ namespace pe.pi.sctp4j.sctp {
 						try {
 							int length = _transp.Receive(buf, 0, buf.Length, TICK);
 							if (length == -1) {
-								Log.verb("Probably tick time out");
+								Logger.logger.Trace("Probably tick time out");
 								continue;
 							}
 							string b = Packet.getHex(buf, 0, length);
-							Log.verb("DTLS message received\n" + b);
+							Logger.logger.Trace("DTLS message received\n" + b);
 							ByteBuffer pbb = new ByteBuffer(buf);
 							pbb.Limit = length;
 							Packet rec = new Packet(pbb);
-							Log.debug("SCTP message parsed\n" + rec.ToString());
+							Logger.logger.Debug("SCTP message parsed\n" + rec.ToString());
 							deal(rec);
 						}
 						catch (SocketException e) {
 							// ignore. it should be a timeout.
 							switch (e.SocketErrorCode) {
 								case SocketError.TimedOut:
-									Log.verb("tick time out");
+									Logger.logger.Trace("tick time out");
 									break;
 								default:
 									throw e;
 							}
 						}
 					}
-					Log.verb("SCTP message recv null\n Shutting down.");
+					Logger.logger.Trace("SCTP message recv null\n Shutting down.");
 
 					_transp.Close();
 				}
 				catch (EndOfStreamException eof) {
 					unexpectedClose(eof);
-					Log.debug(eof.ToString());
+					Logger.logger.Debug(eof.ToString());
 				}
 				catch (Exception ex) {
-					Log.debug("Association rcv failed " + ex.GetType().Name + " " + ex.ToString());
+					Logger.logger.Debug("Association rcv failed " + ex.GetType().Name + " " + ex.ToString());
 				}
 			});
 			_rcv.Priority = ThreadPriority.AboveNormal;
@@ -264,7 +265,7 @@ namespace pe.pi.sctp4j.sctp {
     
 		public Association(DatagramTransport transport, AssociationListener al, bool client) {
 			//Log.setLevel(Log.ALL);
-			Log.debug("Created an Associaction of type: " + this.GetType().Name);
+			Logger.logger.Debug("Created an Associaction of type: " + this.GetType().Name);
 			_al = al;
 			_random = new SecureRandom();
 			_myVerTag = _random.NextInt();
@@ -278,7 +279,7 @@ namespace pe.pi.sctp4j.sctp {
 			if (_transp != null) {
 				startRcv();
 			} else {
-				Log.error("Created an Associaction with a null transport somehow...");
+				Logger.logger.Error("Created an Associaction with a null transport somehow...");
 			}
 			__assocNo++;
 			/*
@@ -305,12 +306,12 @@ namespace pe.pi.sctp4j.sctp {
 		protected void send(Chunk[] c) {
 			if ((c != null) && (c.Length > 0)) {
 				ByteBuffer obb = mkPkt(c);
-				Log.verb("sending SCTP packet" + Packet.getHex(obb));
+				Logger.logger.Trace("sending SCTP packet" + Packet.getHex(obb));
 				lock (this) {
 					_transp.Send(obb.Data, obb.offset, obb.Limit);
 				}
 			} else {
-				Log.verb("Blocked empty packet send() - probably no response needed.");
+				Logger.logger.Trace("Blocked empty packet send() - probably no response needed.");
 			}
 		}
 
@@ -349,33 +350,33 @@ namespace pe.pi.sctp4j.sctp {
 						InitChunk init = (InitChunk) c;
 						reply = inboundInit(init);
 					} else {
-						Log.debug("Got an INIT when state was " + _state.ToString() + " - ignoring it for now ");
+						Logger.logger.Debug("Got an INIT when state was " + _state.ToString() + " - ignoring it for now ");
 					}
 					break;
 				case Chunk.CType.INITACK:
-					Log.debug("got initack " + c.ToString());
+					Logger.logger.Debug("got initack " + c.ToString());
 					if (_state == State.COOKIEWAIT) {
 						InitAckChunk iack = (InitAckChunk) c;
 						reply = iackDeal(iack);
 					} else {
-						Log.debug("Got an INITACK when not waiting for it - ignoring it");
+						Logger.logger.Debug("Got an INITACK when not waiting for it - ignoring it");
 					}
 					break;
 				case Chunk.CType.COOKIE_ECHO:
-					Log.debug("got cookie echo " + c.ToString());
+					Logger.logger.Debug("got cookie echo " + c.ToString());
 					reply = cookieEchoDeal((CookieEchoChunk) c);
 					if (reply.Length > 0) {
 						ret = !typeof(ErrorChunk).IsAssignableFrom(reply[0].GetType()); // ignore any following data chunk. 
 					}
 					break;
 				case Chunk.CType.COOKIE_ACK:
-					Log.debug("got cookie ack " + c.ToString());
+					Logger.logger.Debug("got cookie ack " + c.ToString());
 					if (_state == State.COOKIEECHOED) {
 						_state = State.ESTABLISHED;
 					}
 					break;
 				case Chunk.CType.DATA:
-					Log.debug("got data " + c.ToString());
+					Logger.logger.Debug("got data " + c.ToString());
 					reply = dataDeal((DataChunk) c);
 					break;
 				case Chunk.CType.ABORT:
@@ -387,7 +388,7 @@ namespace pe.pi.sctp4j.sctp {
 					reply = ((HeartBeatChunk) c).mkReply();
 					break;
 				case Chunk.CType.SACK:
-					Log.debug("got tsak for TSN " + ((SackChunk) c).getCumuTSNAck());
+					Logger.logger.Debug("got tsak for TSN " + ((SackChunk) c).getCumuTSNAck());
 					reply = sackDeal((SackChunk) c);
 					// fix the outbound list here
 					break;
@@ -421,7 +422,7 @@ namespace pe.pi.sctp4j.sctp {
 		public ByteBuffer mkPkt(Chunk[] cs) {
 			Packet ob = new Packet(_srcPort, _destPort, _peerVerTag);
 			foreach (Chunk r in cs) {
-				Log.debug("adding chunk to outbound packet: " + r.ToString());
+				Logger.logger.Debug("adding chunk to outbound packet: " + r.ToString());
 				ob.getChunkList().Add(r);
 				//todo - this needs to workout if all the chunks will fit...
 			}
@@ -497,7 +498,7 @@ namespace pe.pi.sctp4j.sctp {
 				this.send(s);
 			} catch (EndOfStreamException end) {
 				unexpectedClose(end);
-				Console.WriteLine(end.ToString());
+				Logger.logger.Error(end.ToString());
 			} // todo need timer here.....
 		}
 
@@ -594,13 +595,13 @@ namespace pe.pi.sctp4j.sctp {
 			}
 			reply = new Chunk[1];
 			reply[0] = iac;
-			Log.debug("Got in bound init :" + init.ToString());
-			Log.debug("Replying with init-ack :" + iac.ToString());
+			Logger.logger.Debug("Got in bound init :" + init.ToString());
+			Logger.logger.Debug("Replying with init-ack :" + iac.ToString());
 			return reply;
 		}
 
 		private void ingest(DataChunk dc, List<Chunk> rep) {
-			Log.verb("ingesting " + dc.ToString());
+			Logger.logger.Trace("ingesting " + dc.ToString());
 			Chunk closer = null;
 			int sno = dc.getStreamId();
 			uint tsn = dc.getTsn();
@@ -620,7 +621,7 @@ namespace pe.pi.sctp4j.sctp {
 					_al.onDCEPStream(_in, _in.getLabel(), dc.getPpid());
 				} catch (Exception x){
 					closer = _in.immediateClose();
-					Console.WriteLine(x.ToString());
+					Logger.logger.Error(x.ToString());
 				}
 			} else {
 				repa = _in.append(dc);
@@ -645,7 +646,7 @@ namespace pe.pi.sctp4j.sctp {
 			uint tsn = dc.getTsn();
 			if (tsn > _farTSN) {
 				// put it in the pen.
-				Log.verb("TSN:::" + tsn);
+				Logger.logger.Trace("TSN:::" + tsn);
 				DataChunk dup;
 				if (_holdingPen.TryGetValue(tsn, out dup)) {
 					duplicates.Add(tsn);
@@ -659,13 +660,13 @@ namespace pe.pi.sctp4j.sctp {
 						_holdingPen.Remove(t);
 						ingest(dc, rep);
 					} else {
-						Log.verb("gap in inbound tsns at " + t);
+						Logger.logger.Trace("gap in inbound tsns at " + t);
 						gap = true;
 					}
 				}
 			} else {
 				// probably wrong now.. 
-				Log.warn("Already seen . " + tsn + " expecting " + (_farTSN));
+				Logger.logger.Warn("Already seen . " + tsn + " expecting " + (_farTSN));
 				duplicates.Add(tsn);
 			}
 			List<uint> l = new List<uint>();
@@ -681,9 +682,9 @@ namespace pe.pi.sctp4j.sctp {
 
 		private Chunk[] dcepDeal(SCTPStream s, DataChunk dc, DCOpen dcep) {
 			Chunk[] rep = null;
-			Log.debug("dealing with a decp for stream " + dc.getDataAsString());
+			Logger.logger.Debug("dealing with a decp for stream " + dc.getDataAsString());
 			if (!dcep.isAck()) {
-				Log.debug("decp is not an ack... ");
+				Logger.logger.Debug("decp is not an ack... ");
 
 				SCTPStreamBehaviour behave = dcep.mkStreamBehaviour();
 				s.setBehave(behave);
@@ -702,7 +703,7 @@ namespace pe.pi.sctp4j.sctp {
 				rep[0] = ack;
 
 			} else {
-				Log.debug("got a dcep ack for " + s.getLabel());
+				Logger.logger.Debug("got a dcep ack for " + s.getLabel());
 				SCTPStreamBehaviour behave = dcep.mkStreamBehaviour();
 				s.setBehave(behave);
 				lock (s) {
@@ -784,11 +785,11 @@ namespace pe.pi.sctp4j.sctp {
 						reply[0] = ec;
 					}
 				} else {
-					Log.error("Got a COOKIE_ECHO that doesn't match any we sent. ?!?");
+					Logger.logger.Error("Got a COOKIE_ECHO that doesn't match any we sent. ?!?");
 				}
 
 			} else {
-				Log.debug("Got an COOKIE_ECHO when not closed - ignoring it");
+				Logger.logger.Debug("Got an COOKIE_ECHO when not closed - ignoring it");
 			}
 			return reply;
 		}
@@ -800,7 +801,7 @@ namespace pe.pi.sctp4j.sctp {
 			ret.setArWin((uint) (MAXBUFF - stashcap));
 			ret.setGaps(pen);
 			ret.setDuplicates(dups);
-			Log.debug("made SACK " + ret.ToString());
+			Logger.logger.Debug("made SACK " + ret.ToString());
 			return ret;
 		}
 
@@ -827,7 +828,7 @@ namespace pe.pi.sctp4j.sctp {
 		public void closeStream(SCTPStream st) {
 			Chunk []cs = new Chunk[1];
 			if (canSend()){
-				Log.debug("due to reconfig stream "+st);
+				Logger.logger.Debug("due to reconfig stream "+st);
 				cs[0] = reconfigState.makeClose(st);
 			}
 			this.send(cs);
@@ -886,7 +887,7 @@ namespace pe.pi.sctp4j.sctp {
 					send(hack);
 				} catch (Exception end) {
 					unexpectedClose(end);
-					Console.WriteLine(end.ToString());
+					Logger.logger.Error(end.ToString());
 				}
 			} else {
 				throw new UnreadyAssociationException();

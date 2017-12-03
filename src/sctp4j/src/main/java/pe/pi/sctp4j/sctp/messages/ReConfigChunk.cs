@@ -14,9 +14,10 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
+using SCTP4CS;
 using LiteNetLib.Utils;
 using pe.pi.sctp4j.sctp.messages.Params;
 using System;
@@ -33,12 +34,12 @@ namespace pe.pi.sctp4j.sctp.messages {
 
 		public ReConfigChunk(CType type, byte flags, int length, ByteBuffer pkt)
 			: base(type, flags, length, pkt) {
-			Log.debug("ReConfig chunk" + this.ToString());
+			Logger.logger.Debug("ReConfig chunk" + this.ToString());
 			if (_body.remaining() >= 4) {
 				while (_body.hasRemaining()) {
 					VariableParam v = this.readVariable();
 					_varList.Add(v);
-					Log.debug("\tParam :" + v.ToString());
+					Logger.logger.Debug("\tParam :" + v.ToString());
 				}
 			}
 		}
@@ -179,7 +180,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		}
 
 		public void addParam(VariableParam rep) {
-			Log.debug("adding " + rep + " to " + this);
+			Logger.logger.Debug("adding " + rep + " to " + this);
 			_varList.Add(rep);
 			validate();
 		}

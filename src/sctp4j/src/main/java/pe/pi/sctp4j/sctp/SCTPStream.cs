@@ -14,8 +14,9 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
+using SCTP4CS;
 using pe.pi.sctp4j.sctp.behave;
 using pe.pi.sctp4j.sctp.messages;
 using System;
@@ -57,7 +58,7 @@ namespace pe.pi.sctp4j.sctp {
 			try {
 				ret = _ass.addToCloseList(this);
 			} catch (Exception ex) {
-				Log.error("Can't make immediate close for " + this._sno + " because " + ex.ToString());
+				Logger.logger.Error("Can't make immediate close for " + this._sno + " because " + ex.ToString());
 			}
 			return ret;
 		}
@@ -88,7 +89,7 @@ namespace pe.pi.sctp4j.sctp {
 		}
 
 		public Chunk[] append(DataChunk dc) {
-			Log.debug("adding data to stash on stream " + _label + "(" + dc + ")");
+			Logger.logger.Debug("adding data to stash on stream " + _label + "(" + dc + ")");
 			_stash.Add(dc);
 			return _behave.respond(this);
 		}
@@ -118,7 +119,7 @@ namespace pe.pi.sctp4j.sctp {
 			if (_behave != null) {
 				_behave.deliver(this, _stash, _sl);
 			} else {
-				Log.warn("No behaviour set");
+				Logger.logger.Warn("No behaviour set");
 			}
 		}
 
@@ -136,7 +137,7 @@ namespace pe.pi.sctp4j.sctp {
 
 		public void setSCTPStreamListener(SCTPStreamListener sl) {
 			_sl = sl;
-			Log.debug("action a delayed delivery now we have a listener.");
+			Logger.logger.Debug("action a delayed delivery now we have a listener.");
 			//todo think about what reliablility looks like here.
 			_behave.deliver(this, _stash, _sl);
 		}
@@ -150,7 +151,7 @@ namespace pe.pi.sctp4j.sctp {
 		}
 
 		public void close() {
-			Log.debug("closing stream " + this._label + " " + this._sno);
+			Logger.logger.Debug("closing stream " + this._label + " " + this._sno);
 			_ass.closeStream(this);
 		}
 
@@ -177,7 +178,7 @@ namespace pe.pi.sctp4j.sctp {
 		}
 
 		public void reset() {
-			Log.debug("Resetting stream " + this._sno);
+			Logger.logger.Debug("Resetting stream " + this._sno);
 			if (this._sl != null) {
 				_sl.close(this);
 			}
@@ -203,7 +204,7 @@ namespace pe.pi.sctp4j.sctp {
 				case State.INBOUNDONLY:
 					break;
 			}
-			Log.debug("Stream State for " + _sno + " is now " + state);
+			Logger.logger.Debug("Stream State for " + _sno + " is now " + state);
 		}
 
 		void setInboundClosed() {
@@ -218,11 +219,11 @@ namespace pe.pi.sctp4j.sctp {
 				case State.OUTBOUNDONLY:
 					break;
 			}
-			Log.debug("Stream State for " + _sno + " is now " + state);
+			Logger.logger.Debug("Stream State for " + _sno + " is now " + state);
 		}
 
 		State getState() {
-			Log.debug("Stream State for " + _sno + " is currently " + state);
+			Logger.logger.Debug("Stream State for " + _sno + " is currently " + state);
 			return state;
 		}
 

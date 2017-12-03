@@ -14,8 +14,9 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
+using SCTP4CS;
 using LiteNetLib.Utils;
 using Org.BouncyCastle.Bcpg;
 using pe.pi.sctp4j.sctp.behave;
@@ -107,7 +108,7 @@ namespace pe.pi.sctp4j.sctp.dataChannel.DECP {
 
 		public byte[] getBytes() {
 			int sz = 12 + _labLen + pad(_labLen) + _protLen + pad(_protLen);
-			Log.verb("dcopen needs " + sz + " bytes ");
+			Logger.logger.Trace("dcopen needs " + sz + " bytes ");
 
 			byte[] ret = new byte[sz];
 			ByteBuffer buff = new ByteBuffer(ret);
@@ -128,12 +129,12 @@ namespace pe.pi.sctp4j.sctp.dataChannel.DECP {
 		static public int pad(int len) {
 			int mod = len % 4;
 			int res = 0;
-			Log.verb("field of " + len + " mod 4 is " + mod);
+			Logger.logger.Trace("field of " + len + " mod 4 is " + mod);
 
 			if (mod > 0) {
 				res = (4 - mod);
 			}
-			Log.verb("padded by " + res);
+			Logger.logger.Trace("padded by " + res);
 			return res;
 		}
 
@@ -174,7 +175,7 @@ namespace pe.pi.sctp4j.sctp.dataChannel.DECP {
 		}
 
 		public SCTPStreamBehaviour mkStreamBehaviour() {
-			Log.debug("Making a behaviour for dcep stream " + _label);
+			Logger.logger.Debug("Making a behaviour for dcep stream " + _label);
 			SCTPStreamBehaviour behave = null;
 			switch (_chanType) {
 				case RELIABLE:
@@ -195,7 +196,7 @@ namespace pe.pi.sctp4j.sctp.dataChannel.DECP {
 					break;
 			}
 			if (behave != null){
-				Log.debug(_label + " behaviour is " +behave.GetType().Name);
+				Logger.logger.Debug(_label + " behaviour is " +behave.GetType().Name);
 			}
 
 			return behave;

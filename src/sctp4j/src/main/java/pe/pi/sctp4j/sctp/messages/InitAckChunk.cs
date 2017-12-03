@@ -14,9 +14,10 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
+using SCTP4CS;
 using LiteNetLib.Utils;
 using pe.pi.sctp4j.sctp.messages.Params;
 
@@ -115,7 +116,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 				_numOutStreams = _body.GetUShort();
 				_numInStreams = _body.GetUShort();
 				_initialTSN = _body.GetUInt();
-				Log.verb("Init Ack" + this.ToString());
+				Logger.logger.Trace("Init Ack" + this.ToString());
 				while (_body.hasRemaining()) {
 					VariableParam v = readVariable();
 					_varList.Add(v);
@@ -123,11 +124,11 @@ namespace pe.pi.sctp4j.sctp.messages {
 
 				foreach (VariableParam v in _varList) {
 					// now look for variables we are expecting...
-					Log.verb("variable of type: " + v.getName() + " " + v.ToString());
+					Logger.logger.Trace("variable of type: " + v.getName() + " " + v.ToString());
 					if (typeof(StateCookie).IsAssignableFrom(v.GetType())) {
 						_cookie = ((StateCookie) v).getData();
 					} else {
-						Log.verb("ignored variable of type: " + v.getName());
+						Logger.logger.Trace("ignored variable of type: " + v.getName());
 					}
 				}
 

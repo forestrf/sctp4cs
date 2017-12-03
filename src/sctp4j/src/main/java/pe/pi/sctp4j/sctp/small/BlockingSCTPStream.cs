@@ -14,9 +14,10 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
+using SCTP4CS;
 using pe.pi.sctp4j.sctp.messages;
 using System.Collections.Generic;
 using System.Threading;
@@ -36,7 +37,7 @@ namespace pe.pi.sctp4j.sctp.small {
 				Association a = base.getAssociation();
 				SCTPMessage m = a.makeMessage(message, this);
 				if (m == null) {
-					Log.error("SCTPMessage cannot be null, but it is");
+					Logger.logger.Error("SCTPMessage cannot be null, but it is");
 				}
 				a.sendAndBlock(m);
 			}

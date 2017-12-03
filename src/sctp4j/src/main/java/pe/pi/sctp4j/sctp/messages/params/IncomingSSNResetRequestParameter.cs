@@ -14,11 +14,12 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
 
 
+using SCTP4CS;
 using LiteNetLib.Utils;
 using System.Text;
 /**
@@ -55,7 +56,7 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 		
 		public override void readBody(ByteBuffer body, int blen) {
 			if (blen < 4) {
-				Log.error("Huh ? No body to this " + this.getName());
+				Logger.logger.Error("Huh ? No body to this " + this.getName());
 				return;
 			}
 			reqSeqNo = body.GetUInt();
@@ -66,7 +67,7 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 				}
 			} else {
 				this.streams = new int[0];
-				Log.warn("No inbound stream mentioned");
+				Logger.logger.Warn("No inbound stream mentioned");
 			}
 		}
 
