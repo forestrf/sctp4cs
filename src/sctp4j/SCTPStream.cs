@@ -53,7 +53,7 @@ namespace pe.pi.sctp4j.sctp {
 			return ((state == State.OPEN) || (state == State.OUTBOUNDONLY));
 		}
 
-		public Chunk immediateClose() {
+		internal Chunk immediateClose() {
 			Chunk ret = null;
 			try {
 				ret = _ass.addToCloseList(this);
@@ -64,7 +64,7 @@ namespace pe.pi.sctp4j.sctp {
 			return ret;
 		}
 
-		abstract public void delivered(DataChunk d);
+		abstract internal void delivered(DataChunk d);
 
 		enum State {
 			CLOSED, INBOUNDONLY, OUTBOUNDONLY, OPEN
@@ -89,7 +89,7 @@ namespace pe.pi.sctp4j.sctp {
 			return "Stream (" + _sno + ") label:" + _label + " state:" + state + " behave:" + _behave.GetType().Name;
 		}
 
-		public Chunk[] append(DataChunk dc) {
+		internal Chunk[] append(DataChunk dc) {
 			Logger.Debug("adding data to stash on stream " + _label + "(" + dc + ")");
 			_stash.Add(dc);
 			return _behave.respond(this);
@@ -111,12 +111,12 @@ namespace pe.pi.sctp4j.sctp {
 		 *
 		 * @param chunk
 		 */
-		public void outbound(DataChunk chunk) {
+		internal void outbound(DataChunk chunk) {
 			chunk.setStreamId(_sno);
 			// roll seqno here.... hopefully....
 		}
 
-		public void inbound(DataChunk dc) {
+		internal void inbound(DataChunk dc) {
 			if (_behave != null) {
 				_behave.deliver(this, _stash, _sl);
 			} else {
@@ -156,19 +156,19 @@ namespace pe.pi.sctp4j.sctp {
 			_ass.closeStream(this);
 		}
 
-		public void setNextMessageSeqIn(int expectedSeq) {
+		internal void setNextMessageSeqIn(int expectedSeq) {
 			_nextMessageSeqIn = (expectedSeq == 1 + ushort.MaxValue) ? 0 : expectedSeq;
 		}
 
-		public int getNextMessageSeqIn() {
+		internal int getNextMessageSeqIn() {
 			return _nextMessageSeqIn;
 		}
 
-		public void setNextMessageSeqOut(int expectedSeq) {
+		internal void setNextMessageSeqOut(int expectedSeq) {
 			_nextMessageSeqOut = (expectedSeq == 1 + ushort.MaxValue) ? 0 : expectedSeq;
 		}
 
-		public int getNextMessageSeqOut() {
+		internal int getNextMessageSeqOut() {
 			return _nextMessageSeqOut;
 		}
 

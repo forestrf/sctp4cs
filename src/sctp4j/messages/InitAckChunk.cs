@@ -49,7 +49,7 @@ using pe.pi.sctp4j.sctp.messages.Params;
  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  */
 namespace pe.pi.sctp4j.sctp.messages {
-	public class InitAckChunk : Chunk {
+	internal class InitAckChunk : Chunk {
 		int _initiateTag;
 		uint _adRecWinCredit;
 		int _numOutStreams;

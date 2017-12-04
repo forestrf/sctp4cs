@@ -40,7 +40,7 @@ using pe.pi.sctp4j.sctp.messages.Params;
  
  */
 namespace pe.pi.sctp4j.sctp.messages {
-	public class AbortChunk : Chunk {
+	internal class AbortChunk : Chunk {
 		public AbortChunk() : base(CType.ABORT) { }
 
 		public AbortChunk(CType type, byte flags, int length, ByteBuffer pkt)

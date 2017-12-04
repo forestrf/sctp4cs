@@ -24,7 +24,7 @@ using SCTP4CS.Utils;
 * @author tim
 */
 namespace pe.pi.sctp4j.sctp.messages {
-	public class FailChunk : Chunk {
+	internal class FailChunk : Chunk {
 		public FailChunk(CType type, byte flags, int length, ByteBuffer pkt) : base(type, flags, length, pkt) { }
 
 		protected override void putFixedParams(ByteBuffer ret) { }

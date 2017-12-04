@@ -56,7 +56,7 @@ namespace pe.pi.sctp4j.sctp.small {
 			ThreadPool.QueueUserWorkItem((obj) => { message.run(); });
 		}
 
-		public override void delivered(DataChunk d) {
+		internal override void delivered(DataChunk d) {
 			int f = d.getFlags();
 			if ((f & DataChunk.ENDFLAG) > 0) {
 				int ssn = d.getSSeqNo();

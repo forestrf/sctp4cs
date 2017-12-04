@@ -25,7 +25,7 @@ using pe.pi.sctp4j.sctp.messages.Params;
  * @author Westhawk Ltd<thp@westhawk.co.uk>
  */
 namespace pe.pi.sctp4j.sctp.messages {
-	public class HeartBeatChunk : Chunk {
+	internal class HeartBeatChunk : Chunk {
 		public HeartBeatChunk(CType type, byte flags, int length, ByteBuffer pkt)
 			: base(type, flags, length, pkt) {
 			if (_body.remaining() >= 4) {

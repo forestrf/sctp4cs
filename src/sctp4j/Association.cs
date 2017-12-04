@@ -128,7 +128,7 @@ namespace pe.pi.sctp4j.sctp {
 		private int _maxOutStreams;
 		private int _maxInStreams;
 		public static uint MAXBUFF = 20 * 1024;
-		public uint _nearTSN;
+		internal uint _nearTSN;
 		private int _srcPort;
 		private int _destPort;
 		private Dictionary<int, SCTPStream> _streams;
@@ -149,7 +149,7 @@ namespace pe.pi.sctp4j.sctp {
 		protected byte[] getSupportedExtensions() { // this lets others swithc features off.
 			return _supportedExtensions;
 		}
-		public uint getNearTSN() {
+		internal uint getNearTSN() {
 			return _nearTSN;
 		}
 		byte[] getUnionSupportedExtensions(byte[] far) {
@@ -171,7 +171,7 @@ namespace pe.pi.sctp4j.sctp {
 			return res;
 		}
 
-		public void deal(Packet rec) {
+		internal void deal(Packet rec) {
 			List<Chunk> replies = new List<Chunk>();
 			rec.validate(this);
 			List<Chunk> cl = rec.getChunkList();
@@ -300,11 +300,11 @@ namespace pe.pi.sctp4j.sctp {
 		 *
 		 * @return true
 		 */
-		public bool doBidirectionalInit() {
+		internal bool doBidirectionalInit() {
 			return true;
 		}
 
-		protected void send(Chunk[] c) {
+		internal void send(Chunk[] c) {
 			if ((c != null) && (c.Length > 0)) {
 				ByteBuffer obb = mkPkt(c);
 				Logger.Trace("sending SCTP packet" + Packet.getHex(obb));
@@ -420,7 +420,7 @@ namespace pe.pi.sctp4j.sctp {
 			return ret;
 		}
 
-		public ByteBuffer mkPkt(Chunk[] cs) {
+		internal ByteBuffer mkPkt(Chunk[] cs) {
 			Packet ob = new Packet(_srcPort, _destPort, _peerVerTag);
 			foreach (Chunk r in cs) {
 				Logger.Debug("adding chunk to outbound packet: " + r.ToString());
@@ -431,11 +431,11 @@ namespace pe.pi.sctp4j.sctp {
 			return obb;
 		}
 
-		public int getPeerVerTag() {
+		internal int getPeerVerTag() {
 			return _peerVerTag;
 		}
 
-		public int getMyVerTag() {
+		internal int getMyVerTag() {
 			return _myVerTag;
 		}
 
@@ -485,7 +485,7 @@ namespace pe.pi.sctp4j.sctp {
 			return ret;
 		}
 
-		public void sendInit() {
+		internal void sendInit() {
 			InitChunk c = new InitChunk();
 			c.setInitialTSN(this._nearTSN);
 			c.setNumInStreams(this.MAXSTREAMS);
@@ -504,7 +504,7 @@ namespace pe.pi.sctp4j.sctp {
 			} // todo need timer here.....
 		}
 
-		protected virtual Chunk[] iackDeal(InitAckChunk iack) {
+		internal virtual Chunk[] iackDeal(InitAckChunk iack) {
 			iack.getAdRecWinCredit();
 			iack.getInitialTSN();
 			iack.getNumInStreams();
@@ -570,7 +570,7 @@ namespace pe.pi.sctp4j.sctp {
 		 Cookie (see Section 5.2.2 for a description of the Tie-Tags).
 		 </pre>
 		 */
-		public virtual Chunk[] inboundInit(InitChunk init) {
+		internal virtual Chunk[] inboundInit(InitChunk init) {
 			Chunk[] reply = null;
 			_peerVerTag = init.getInitiateTag();
 			_winCredit = init.getAdRecWinCredit();
@@ -611,7 +611,6 @@ namespace pe.pi.sctp4j.sctp {
 			if (!_streams.TryGetValue(sno, out _in)) {
 				_in = mkStream(sno);
 				_streams.Add(sno, _in);
-				_al.onRawStream(_in);
 			}
 			Chunk[] repa;
 			// todo dcep logic belongs in behave - not here.
@@ -816,15 +815,15 @@ namespace pe.pi.sctp4j.sctp {
 			return ret;
 		}
 
-		public abstract void enqueue(DataChunk d);
+		internal abstract void enqueue(DataChunk d);
 
 		public abstract SCTPStream mkStream(int id);
 
 
-		public uint getCumAckPt() {
+		internal uint getCumAckPt() {
 			return _farTSN;
 		}
-		public ReConfigChunk addToCloseList(SCTPStream st) {
+		internal ReConfigChunk addToCloseList(SCTPStream st) {
 			return reconfigState.makeClose(st);
 		}
 
@@ -852,7 +851,7 @@ namespace pe.pi.sctp4j.sctp {
 			return mkStream(n, label);
 		}
 
-		public int[] allStreams() {
+		internal int[] allStreams() {
 			var ks = _streams.Keys;
 			int[] ret = new int[ks.Count];
 			int i = 0;
@@ -861,12 +860,12 @@ namespace pe.pi.sctp4j.sctp {
 			}
 			return ret;
 		}
-		public SCTPStream getStream(int s) {
+		internal SCTPStream getStream(int s) {
 			SCTPStream stream;
 			return _streams.TryGetValue(s, out stream) ? stream : null;
 		}
 
-		public SCTPStream delStream(int s) {
+		internal SCTPStream delStream(int s) {
 			var st = _streams[s];
 			_streams.Remove(s);
 			return st;
@@ -901,11 +900,11 @@ namespace pe.pi.sctp4j.sctp {
 			return sout;
 		}
 
-		public int maxMessageSize() {
+		internal int maxMessageSize() {
 			return 1 << 16; // shrug - I don't know 
 		}
 
-		public bool canSend() {
+		internal bool canSend() {
 			bool ok;
 			switch (_state) {
 				case State.ESTABLISHED:
@@ -932,6 +931,6 @@ namespace pe.pi.sctp4j.sctp {
 
 		abstract internal SCTPMessage makeMessage(string s, BlockingSCTPStream aThis);
 
-		abstract protected Chunk[] sackDeal(SackChunk sackChunk);
+		abstract internal Chunk[] sackDeal(SackChunk sackChunk);
 	}
 }

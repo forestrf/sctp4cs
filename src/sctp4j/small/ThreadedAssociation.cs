@@ -161,7 +161,7 @@ namespace pe.pi.sctp4j.sctp.small {
 		 defined in Section 6.3 to determine the proper timer value.
 		 */
 
-		protected override Chunk[] iackDeal(InitAckChunk iack) {
+		internal override Chunk[] iackDeal(InitAckChunk iack) {
 			Chunk[] ret = base.iackDeal(iack);
 			_stashCookieEcho = ret;
 			return ret;
@@ -213,11 +213,11 @@ namespace pe.pi.sctp4j.sctp.small {
 			return new BlockingSCTPStream(this, id);
 		}
 
-		public long getT3() {
+		internal long getT3() {
 			return (_rto > 0) ? (long) (1000.0 * _rto) : 100;
 		}
 
-		public override void enqueue(DataChunk d) {
+		internal override void enqueue(DataChunk d) {
 			// todo - this worries me - 2 nested synchronized 
 			Logger.Trace(" Aspiring to enqueue " + d.ToString());
 
@@ -378,7 +378,7 @@ namespace pe.pi.sctp4j.sctp.small {
 		 the rwnd to the Advertised Receiver Window Credit (a_rwnd) the
 		 peer specified in the INIT or INIT ACK.
 		 */
-		public override Chunk[] inboundInit(InitChunk init) {
+		internal override Chunk[] inboundInit(InitChunk init) {
 			_rwnd = init.getAdRecWinCredit();
 			setSsthresh(init);
 			return base.inboundInit(init);
@@ -430,7 +430,7 @@ namespace pe.pi.sctp4j.sctp.small {
 
 		 */
 
-		protected override Chunk[] sackDeal(SackChunk sack) {
+		internal override Chunk[] sackDeal(SackChunk sack) {
 			Chunk[] ret = { };
 			/*
 			 i) If Cumulative TSN Ack is less than the Cumulative TSN Ack
@@ -707,7 +707,7 @@ namespace pe.pi.sctp4j.sctp.small {
 		 */
 
 		// timer goes off,
-		public void run() {
+		private void run() {
 			if (canSend()) {
 				long now = Time.CurrentTimeMillis();
 				Logger.Trace("retry timer went off at " + now);

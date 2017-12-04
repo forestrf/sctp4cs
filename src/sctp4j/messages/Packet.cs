@@ -141,7 +141,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			return ret;
 		}
 
-		public List<Chunk> getChunkList() {
+		internal List<Chunk> getChunkList() {
 			return _chunks;
 		}
 

@@ -27,7 +27,7 @@ using System;
  * @author thp
  */
 namespace pe.pi.sctp4j.sctp.messages {
-	public class ReConfigChunk : Chunk {
+	internal class ReConfigChunk : Chunk {
 
 		private long sentAt;
 		private int retries;

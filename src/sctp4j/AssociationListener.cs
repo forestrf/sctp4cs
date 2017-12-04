@@ -26,6 +26,5 @@ namespace pe.pi.sctp4j.sctp {
 		void onAssociated(Association a);
 		void onDisAssociated(Association a);
 		void onDCEPStream(SCTPStream s, string label, int type);
-		void onRawStream(SCTPStream s);
 	}
 }

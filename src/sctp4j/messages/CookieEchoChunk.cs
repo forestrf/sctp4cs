@@ -76,7 +76,7 @@ RFC 4960          Stream Control Transmission Protocol    September 2007
  * </code>
  */
 namespace pe.pi.sctp4j.sctp.messages {
-	public class CookieEchoChunk : Chunk {
+	internal class CookieEchoChunk : Chunk {
 		private byte[] _cookieData;
 
 		public CookieEchoChunk(CType type, byte flags, int length, ByteBuffer pkt) : base(type, flags, length, pkt) {

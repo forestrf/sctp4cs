@@ -26,7 +26,7 @@ using pe.pi.sctp4j.sctp.messages.Params;
  * @author tim
  */
 namespace pe.pi.sctp4j.sctp.messages {
-	public class InitChunk : Chunk {
+	internal class InitChunk : Chunk {
 		/*
 		 0                   1                   2                   3
 		 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1

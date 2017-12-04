@@ -54,7 +54,7 @@ using pe.pi.sctp4j.sctp.messages.Params;
  and all the Error Cause fields present.
  */
 namespace pe.pi.sctp4j.sctp.messages {
-	public class ErrorChunk : Chunk {
+	internal class ErrorChunk : Chunk {
 
 		public ErrorChunk() : base(CType.ERROR) { }
 
