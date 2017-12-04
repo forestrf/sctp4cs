@@ -16,14 +16,12 @@
  */
 // Modified by Andrés Leone Gámez
 
-
-
 using SCTP4CS;
-using io.netty.handler.codec.compression;
 using SCTP4CS.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
+
 /**
 *
 * @author Westhawk Ltd<thp@westhawk.co.uk>

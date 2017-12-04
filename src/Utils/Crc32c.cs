@@ -5,10 +5,9 @@
  * 
  * Max Vysokikh, 2016
  */
-namespace io.netty.handler.codec.compression {
+namespace SCTP4CS.Utils {
 	public static class Crc32c {
 		private const uint Poly = 0x82f63b78;
-
 		private static readonly uint[] _table = new uint[256];
 
 		static Crc32c() {
@@ -23,7 +22,7 @@ namespace io.netty.handler.codec.compression {
 			uint crc = ~0u;
 			while (--length >= 0)
 				crc = _table[(crc ^ buffer[offset++]) & 0xff] ^ crc >> 8;
-			return crc ^ uint.MaxValue;
+			return crc ^ 0xffffffff;
 		}
 	}
 }

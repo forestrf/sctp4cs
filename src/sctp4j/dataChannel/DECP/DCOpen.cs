@@ -88,12 +88,7 @@ namespace pe.pi.sctp4j.sctp.dataChannel.DECP {
 
 		public DCOpen(string label) : this((byte) RELIABLE, 0, 0, label, "") { }
 
-		public DCOpen(
-				byte chanType,
-				int priority,
-				long reliablity,
-				string label,
-				string protocol) {
+		public DCOpen(byte chanType, int priority, long reliablity, string label, string protocol) {
 			_messType = (byte) OPEN;
 			_chanType = chanType;
 			_priority = priority;
@@ -155,7 +150,6 @@ namespace pe.pi.sctp4j.sctp.dataChannel.DECP {
 					break;
 				default:
 					throw new InvalidDataChunkException("Unexpected DCEP message type " + _messType);
-				//break;
 			}
 		}
 
