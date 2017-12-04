@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Ashkatchap.BitUtils {
+namespace SCTP4CS.Utils {
 	public enum Endianness {
 		/// <summary>
 		/// Network Byte order

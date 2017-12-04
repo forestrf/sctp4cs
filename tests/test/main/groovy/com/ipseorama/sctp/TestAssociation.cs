@@ -18,7 +18,7 @@
  // Modified by Andrés Leone Gámez
 
 
-using LiteNetLib.Utils;
+using SCTP4CS.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Org.BouncyCastle.Crypto.Tls;
 using pe.pi.sctp4j.sctp;

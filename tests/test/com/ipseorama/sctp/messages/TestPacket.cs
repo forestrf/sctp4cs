@@ -19,7 +19,7 @@
 
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using LiteNetLib.Utils;
+using SCTP4CS.Utils;
 using pe.pi.sctp4j.sctp;
 using pe.pi.sctp4j.sctp.messages;
 using System;

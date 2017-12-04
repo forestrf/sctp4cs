@@ -1,7 +1,6 @@
-using Ashkatchap.BitUtils;
 using System;
 
-namespace LiteNetLib.Utils {
+namespace SCTP4CS.Utils {
 	public class ByteBuffer {
 		private byte[] _data;
 		

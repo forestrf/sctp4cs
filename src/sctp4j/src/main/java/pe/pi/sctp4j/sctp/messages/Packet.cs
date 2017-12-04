@@ -20,7 +20,7 @@
 
 using SCTP4CS;
 using io.netty.handler.codec.compression;
-using LiteNetLib.Utils;
+using SCTP4CS.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -169,8 +169,8 @@ namespace pe.pi.sctp4j.sctp.messages {
 		 */
 		void setChecksum(ByteBuffer pkt) {
 			pkt.Put(SUMOFFSET, 0);
-			var UUint = new Ashkatchap.BitUtils.FastBit.Uint(Crc32c.Calculate(pkt.Data, pkt.offset, pkt.Limit));
-			uint flip = new Ashkatchap.BitUtils.FastBit.Uint(UUint.b3, UUint.b2, UUint.b1, UUint.b0).Auint;
+			var UUint = new FastBit.Uint(Crc32c.Calculate(pkt.Data, pkt.offset, pkt.Limit));
+			uint flip = new FastBit.Uint(UUint.b3, UUint.b2, UUint.b1, UUint.b0).Auint;
 			pkt.Put(SUMOFFSET, flip);
 		}
 

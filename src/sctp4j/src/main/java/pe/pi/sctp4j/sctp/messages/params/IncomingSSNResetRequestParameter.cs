@@ -20,7 +20,7 @@
 
 
 using SCTP4CS;
-using LiteNetLib.Utils;
+using SCTP4CS.Utils;
 using System.Text;
 /**
 *

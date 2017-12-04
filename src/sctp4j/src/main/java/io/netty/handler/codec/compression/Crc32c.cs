@@ -9,16 +9,13 @@ namespace io.netty.handler.codec.compression {
 	public static class Crc32c {
 		private const uint Poly = 0x82f63b78;
 
-		private static readonly uint[] _table = new uint[16 * 256];
+		private static readonly uint[] _table = new uint[256];
 
 		static Crc32c() {
-			uint[] table = _table;
 			for (uint i = 0; i < 256; i++) {
 				uint res = i;
-				for (int t = 0; t < 16; t++) {
-					for (int k = 0; k < 8; k++) res = (res & 1) == 1 ? Poly ^ (res >> 1) : (res >> 1);
-					table[(t * 256) + i] = res;
-				}
+				for (int k = 0; k < 8; k++) res = (res & 1) == 1 ? Poly ^ (res >> 1) : (res >> 1);
+				_table[i] = res;
 			}
 		}
 

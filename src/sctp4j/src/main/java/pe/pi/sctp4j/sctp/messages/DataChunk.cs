@@ -18,7 +18,7 @@
 
 
 using SCTP4CS;
-using LiteNetLib.Utils;
+using SCTP4CS.Utils;
 using pe.pi.sctp4j.sctp.dataChannel.DECP;
 using System;
 using System.Collections.Generic;

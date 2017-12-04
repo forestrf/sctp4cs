@@ -18,9 +18,9 @@
 
 
 using SCTP4CS;
+using SCTP4CS.Utils;
 using pe.pi.sctp4j.sctp.messages;
 using System;
-using System.Collections.Generic;
 
 /**
  *

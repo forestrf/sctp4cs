@@ -17,7 +17,7 @@
 // Modified by Andrés Leone Gámez
 
 using SCTP4CS;
-using LiteNetLib.Utils;
+using SCTP4CS.Utils;
 using pe.pi.sctp4j.sctp.messages.Params;
 
 /**

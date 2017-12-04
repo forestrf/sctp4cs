@@ -24,7 +24,7 @@ using System;
 using Org.BouncyCastle.Crypto.Tls;
 using Org.BouncyCastle.Security;
 using pe.pi.sctp4j.sctp.small;
-using LiteNetLib.Utils;
+using SCTP4CS.Utils;
 using pe.pi.sctp4j.sctp.dataChannel.DECP;
 using pe.pi.sctp4j.sctp.behave;
 using pe.pi.sctp4j.sctp.messages.Params;
@@ -273,8 +273,8 @@ namespace pe.pi.sctp4j.sctp {
 			_streams = new Dictionary<int, SCTPStream>();
 			_outbound = new Dictionary<long, DataChunk>();
 			_holdingPen = new Dictionary<uint, DataChunk>();
-			var IInt = new Ashkatchap.BitUtils.FastBit.Int(_random.NextInt());
-			_nearTSN = new Ashkatchap.BitUtils.FastBit.Uint(IInt.b0, IInt.b1, IInt.b2, IInt.b3).Auint;
+			var IInt = new FastBit.Int(_random.NextInt());
+			_nearTSN = new FastBit.Uint(IInt.b0, IInt.b1, IInt.b2, IInt.b3).Auint;
 			_state = State.CLOSED;
 			if (_transp != null) {
 				startRcv();

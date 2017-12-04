@@ -16,9 +16,8 @@
  */
  // Modified by Andrés Leone Gámez
 
+using SCTP4CS.Utils;
 
-
-using LiteNetLib.Utils;
 /**
 *
 * @author tim
