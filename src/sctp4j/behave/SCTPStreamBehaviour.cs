@@ -24,7 +24,7 @@ using pe.pi.sctp4j.sctp.messages;
  * @author tim
  */
 namespace pe.pi.sctp4j.sctp.behave {
-	public interface SCTPStreamBehaviour {
+	internal interface SCTPStreamBehaviour {
 
 		// Something has happend to the stream, this is our chance to respond.
 		// typically this means sending nothing

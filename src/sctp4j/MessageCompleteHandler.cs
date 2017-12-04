@@ -21,7 +21,7 @@
  * @author Westhawk Ltd<thp@westhawk.co.uk>
  */
 namespace pe.pi.sctp4j.sctp {
-	public interface MessageCompleteHandler {
+	internal interface MessageCompleteHandler {
 		/**
 		 * 
 		 * @param m message which has completed

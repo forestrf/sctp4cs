@@ -83,15 +83,15 @@ namespace pe.pi.sctp4j.sctp {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
 
-			public override void sendAndBlock(SCTPMessage m) {
+			internal override void sendAndBlock(SCTPMessage m) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
 
-			public override SCTPMessage makeMessage(byte[] bytes, BlockingSCTPStream aThis) {
+			internal override SCTPMessage makeMessage(byte[] bytes, BlockingSCTPStream aThis) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
 
-			public override SCTPMessage makeMessage(string s, BlockingSCTPStream aThis) {
+			internal override SCTPMessage makeMessage(string s, BlockingSCTPStream aThis) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
 
@@ -107,7 +107,7 @@ namespace pe.pi.sctp4j.sctp {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
 
-			public override void deliverMessage(SCTPMessage message) {
+			internal override void deliverMessage(SCTPMessage message) {
 				message.run();
 			}
 

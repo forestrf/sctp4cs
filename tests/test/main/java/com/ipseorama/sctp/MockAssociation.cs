@@ -43,7 +43,7 @@ namespace pe.pi.sctp4j.sctp {
 
 			public override void delivered(DataChunk d) { }
 
-			public override void deliverMessage(SCTPMessage message) { }
+			internal override void deliverMessage(SCTPMessage message) { }
 
 			public override void send(string message) {
 				SCTPMessage m = new SCTPMessage(message, this);
@@ -58,7 +58,7 @@ namespace pe.pi.sctp4j.sctp {
 			return new SCTPStreamImpl(this, id);
 		}
 
-		public override void sendAndBlock(SCTPMessage m) {
+		internal override void sendAndBlock(SCTPMessage m) {
 			Chunk[] dar = new Chunk[1];
 
 			DataChunk dc = new DataChunk();
@@ -70,7 +70,7 @@ namespace pe.pi.sctp4j.sctp {
 
 		}
 
-		public override SCTPMessage makeMessage(byte[] bytes, BlockingSCTPStream aThis) {
+		internal override SCTPMessage makeMessage(byte[] bytes, BlockingSCTPStream aThis) {
 			throw new Exception("[UnsupportedOperationException] Not supported yet. (makeMessage)"); //To change body of generated methods, choose Tools | Templates.
 		}
 
@@ -82,7 +82,7 @@ namespace pe.pi.sctp4j.sctp {
 			base._myVerTag = v;
 		}
 
-		public override SCTPMessage makeMessage(string s, BlockingSCTPStream aThis) {
+		internal override SCTPMessage makeMessage(string s, BlockingSCTPStream aThis) {
 			throw new Exception("[UnsupportedOperationException] Not supported yet.(Make Message - string"); //To change body of generated methods, choose Tools | Templates.
 		}
 

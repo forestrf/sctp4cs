@@ -27,7 +27,7 @@ using System;
  * @author Westhawk Ltd<thp@westhawk.co.uk>
  */
 namespace pe.pi.sctp4j.sctp {
-	public class SCTPMessage {
+	internal class SCTPMessage {
 		private SCTPStream _stream;
 		private byte[] _data;
 		private int _offset = 0;
@@ -140,7 +140,7 @@ namespace pe.pi.sctp4j.sctp {
 		public bool deliver(SCTPStreamListener li) {
 			_li = li;
 			_delivered = false;
-			Logger.logger.Debug("delegating message delivery to stream of type " + _stream.GetType().Name);
+			Logger.Debug("delegating message delivery to stream of type " + _stream.GetType().Name);
 			_stream.deliverMessage(this);
 			return true;
 		}
@@ -157,7 +157,7 @@ namespace pe.pi.sctp4j.sctp {
 		}
 
 		public void run() {
-			Logger.logger.Debug("delegated message delivery from stream of type " + _stream.GetType().Name);
+			Logger.Debug("delegated message delivery from stream of type " + _stream.GetType().Name);
 			byte[] data = _data;
 			if (_li != null) {
 				switch (_pPid) {
@@ -180,7 +180,7 @@ namespace pe.pi.sctp4j.sctp {
 				}
 			}
 			if (!_delivered) {
-				Logger.logger.Debug("Undelivered message to " + (_stream == null ? "null stream" : _stream.getLabel()) + " via " + (_li == null ? "null listener" : _li.GetType().Name) + " ppid is " + _pPid);
+				Logger.Debug("Undelivered message to " + (_stream == null ? "null stream" : _stream.getLabel()) + " via " + (_li == null ? "null listener" : _li.GetType().Name) + " ppid is " + _pPid);
 			}
 		}
 

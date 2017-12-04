@@ -101,7 +101,7 @@ namespace pe.pi.sctp4j.sctp.dataChannel.DECP {
 
 		public byte[] getBytes() {
 			int sz = 12 + _labLen + pad(_labLen) + _protLen + pad(_protLen);
-			Logger.logger.Trace("dcopen needs " + sz + " bytes ");
+			Logger.Trace("dcopen needs " + sz + " bytes ");
 
 			byte[] ret = new byte[sz];
 			ByteBuffer buff = new ByteBuffer(ret);
@@ -122,12 +122,12 @@ namespace pe.pi.sctp4j.sctp.dataChannel.DECP {
 		static public int pad(int len) {
 			int mod = len % 4;
 			int res = 0;
-			Logger.logger.Trace("field of " + len + " mod 4 is " + mod);
+			Logger.Trace("field of " + len + " mod 4 is " + mod);
 
 			if (mod > 0) {
 				res = (4 - mod);
 			}
-			Logger.logger.Trace("padded by " + res);
+			Logger.Trace("padded by " + res);
 			return res;
 		}
 
@@ -166,8 +166,8 @@ namespace pe.pi.sctp4j.sctp.dataChannel.DECP {
 			return _isAck;
 		}
 
-		public SCTPStreamBehaviour mkStreamBehaviour() {
-			Logger.logger.Debug("Making a behaviour for dcep stream " + _label);
+		internal SCTPStreamBehaviour mkStreamBehaviour() {
+			Logger.Debug("Making a behaviour for dcep stream " + _label);
 			SCTPStreamBehaviour behave = null;
 			switch (_chanType) {
 				case RELIABLE:
@@ -188,7 +188,7 @@ namespace pe.pi.sctp4j.sctp.dataChannel.DECP {
 					break;
 			}
 			if (behave != null) {
-				Logger.logger.Debug(_label + " behaviour is " + behave.GetType().Name);
+				Logger.Debug(_label + " behaviour is " + behave.GetType().Name);
 			}
 
 			return behave;

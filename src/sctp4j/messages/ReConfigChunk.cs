@@ -34,12 +34,12 @@ namespace pe.pi.sctp4j.sctp.messages {
 
 		public ReConfigChunk(CType type, byte flags, int length, ByteBuffer pkt)
 			: base(type, flags, length, pkt) {
-			Logger.logger.Debug("ReConfig chunk" + this.ToString());
+			Logger.Debug("ReConfig chunk" + this.ToString());
 			if (_body.remaining() >= 4) {
 				while (_body.hasRemaining()) {
 					VariableParam v = this.readVariable();
 					_varList.Add(v);
-					Logger.logger.Debug("\tParam :" + v.ToString());
+					Logger.Debug("\tParam :" + v.ToString());
 				}
 			}
 		}
@@ -180,7 +180,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		}
 
 		public void addParam(VariableParam rep) {
-			Logger.logger.Debug("adding " + rep + " to " + this);
+			Logger.Debug("adding " + rep + " to " + this);
 			_varList.Add(rep);
 			validate();
 		}

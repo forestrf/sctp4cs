@@ -78,7 +78,7 @@ namespace pe.pi.sctp4j.sctp {
 		public Chunk[] deal(ReConfigChunk rconf) {
 			Chunk[] ret = new Chunk[1];
 			ReConfigChunk reply = null;
-			Logger.logger.Debug("Got a reconfig message to deal with");
+			Logger.Debug("Got a reconfig message to deal with");
 			if (haveSeen(rconf)) {
 				// if not - is this a repeat
 				reply = getPrevious(rconf); // then send the same reply
@@ -97,7 +97,7 @@ namespace pe.pi.sctp4j.sctp {
 					}
 					// if we are behind, we are supposed to wait untill we catch up.
 					if (oreset.getLastAssignedTSN() > assoc.getCumAckPt()) {
-						Logger.logger.Debug("Last assigned > farTSN " + oreset.getLastAssignedTSN() + " v " + assoc.getCumAckPt());
+						Logger.Debug("Last assigned > farTSN " + oreset.getLastAssignedTSN() + " v " + assoc.getCumAckPt());
 						foreach (int s in streams) {
 							SCTPStream defstr = assoc.getStream(s);
 							defstr.setDeferred(true);
@@ -108,7 +108,7 @@ namespace pe.pi.sctp4j.sctp {
 						reply.addParam(rep);
 					} else {
 						// somehow invoke this when TSN catches up ?!?! ToDo
-						Logger.logger.Debug("we are up-to-date ");
+						Logger.Debug("we are up-to-date ");
 						ReconfigurationResponseParameter rep = new ReconfigurationResponseParameter();
 						rep.setSeq(oreset.getReqSeqNo());
 						int result = streams.Length > 0 ? ReconfigurationResponseParameter.SUCCESS_PERFORMED : ReconfigurationResponseParameter.SUCCESS_NOTHING_TO_DO;
@@ -116,7 +116,7 @@ namespace pe.pi.sctp4j.sctp {
 						foreach (int s in streams) {
 							SCTPStream cstrm = assoc.delStream(s);
 							if (cstrm == null) {
-								Logger.logger.Error("Close a non existant stream");
+								Logger.Error("Close a non existant stream");
 								rep.setResult(ReconfigurationResponseParameter.ERROR_WRONG_SSN);
 								break;
 								// bidriectional might be a problem here...
@@ -148,13 +148,13 @@ namespace pe.pi.sctp4j.sctp {
 					}
 					reply.addParam(rep);
 					// set outbound timer running here ???
-					Logger.logger.Debug("Ireset " + ireset);
+					Logger.Debug("Ireset " + ireset);
 				}
 			}
 			if (reply.hasParam()) {
 				ret[0] = reply;
 				// todo should add sack here
-				Logger.logger.Debug("about to reply with " + reply.ToString());
+				Logger.Debug("about to reply with " + reply.ToString());
 			} else {
 				ret = null;
 			}
@@ -168,7 +168,7 @@ namespace pe.pi.sctp4j.sctp {
 		/* mull this over.... */
 		public ReConfigChunk makeClose(SCTPStream st) {
 			ReConfigChunk ret = null;
-			Logger.logger.Debug("building reconfig so close stream " + st);
+			Logger.Debug("building reconfig so close stream " + st);
 			st.setClosing(true);
 			lock (listOfStreamsToReset) {
 				listOfStreamsToReset.Enqueue(st);
@@ -181,7 +181,7 @@ namespace pe.pi.sctp4j.sctp {
 
 		private ReConfigChunk makeSSNResets() {
 			ReConfigChunk reply = new ReConfigChunk(); // create a new thing
-			Logger.logger.Debug("closing streams n=" + listOfStreamsToReset.Count);
+			Logger.Debug("closing streams n=" + listOfStreamsToReset.Count);
 			List<int> streamsL = new List<int>();
 			lock (listOfStreamsToReset) {
 				foreach (var s in listOfStreamsToReset) if (s.InboundIsOpen()) streamsL.Add(s.getNum());
@@ -202,7 +202,7 @@ namespace pe.pi.sctp4j.sctp {
 				rep.setStreams(streams);
 				reply.addParam(rep);
 			}
-			Logger.logger.Debug("reconfig chunk is " + reply.ToString());
+			Logger.Debug("reconfig chunk is " + reply.ToString());
 			return reply;
 		}
 	}

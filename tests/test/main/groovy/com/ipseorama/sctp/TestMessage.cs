@@ -44,7 +44,7 @@ namespace com.ipseorama.sctp {
 				throw new NotImplementedException();
 			}
 
-			public override void deliverMessage(SCTPMessage message) {
+			internal override void deliverMessage(SCTPMessage message) {
 				throw new NotImplementedException();
 			}
 

@@ -21,7 +21,7 @@
  * @author tim
  */
 namespace pe.pi.sctp4j.sctp.behave {
-	public class UnorderedStreamBehaviour : OrderedStreamBehaviour {
+	internal class UnorderedStreamBehaviour : OrderedStreamBehaviour {
 		public UnorderedStreamBehaviour() {
 			_ordered = false;
 		}

@@ -22,7 +22,7 @@
  * @author Westhawk Ltd<thp@westhawk.co.uk>
  */
 namespace pe.pi.sctp4j.sctp {
-	public interface SCTPByteStreamListener : SCTPStreamListener {
+	internal interface SCTPByteStreamListener : SCTPStreamListener {
 		void onMessage(SCTPStream s, byte[] message);
 	}
 }

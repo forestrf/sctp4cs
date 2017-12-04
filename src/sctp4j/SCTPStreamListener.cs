@@ -16,13 +16,12 @@
  */
 // Modified by Andrés Leone Gámez
 
-
 /**
  *
  * @author Westhawk Ltd<thp@westhawk.co.uk>
  */
 namespace pe.pi.sctp4j.sctp {
-	public interface SCTPStreamListener {
+	internal interface SCTPStreamListener {
 		void onMessage(SCTPStream s, string message);
 		void close(SCTPStream aThis);
 	}

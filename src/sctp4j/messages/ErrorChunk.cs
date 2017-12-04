@@ -70,7 +70,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 
 		public ErrorChunk(CType type, byte flags, int length, ByteBuffer pkt) : base(type, flags, length, pkt) {
 			if (_body.remaining() >= 4) {
-				Logger.logger.Trace("Error" + this.ToString());
+				Logger.Trace("Error" + this.ToString());
 				while (_body.hasRemaining()) {
 					VariableParam v = readErrorParam();
 					_varList.Add(v);

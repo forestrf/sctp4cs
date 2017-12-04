@@ -50,7 +50,7 @@ namespace pe.pi.sctp4j.sctp.small {
 					try {
 						int l = _udpSock.Receive(buff);
 						if (l > buff.Length) {
-							Logger.logger.Warn("truncated packet from " + _udpSock.RemoteEndPoint.ToString());
+							Logger.Warn("truncated packet from " + _udpSock.RemoteEndPoint.ToString());
 							l = buff.Length;
 						}
 						byte[] pkt = new byte[l];

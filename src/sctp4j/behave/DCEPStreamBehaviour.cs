@@ -25,21 +25,21 @@ using pe.pi.sctp4j.sctp.messages;
  * what DCEPS do 
  */
 namespace pe.pi.sctp4j.sctp.behave {
-	public class DCEPStreamBehaviour : SCTPStreamBehaviour {
+	internal class DCEPStreamBehaviour : SCTPStreamBehaviour {
 
 		public Chunk[] respond(SCTPStream a) {
-			Logger.logger.Debug("in respond() for a opened stream " + a.getLabel());
+			Logger.Debug("in respond() for a opened stream " + a.getLabel());
 			return null;
 		}
 
 		public void deliver(SCTPStream s, SortedArray<DataChunk> a, SCTPStreamListener l) {
-			Logger.logger.Debug("in deliver() for stream " + s.getLabel() + " with " + a.Count + " chunks. ");
+			Logger.Debug("in deliver() for stream " + s.getLabel() + " with " + a.Count + " chunks. ");
 			// strictly this should be looking at flags etc, and bundling the result into a message
 			foreach (DataChunk dc in a) {
 				if (dc.getDCEP() != null) {
-					Logger.logger.Debug("in deliver() for a DCEP message " + dc.getDataAsString());
+					Logger.Debug("in deliver() for a DCEP message " + dc.getDataAsString());
 				} else {
-					Logger.logger.Debug("inbound data chunk is " + dc.ToString());
+					Logger.Debug("inbound data chunk is " + dc.ToString());
 					l.onMessage(s, dc.getDataAsString());
 				}
 			}

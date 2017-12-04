@@ -69,14 +69,14 @@ namespace pe.pi.sctp4j.sctp.messages {
 				_numOutStreams = _body.GetUShort();
 				_numInStreams = _body.GetUShort();
 				_initialTSN = _body.GetUInt();
-				Logger.logger.Trace("Init " + this.ToString());
+				Logger.Trace("Init " + this.ToString());
 				while (_body.hasRemaining()) {
 					VariableParam v = readVariable();
 					_varList.Add(v);
 				}
 				foreach (VariableParam v in _varList) {
 					// now look for variables we are expecting...
-					Logger.logger.Trace("variable of type: " + v.getName() + " " + v.ToString());
+					Logger.Trace("variable of type: " + v.getName() + " " + v.ToString());
 					if (typeof(SupportedExtensions).IsAssignableFrom(v.GetType())) {
 						_farSupportedExtensions = ((SupportedExtensions) v).getData();
 					} else if (typeof(RandomParam).IsAssignableFrom(v.GetType())) {
@@ -88,7 +88,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 					} else if (typeof(ChunkListParam).IsAssignableFrom(v.GetType())) {
 						_farChunks = ((ChunkListParam) v).getData();
 					} else {
-						Logger.logger.Trace("unexpected variable of type: " + v.getName());
+						Logger.Trace("unexpected variable of type: " + v.getName());
 					}
 				}
 			}

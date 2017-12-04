@@ -116,7 +116,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 				_numOutStreams = _body.GetUShort();
 				_numInStreams = _body.GetUShort();
 				_initialTSN = _body.GetUInt();
-				Logger.logger.Trace("Init Ack" + this.ToString());
+				Logger.Trace("Init Ack" + this.ToString());
 				while (_body.hasRemaining()) {
 					VariableParam v = readVariable();
 					_varList.Add(v);
@@ -124,11 +124,11 @@ namespace pe.pi.sctp4j.sctp.messages {
 
 				foreach (VariableParam v in _varList) {
 					// now look for variables we are expecting...
-					Logger.logger.Trace("variable of type: " + v.getName() + " " + v.ToString());
+					Logger.Trace("variable of type: " + v.getName() + " " + v.ToString());
 					if (typeof(StateCookie).IsAssignableFrom(v.GetType())) {
 						_cookie = ((StateCookie) v).getData();
 					} else {
-						Logger.logger.Trace("ignored variable of type: " + v.getName());
+						Logger.Trace("ignored variable of type: " + v.getName());
 					}
 				}
 

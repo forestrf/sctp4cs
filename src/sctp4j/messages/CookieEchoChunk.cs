@@ -101,7 +101,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		}
 
 		protected override void putFixedParams(ByteBuffer ret) {
-			Logger.logger.Debug("cookie is " + _cookieData + "and buffer is " + ret);
+			Logger.Debug("cookie is " + _cookieData + "and buffer is " + ret);
 			ret.Put(_cookieData);
 		}
 	}

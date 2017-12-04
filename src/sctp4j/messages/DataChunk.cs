@@ -75,8 +75,8 @@ namespace pe.pi.sctp4j.sctp.messages {
 		private long _sentTime;
 
 		public DataChunk(CType type, byte flags, int length, ByteBuffer pkt) : base(type, flags, length, pkt) {
-			Logger.logger.Debug("read in chunk header " + length);
-			Logger.logger.Debug("body remaining " + _body.remaining());
+			Logger.Debug("read in chunk header " + length);
+			Logger.Debug("body remaining " + _body.remaining());
 
 			if (_body.remaining() >= 12) {
 				_tsn = _body.GetUInt();
@@ -84,11 +84,11 @@ namespace pe.pi.sctp4j.sctp.messages {
 				_sSeqNo = _body.GetUShort();
 				_ppid = _body.GetInt();
 
-				Logger.logger.Debug(" _tsn : " + _tsn
+				Logger.Debug(" _tsn : " + _tsn
 						+ " _streamId : " + _streamId
 						+ " _sSeqNo : " + _sSeqNo
 						+ " _ppid : " + _ppid);
-				Logger.logger.Debug("data size remaining " + _body.remaining());
+				Logger.Debug("data size remaining " + _body.remaining());
 
 				switch (_ppid) {
 					case WEBRTCCONTROL:
@@ -99,7 +99,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 						catch (InvalidDataChunkException ex) {
 							_invalid = ex;
 						}
-						Logger.logger.Trace("Got an DCEP " + _open);
+						Logger.Trace("Got an DCEP " + _open);
 						break;
 					case WEBRTCstring:
 						// what format is a string ?
@@ -107,14 +107,14 @@ namespace pe.pi.sctp4j.sctp.messages {
 						_body.GetBytes(_data, _data.Length);
 						_dataOffset = 0;
 						_dataLength = _data.Length;
-						Logger.logger.Trace("string data is " + Encoding.ASCII.GetString(_data));
+						Logger.Trace("string data is " + Encoding.ASCII.GetString(_data));
 						break;
 					case WEBRTCBINARY:
 						_data = new byte[_body.remaining()];
 						_body.GetBytes(_data, _data.Length);
 						_dataOffset = 0;
 						_dataLength = _data.Length;
-						Logger.logger.Trace("data is " + Packet.getHex(_data));
+						Logger.Trace("data is " + Packet.getHex(_data));
 						break;
 
 					default:

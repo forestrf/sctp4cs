@@ -44,7 +44,7 @@ namespace pe.pi.sctp4j.sctp.behave {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
 
-			public override void deliverMessage(SCTPMessage message) {
+			internal override void deliverMessage(SCTPMessage message) {
 				message.run();
 			}
 

@@ -21,7 +21,6 @@ using SCTP4CS.Utils;
 using pe.pi.sctp4j.sctp.behave;
 using pe.pi.sctp4j.sctp.messages;
 using System;
-using System.Collections.Generic;
 
 /**
  *
@@ -60,7 +59,7 @@ namespace pe.pi.sctp4j.sctp {
 				ret = _ass.addToCloseList(this);
 			}
 			catch (Exception ex) {
-				Logger.logger.Error("Can't make immediate close for " + this._sno + " because " + ex.ToString());
+				Logger.Error("Can't make immediate close for " + this._sno + " because " + ex.ToString());
 			}
 			return ret;
 		}
@@ -91,7 +90,7 @@ namespace pe.pi.sctp4j.sctp {
 		}
 
 		public Chunk[] append(DataChunk dc) {
-			Logger.logger.Debug("adding data to stash on stream " + _label + "(" + dc + ")");
+			Logger.Debug("adding data to stash on stream " + _label + "(" + dc + ")");
 			_stash.Add(dc);
 			return _behave.respond(this);
 		}
@@ -102,7 +101,7 @@ namespace pe.pi.sctp4j.sctp {
 		 *
 		 * @param behave
 		 */
-		public void setBehave(SCTPStreamBehaviour behave) {
+		internal void setBehave(SCTPStreamBehaviour behave) {
 			_behave = behave;
 		}
 
@@ -121,7 +120,7 @@ namespace pe.pi.sctp4j.sctp {
 			if (_behave != null) {
 				_behave.deliver(this, _stash, _sl);
 			} else {
-				Logger.logger.Warn("No behaviour set");
+				Logger.Warn("No behaviour set");
 			}
 		}
 
@@ -137,9 +136,9 @@ namespace pe.pi.sctp4j.sctp {
 			return ret;
 		}
 
-		public void setSCTPStreamListener(SCTPStreamListener sl) {
+		internal void setSCTPStreamListener(SCTPStreamListener sl) {
 			_sl = sl;
-			Logger.logger.Debug("action a delayed delivery now we have a listener.");
+			Logger.Debug("action a delayed delivery now we have a listener.");
 			//todo think about what reliablility looks like here.
 			_behave.deliver(this, _stash, _sl);
 		}
@@ -153,7 +152,7 @@ namespace pe.pi.sctp4j.sctp {
 		}
 
 		public void close() {
-			Logger.logger.Debug("closing stream " + this._label + " " + this._sno);
+			Logger.Debug("closing stream " + this._label + " " + this._sno);
 			_ass.closeStream(this);
 		}
 
@@ -173,14 +172,14 @@ namespace pe.pi.sctp4j.sctp {
 			return _nextMessageSeqOut;
 		}
 
-		abstract public void deliverMessage(SCTPMessage message);
+		abstract internal void deliverMessage(SCTPMessage message);
 
 		public void setDeferred(bool b) {
 			bool deferred = true;
 		}
 
 		public void reset() {
-			Logger.logger.Debug("Resetting stream " + this._sno);
+			Logger.Debug("Resetting stream " + this._sno);
 			if (this._sl != null) {
 				_sl.close(this);
 			}
@@ -206,7 +205,7 @@ namespace pe.pi.sctp4j.sctp {
 				case State.INBOUNDONLY:
 					break;
 			}
-			Logger.logger.Debug("Stream State for " + _sno + " is now " + state);
+			Logger.Debug("Stream State for " + _sno + " is now " + state);
 		}
 
 		void setInboundClosed() {
@@ -221,11 +220,11 @@ namespace pe.pi.sctp4j.sctp {
 				case State.OUTBOUNDONLY:
 					break;
 			}
-			Logger.logger.Debug("Stream State for " + _sno + " is now " + state);
+			Logger.Debug("Stream State for " + _sno + " is now " + state);
 		}
 
 		State getState() {
-			Logger.logger.Debug("Stream State for " + _sno + " is currently " + state);
+			Logger.Debug("Stream State for " + _sno + " is currently " + state);
 			return state;
 		}
 

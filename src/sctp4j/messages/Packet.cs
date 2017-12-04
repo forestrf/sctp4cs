@@ -89,7 +89,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 				c.write(cs); // ask the chunk to write itself into there.
 				pad = cs.Position % 4;
 				pad = (pad != 0) ? 4 - pad : 0;
-				Logger.logger.Trace("padding by " + pad);
+				Logger.Trace("padding by " + pad);
 				ret.Position += pad + cs.Position;// move us along.
 			}
 			/*Log.logger.verb("un padding by " + pad);
@@ -136,7 +136,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			Chunk next = null;
 			while (null != (next = Chunk.mkChunk(pkt))) {
 				ret.Add(next);
-				Logger.logger.Debug("saw chunk: " + next.typeLookup());
+				Logger.Debug("saw chunk: " + next.typeLookup());
 			}
 			return ret;
 		}
@@ -177,9 +177,9 @@ namespace pe.pi.sctp4j.sctp.messages {
 			setChecksum(pkt);
 			uint calc = pkt.GetUInt(SUMOFFSET);
 			if (calc != farsum) {
-				Logger.logger.Error("Checksums don't match " + calc.ToString("X4") + " vs " + farsum.ToString("X4"));
+				Logger.Error("Checksums don't match " + calc.ToString("X4") + " vs " + farsum.ToString("X4"));
 				byte[] p = pkt.Data;
-				Logger.logger.Error("for packet " + getHex(p));
+				Logger.Error("for packet " + getHex(p));
 				throw new ChecksumException();
 			}
 		}

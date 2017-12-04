@@ -37,7 +37,7 @@ namespace pe.pi.sctp4j.sctp.small {
 				Association a = base.getAssociation();
 				SCTPMessage m = a.makeMessage(message, this);
 				if (m == null) {
-					Logger.logger.Error("SCTPMessage cannot be null, but it is");
+					Logger.Error("SCTPMessage cannot be null, but it is");
 				}
 				a.sendAndBlock(m);
 			}
@@ -52,7 +52,7 @@ namespace pe.pi.sctp4j.sctp.small {
 			}
 		}
 
-		public override void deliverMessage(SCTPMessage message) {
+		internal override void deliverMessage(SCTPMessage message) {
 			ThreadPool.QueueUserWorkItem((obj) => { message.run(); });
 		}
 
