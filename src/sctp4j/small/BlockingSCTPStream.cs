@@ -29,9 +29,9 @@ using System.Threading;
 namespace pe.pi.sctp4j.sctp.small {
 	public class BlockingSCTPStream : SCTPStream {
 		private Dictionary<int, SCTPMessage> undeliveredOutboundMessages = new Dictionary<int, SCTPMessage>();
-		
+
 		public BlockingSCTPStream(Association a, int id) : base(a, id) { }
-		
+
 		public override void send(string message) {
 			lock (this) {
 				Association a = base.getAssociation();
@@ -51,14 +51,14 @@ namespace pe.pi.sctp4j.sctp.small {
 				a.sendAndBlock(m);
 			}
 		}
-		
+
 		public override void deliverMessage(SCTPMessage message) {
 			ThreadPool.QueueUserWorkItem((obj) => { message.run(); });
 		}
-		
+
 		public override void delivered(DataChunk d) {
 			int f = d.getFlags();
-			if ((f & DataChunk.ENDFLAG) > 0){
+			if ((f & DataChunk.ENDFLAG) > 0) {
 				int ssn = d.getSSeqNo();
 				SCTPMessage st;
 				if (undeliveredOutboundMessages.TryGetValue(ssn, out st)) {
@@ -67,8 +67,8 @@ namespace pe.pi.sctp4j.sctp.small {
 				}
 			}
 		}
-		
-		public override bool idle(){
+
+		public override bool idle() {
 			return undeliveredOutboundMessages.Count == 0;
 		}
 	}

@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
 using SCTP4CS.Utils;
@@ -29,7 +29,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			: base(type, flags, length, pkt) { }
 
 		public CookieAckChunk() : base(CType.COOKIE_ACK) { }
-		
+
 		protected override void putFixedParams(ByteBuffer ret) {
 		}
 	}

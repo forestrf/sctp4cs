@@ -45,7 +45,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		}
 
 		public ReConfigChunk() : base(CType.RE_CONFIG) { }
-		
+
 		protected override void putFixedParams(ByteBuffer ret) {
 			//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}
@@ -150,7 +150,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 					VariableParam remain = null;
 
 					foreach (var v in _varList) {
-						if (!typeof(AddOutgoingStreamsRequestParameter).IsAssignableFrom(v.GetType() )) {
+						if (!typeof(AddOutgoingStreamsRequestParameter).IsAssignableFrom(v.GetType())) {
 							remain = v;
 							break;
 						}

@@ -162,10 +162,10 @@ namespace pe.pi.sctp4j.sctp {
 		}
 
 		/* we can only demand they close their outbound streams */
-	 /* we can request they start to close inbound (ie ask us to shut our outbound */
-	 /* DCEP treats streams as bi-directional - so this is somewhat of an inpedance mis-match */
-	 /* resulting in a temporary 'half closed' state */
-	 /* mull this over.... */
+		/* we can request they start to close inbound (ie ask us to shut our outbound */
+		/* DCEP treats streams as bi-directional - so this is somewhat of an inpedance mis-match */
+		/* resulting in a temporary 'half closed' state */
+		/* mull this over.... */
 		public ReConfigChunk makeClose(SCTPStream st) {
 			ReConfigChunk ret = null;
 			Logger.logger.Debug("building reconfig so close stream " + st);

@@ -53,7 +53,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		public const int WEBRTCBINARY = 53;
 		public const int WEBRTCstringEMPTY = 56;
 		public const int WEBRTCBINARYEMPTY = 57;
-		
+
 		public const int BEGINFLAG = 2;
 		public const int ENDFLAG = 1;
 		public const int SINGLEFLAG = 3;
@@ -95,7 +95,8 @@ namespace pe.pi.sctp4j.sctp.messages {
 						ByteBuffer bb = _body.slice();
 						try {
 							_open = new DCOpen(bb);
-						} catch (InvalidDataChunkException ex) {
+						}
+						catch (InvalidDataChunkException ex) {
 							_invalid = ex;
 						}
 						Logger.logger.Trace("Got an DCEP " + _open);
@@ -149,7 +150,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			}
 			return ret;
 		}
-		
+
 		public override void validate() {
 			if (_invalid != null) {
 				throw _invalid;
@@ -220,7 +221,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			}
 			return len;
 		}
-		
+
 		protected override void putFixedParams(ByteBuffer ret) {
 			ret.Put(_tsn);// = _body.getInt();
 			ret.Put((ushort) _streamId);// = _body.getushort();

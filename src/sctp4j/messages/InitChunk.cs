@@ -53,14 +53,14 @@ namespace pe.pi.sctp4j.sctp.messages {
 		int _numInStreams;
 		uint _initialTSN;
 		byte[] _farSupportedExtensions;
-		byte [] _farRandom;
+		byte[] _farRandom;
 		bool _farForwardTSNsupported;
 		byte[] _farHmacs;
 		byte[] _farChunks;
 		public int _outStreams;
 
 		public InitChunk() : base(CType.INIT) { }
-    
+
 		public InitChunk(CType type, byte flags, int length, ByteBuffer pkt)
 			: base(type, flags, length, pkt) {
 			if (_body.remaining() >= 16) {
@@ -74,21 +74,21 @@ namespace pe.pi.sctp4j.sctp.messages {
 					VariableParam v = readVariable();
 					_varList.Add(v);
 				}
-				foreach (VariableParam v in _varList){
+				foreach (VariableParam v in _varList) {
 					// now look for variables we are expecting...
-					Logger.logger.Trace("variable of type: "+v.getName()+" "+ v.ToString());
-					if (typeof(SupportedExtensions).IsAssignableFrom(v.GetType())){
-						_farSupportedExtensions = ((SupportedExtensions)v).getData();
-					} else if (typeof(RandomParam).IsAssignableFrom(v.GetType())){
-						_farRandom = ((RandomParam)v).getData();
+					Logger.logger.Trace("variable of type: " + v.getName() + " " + v.ToString());
+					if (typeof(SupportedExtensions).IsAssignableFrom(v.GetType())) {
+						_farSupportedExtensions = ((SupportedExtensions) v).getData();
+					} else if (typeof(RandomParam).IsAssignableFrom(v.GetType())) {
+						_farRandom = ((RandomParam) v).getData();
 					} else if (typeof(ForwardTSNsupported).IsAssignableFrom(v.GetType())) {
 						_farForwardTSNsupported = true;
 					} else if (typeof(RequestedHMACAlgorithmParameter).IsAssignableFrom(v.GetType())) {
-						_farHmacs = ((RequestedHMACAlgorithmParameter)v).getData();
+						_farHmacs = ((RequestedHMACAlgorithmParameter) v).getData();
 					} else if (typeof(ChunkListParam).IsAssignableFrom(v.GetType())) {
-						_farChunks = ((ChunkListParam)v).getData();
+						_farChunks = ((ChunkListParam) v).getData();
 					} else {
-						Logger.logger.Trace("unexpected variable of type: "+v.getName());
+						Logger.logger.Trace("unexpected variable of type: " + v.getName());
 					}
 				}
 			}
@@ -101,50 +101,50 @@ namespace pe.pi.sctp4j.sctp.messages {
 					+ " numOutStreams : " + _numOutStreams
 					+ " numInStreams : " + _numInStreams
 					+ " initialTSN : " + _initialTSN
-					+ " farForwardTSNsupported : "+_farForwardTSNsupported
-					+ ((_farSupportedExtensions == null) ?" no supported extensions": " supported extensions are: "+chunksToNames(_farSupportedExtensions));
+					+ " farForwardTSNsupported : " + _farForwardTSNsupported
+					+ ((_farSupportedExtensions == null) ? " no supported extensions" : " supported extensions are: " + chunksToNames(_farSupportedExtensions));
 			return ret;
 		}
-	
+
 		protected override void putFixedParams(ByteBuffer ret) {
-			ret.Put((int)_initiateTag);
+			ret.Put((int) _initiateTag);
 			ret.Put(_adRecWinCredit);
 			ret.Put((ushort) _numOutStreams);
 			ret.Put((ushort) _numInStreams);
-			ret.Put( _initialTSN);
+			ret.Put(_initialTSN);
 		}
 
 		public int getInitiateTag() {
-			return (int)_initiateTag;
+			return (int) _initiateTag;
 		}
-    
-		public long getAdRecWinCredit(){
+
+		public long getAdRecWinCredit() {
 			return _adRecWinCredit;
 		}
-		public int getNumOutStreams(){
+		public int getNumOutStreams() {
 			return _numOutStreams;
 		}
-		public int getNumInStreams(){
+		public int getNumInStreams() {
 			return _numInStreams;
 		}
-		public long getInitialTSN(){
+		public long getInitialTSN() {
 			return _initialTSN;
 		}
-		public void setInitialTSN(uint tsn){
+		public void setInitialTSN(uint tsn) {
 			_initialTSN = tsn;
 		}
-		public void setAdRecWinCredit(uint credit){
+		public void setAdRecWinCredit(uint credit) {
 			_adRecWinCredit = credit;
 		}
-		public void setNumOutStreams(int outn){
+		public void setNumOutStreams(int outn) {
 			_numOutStreams = outn;
 		}
-		public void setNumInStreams(int inn){
+		public void setNumInStreams(int inn) {
 			_numInStreams = inn;
 		}
-		public byte[] getFarSupportedExtensions(){
+		public byte[] getFarSupportedExtensions() {
 			return _farSupportedExtensions;
-		}        
+		}
 
 		public void setInitiate(long tag) {
 			this._initiateTag = tag;

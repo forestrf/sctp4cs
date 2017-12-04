@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 using System;
 
@@ -23,5 +23,5 @@ using System;
  * @author Westhawk Ltd<thp@westhawk.co.uk>
  */
 public class InvalidDataChunkException : Exception {
-    public InvalidDataChunkException(string message) : base(message) { }
+	public InvalidDataChunkException(string message) : base(message) { }
 }

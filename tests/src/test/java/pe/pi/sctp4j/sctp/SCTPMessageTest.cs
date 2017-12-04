@@ -74,27 +74,27 @@ namespace pe.pi.sctp4j.sctp {
 			public override void associate() {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
-			
+
 			public override void enqueue(DataChunk d) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
-			
+
 			public override SCTPStream mkStream(int id) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
-			
+
 			public override void sendAndBlock(SCTPMessage m) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
-			
+
 			public override SCTPMessage makeMessage(byte[] bytes, BlockingSCTPStream aThis) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
-			
+
 			public override SCTPMessage makeMessage(string s, BlockingSCTPStream aThis) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
-			
+
 			protected override Chunk[] sackDeal(SackChunk sackChunk) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
@@ -106,15 +106,15 @@ namespace pe.pi.sctp4j.sctp {
 			public override void send(string message) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
-			
+
 			public override void deliverMessage(SCTPMessage message) {
 				message.run();
 			}
-			
+
 			public override void send(byte[] message) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
-			
+
 			public override void delivered(DataChunk d) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
@@ -165,13 +165,13 @@ namespace pe.pi.sctp4j.sctp {
 				chunks.Add(dc);
 			}
 			Assert.AreEqual(chunks.Count, 1);
-			int ppid = ((DataChunk)chunks.First).getPpid();
-			Assert.AreEqual(ppid,DataChunk.WEBRTCstring);
+			int ppid = ((DataChunk) chunks.First).getPpid();
+			Assert.AreEqual(ppid, DataChunk.WEBRTCstring);
 		}
 		[TestMethod]
 		public void testFillShortBlob() {
 			Console.WriteLine("--> fill short blob ");
-			byte [] testBlob = new byte[21];
+			byte[] testBlob = new byte[21];
 			_rand.NextBytes(testBlob);
 			SCTPMessage instance = new SCTPMessage(testBlob, _fakeStream);
 			SortedArray<DataChunk> chunks = new SortedArray<DataChunk>();
@@ -181,8 +181,8 @@ namespace pe.pi.sctp4j.sctp {
 				chunks.Add(dc);
 			}
 			Assert.AreEqual(chunks.Count, 1);
-			int ppid = ((DataChunk)chunks.First).getPpid();
-			Assert.AreEqual(ppid,DataChunk.WEBRTCBINARY);
+			int ppid = ((DataChunk) chunks.First).getPpid();
+			Assert.AreEqual(ppid, DataChunk.WEBRTCBINARY);
 		}
 		[TestMethod]
 		public void testFillLongstring() {
@@ -225,32 +225,32 @@ namespace pe.pi.sctp4j.sctp {
 			}
 			int pktsz = chunks.First.getDataSize();
 			Assert.AreEqual(chunks.Count, 1);
-			Assert.AreEqual(pktsz,1);
-			int ppid = ((DataChunk)chunks.First).getPpid();
-			Assert.AreEqual(ppid,DataChunk.WEBRTCstringEMPTY);
+			Assert.AreEqual(pktsz, 1);
+			int ppid = ((DataChunk) chunks.First).getPpid();
+			Assert.AreEqual(ppid, DataChunk.WEBRTCstringEMPTY);
 		}
 
 		[TestMethod]
 		public void testEmptyBlob() {
 			Console.WriteLine("--> fill empty blob");
-			byte [] testBlob = new byte[0];
+			byte[] testBlob = new byte[0];
 			SCTPMessage instance = new SCTPMessage(testBlob, _fakeStream);
 			SortedArray<DataChunk> chunks = new SortedArray<DataChunk>();
 			long tsn = 111;
 
 			while (instance.hasMoreData()) {
 				DataChunk dc = new DataChunk();
-				dc.setTsn((uint)tsn++);
+				dc.setTsn((uint) tsn++);
 				instance.fill(dc);
 				chunks.Add(dc);
 			}
 			Assert.AreEqual(chunks.Count, 1);
 			int pktsz = chunks.First.getDataSize();
-			Assert.AreEqual(pktsz,1);
-			int ppid = ((DataChunk)chunks.First).getPpid();
-			Assert.AreEqual(ppid,DataChunk.WEBRTCBINARYEMPTY);
+			Assert.AreEqual(pktsz, 1);
+			int ppid = ((DataChunk) chunks.First).getPpid();
+			Assert.AreEqual(ppid, DataChunk.WEBRTCBINARYEMPTY);
 		}
-    
+
 		/**
 		 * Test of getData method, of class SCTPMessage.
 		 */

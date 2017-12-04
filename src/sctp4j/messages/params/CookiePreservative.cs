@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
 using SCTP4CS.Utils;
@@ -27,11 +27,11 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 	public class CookiePreservative : KnownParam {
 		int time;
 		public CookiePreservative(int t, string n) : base(t, n) { }
-		
+
 		public override void readBody(ByteBuffer body, int blen) {
 			time = body.GetInt();
 		}
-		
+
 		public override void writeBody(ByteBuffer body) {
 			body.Put(time);
 		}

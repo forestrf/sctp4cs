@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
 using SCTP4CS.Utils;
@@ -46,7 +46,8 @@ namespace pe.pi.sctp4j.sctp.small {
 			foreach (DatagramTransport t in __transList) {
 				try {
 					t.Close();
-				} catch (IOException ex) {
+				}
+				catch (IOException ex) {
 					Console.WriteLine(ex.ToString());
 				}
 			}
@@ -439,7 +440,8 @@ namespace pe.pi.sctp4j.sctp.small {
 			Thread st = new Thread(() => {
 				try {
 					s.send(teststring);
-				} catch (Exception ex) {
+				}
+				catch (Exception ex) {
 					Console.WriteLine(ex.ToString());
 				}
 			});

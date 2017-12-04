@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
 /**
@@ -24,8 +24,8 @@
 namespace pe.pi.sctp4j.sctp.messages.Params {
 	public class KnownParam : Unknown {
 		public KnownParam(int t, string n) : base(t, n) { }
-    
-		public byte[] getData(){
+
+		public byte[] getData() {
 			return _data;
 		}
 		public void setData(byte[] data) {

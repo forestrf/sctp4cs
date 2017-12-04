@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
 
@@ -32,7 +32,7 @@ namespace pe.pi.sctp4j.sctp {
 		public MockAssociation(DatagramTransport transport, AssociationListener al) : base(transport, al) { }
 
 
-		
+
 		public override void enqueue(DataChunk d) {
 			throw new Exception("[UnsupportedOperationException] Not supported yet. (enqueue)"); //To change body of generated methods, choose Tools | Templates.
 		}
@@ -57,7 +57,7 @@ namespace pe.pi.sctp4j.sctp {
 		public override SCTPStream mkStream(int id) {
 			return new SCTPStreamImpl(this, id);
 		}
-		
+
 		public override void sendAndBlock(SCTPMessage m) {
 			Chunk[] dar = new Chunk[1];
 
@@ -69,11 +69,11 @@ namespace pe.pi.sctp4j.sctp {
 			send(dar);
 
 		}
-		
+
 		public override SCTPMessage makeMessage(byte[] bytes, BlockingSCTPStream aThis) {
 			throw new Exception("[UnsupportedOperationException] Not supported yet. (makeMessage)"); //To change body of generated methods, choose Tools | Templates.
 		}
-		
+
 		public override Chunk[] inboundInit(InitChunk i) {
 			return base.inboundInit(i);
 		}
@@ -81,11 +81,11 @@ namespace pe.pi.sctp4j.sctp {
 		public void setMyVerTag(int v) {
 			base._myVerTag = v;
 		}
-		
+
 		public override SCTPMessage makeMessage(string s, BlockingSCTPStream aThis) {
 			throw new Exception("[UnsupportedOperationException] Not supported yet.(Make Message - string"); //To change body of generated methods, choose Tools | Templates.
 		}
-		
+
 		protected override Chunk[] sackDeal(SackChunk sackChunk) {
 			throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}

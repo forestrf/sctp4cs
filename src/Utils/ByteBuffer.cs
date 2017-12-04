@@ -3,7 +3,7 @@ using System;
 namespace SCTP4CS.Utils {
 	public class ByteBuffer {
 		private byte[] _data;
-		
+
 		/// <summary>
 		/// Absolute
 		/// </summary>
@@ -11,8 +11,7 @@ namespace SCTP4CS.Utils {
 		/// <summary>
 		/// Relative
 		/// </summary>
-		public int Position
-		{
+		public int Position {
 			get { return positionAbsolute - offset; }
 			set { positionAbsolute = value + offset; }
 		}
@@ -29,8 +28,7 @@ namespace SCTP4CS.Utils {
 		/// <summary>
 		/// Relative
 		/// </summary>
-		public int Limit
-		{
+		public int Limit {
 			get { return limitAbsolute - offset; }
 			set {
 				limitAbsolute = value + offset;

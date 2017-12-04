@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
 
@@ -56,13 +56,13 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 		 </code>
 		 */
 
-		public StaleCookieError() : base (3, "StaleCookieError") { }
-		
+		public StaleCookieError() : base(3, "StaleCookieError") { }
+
 		public override void readBody(ByteBuffer body, int blen) {
 			_measure = body.GetUInt();
 		}
 
-		
+
 		public override void writeBody(ByteBuffer body) {
 			body.Put(_measure);
 		}

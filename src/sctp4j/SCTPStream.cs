@@ -58,7 +58,8 @@ namespace pe.pi.sctp4j.sctp {
 			Chunk ret = null;
 			try {
 				ret = _ass.addToCloseList(this);
-			} catch (Exception ex) {
+			}
+			catch (Exception ex) {
 				Logger.logger.Error("Can't make immediate close for " + this._sno + " because " + ex.ToString());
 			}
 			return ret;

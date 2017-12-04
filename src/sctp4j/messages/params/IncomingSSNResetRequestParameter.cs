@@ -53,7 +53,7 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 		public IncomingSSNResetRequestParameter(uint reqNo) : this() {
 			this.reqSeqNo = reqNo;
 		}
-		
+
 		public override void readBody(ByteBuffer body, int blen) {
 			if (blen < 4) {
 				Logger.logger.Error("Huh ? No body to this " + this.getName());
@@ -79,7 +79,7 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 				}
 			}
 		}
-		
+
 		public override string ToString() {
 			StringBuilder ret = new StringBuilder();
 			ret.Append(this.GetType().Name).Append(" ");

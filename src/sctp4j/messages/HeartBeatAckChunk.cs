@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 using SCTP4CS.Utils;
 
@@ -25,7 +25,7 @@ using SCTP4CS.Utils;
 namespace pe.pi.sctp4j.sctp.messages {
 	public class HeartBeatAckChunk : Chunk {
 		public HeartBeatAckChunk() : base(CType.HEARTBEAT_ACK) { }
-		
+
 		protected override void putFixedParams(ByteBuffer ret) { }
 	}
 }

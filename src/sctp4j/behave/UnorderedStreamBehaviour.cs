@@ -14,13 +14,13 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 /**
  *
  * @author tim
  */
- namespace pe.pi.sctp4j.sctp.behave {
+namespace pe.pi.sctp4j.sctp.behave {
 	public class UnorderedStreamBehaviour : OrderedStreamBehaviour {
 		public UnorderedStreamBehaviour() {
 			_ordered = false;

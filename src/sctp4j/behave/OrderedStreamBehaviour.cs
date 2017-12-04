@@ -40,9 +40,9 @@ namespace pe.pi.sctp4j.sctp.behave {
 				return; // I'm not fond of these early returns 
 			}
 			long expectedTsn = stash.First.getTsn(); // This ignores gaps - but _hopefully_ messageNo will catch any
-												   // gaps we care about - ie gaps in the sequence for _this_ stream 
-												   // we can deliver ordered messages on this stream even if earlier messages from other streams are missing
-												   // - this does assume that the tsn's of a message are contiguous -which is odd.
+													 // gaps we care about - ie gaps in the sequence for _this_ stream 
+													 // we can deliver ordered messages on this stream even if earlier messages from other streams are missing
+													 // - this does assume that the tsn's of a message are contiguous -which is odd.
 
 
 			foreach (DataChunk dc in stash) {

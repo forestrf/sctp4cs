@@ -56,13 +56,13 @@ namespace pe.pi.sctp4j.sctp.small {
 		 */
 		private long _cwnd;
 		// assume a single destination via ICE
-	/*
-		 o  Slow-start threshold (ssthresh, in bytes), which is used by the
-		 sender to distinguish slow-start and congestion avoidance phases.
+		/*
+			 o  Slow-start threshold (ssthresh, in bytes), which is used by the
+			 sender to distinguish slow-start and congestion avoidance phases.
 
-		 Note: This variable is maintained on a per-destination-address
-		 basis.
-		 */
+			 Note: This variable is maintained on a per-destination-address
+			 basis.
+			 */
 		private long _ssthresh;
 		/*
 
@@ -133,7 +133,8 @@ namespace pe.pi.sctp4j.sctp.small {
 			try {
 				_transpMTU = Math.Min(transport.GetReceiveLimit(), transport.GetSendLimit());
 				Logger.logger.Debug("Transport MTU is now " + _transpMTU);
-			} catch (IOException x) {
+			}
+			catch (IOException x) {
 				Logger.logger.Warn("Failed to get suitable transport mtu ");
 				Logger.logger.Warn(x.ToString());
 			}
@@ -159,13 +160,13 @@ namespace pe.pi.sctp4j.sctp.small {
 		 When retransmitting the INIT, the endpoint MUST follow the rules
 		 defined in Section 6.3 to determine the proper timer value.
 		 */
-		 
+
 		protected override Chunk[] iackDeal(InitAckChunk iack) {
 			Chunk[] ret = base.iackDeal(iack);
 			_stashCookieEcho = ret;
 			return ret;
 		}
-		
+
 		class AssocRun {
 			ThreadedAssociation ta;
 			private AssocRun() { }
@@ -213,9 +214,9 @@ namespace pe.pi.sctp4j.sctp.small {
 		}
 
 		public long getT3() {
-			return (_rto > 0) ? (long) (1000.0 * _rto): 100;
+			return (_rto > 0) ? (long) (1000.0 * _rto) : 100;
 		}
-		
+
 		public override void enqueue(DataChunk d) {
 			// todo - this worries me - 2 nested synchronized 
 			Logger.logger.Trace(" Aspiring to enqueue " + d.ToString());
@@ -241,13 +242,16 @@ namespace pe.pi.sctp4j.sctp.small {
 					}
 					Logger.logger.Trace("added to inFlight... " + d.getTsn());
 
-				} catch (SctpPacketFormatException ex) {
+				}
+				catch (SctpPacketFormatException ex) {
 					Logger.logger.Error("badly formatted chunk " + d.ToString());
 					Logger.logger.Error(ex.ToString());
-				} catch (EndOfStreamException end) {
+				}
+				catch (EndOfStreamException end) {
 					unexpectedClose(end);
 					Logger.logger.Error(end.ToString());
-				} catch (IOException ex) {
+				}
+				catch (IOException ex) {
 					Logger.logger.Error("Can not send chunk " + d.ToString());
 					Logger.logger.Error(ex.ToString());
 				}
@@ -255,7 +259,7 @@ namespace pe.pi.sctp4j.sctp.small {
 			Logger.logger.Trace("leaving enqueue" + d.getTsn());
 
 		}
-		
+
 		public override void sendAndBlock(SCTPMessage m) {
 			while (m.hasMoreData()) {
 				DataChunk dc;
@@ -276,7 +280,7 @@ namespace pe.pi.sctp4j.sctp.small {
 				enqueue(dc);
 			}
 		}
-		
+
 		public override SCTPMessage makeMessage(byte[] bytes, BlockingSCTPStream s) {
 			lock (this) {
 				SCTPMessage m = null;
@@ -293,7 +297,7 @@ namespace pe.pi.sctp4j.sctp.small {
 				return m;
 			}
 		}
-		
+
 		public override SCTPMessage makeMessage(string bytes, BlockingSCTPStream s) {
 			SCTPMessage m = null;
 			if (base.canSend()) {
@@ -305,7 +309,7 @@ namespace pe.pi.sctp4j.sctp.small {
 						m.setSeq(mseq);
 					}
 				} else {
-					Logger.logger.Warn("Message too long " + bytes.Length + " > "+this.maxMessageSize());
+					Logger.logger.Warn("Message too long " + bytes.Length + " > " + this.maxMessageSize());
 				}
 			} else {
 				Logger.logger.Warn("Can't send a message right now");
@@ -330,7 +334,7 @@ namespace pe.pi.sctp4j.sctp.small {
 			// ToDo - check on unacked recvs (why?)
 			// and then check on size - will it fit?
 			// then add sack
-			Chunk[] ret = {d};
+			Chunk[] ret = { d };
 			return ret;
 		}
 
@@ -425,9 +429,9 @@ namespace pe.pi.sctp4j.sctp.small {
 		 Recovery exitpoint (Section 7.2.4), Fast Recovery is exited.
 
 		 */
-		 
+
 		protected override Chunk[] sackDeal(SackChunk sack) {
-			Chunk[] ret = {};
+			Chunk[] ret = { };
 			/*
 			 i) If Cumulative TSN Ack is less than the Cumulative TSN Ack
 			 Point, then drop the SACK.  Since Cumulative TSN Ack is
@@ -461,11 +465,12 @@ namespace pe.pi.sctp4j.sctp.small {
 						try {
 							int sid = d.getStreamId();
 							SCTPStream stream = getStream(sid);
-							if(stream != null) { stream.delivered(d); }
+							if (stream != null) { stream.delivered(d); }
 							lock (_freeBlocks) {
 								_freeBlocks.Enqueue(d);
 							}
-						} catch (Exception ex) {
+						}
+						catch (Exception ex) {
 							Logger.logger.Error("eek - can't replace free block on list!?!");
 							Logger.logger.Error(ex.ToString());
 						}
@@ -744,11 +749,13 @@ namespace pe.pi.sctp4j.sctp.small {
 					try {
 						Logger.logger.Debug("Sending retry for  " + da.Length + " data chunks");
 						this.send(da);
-					} catch (EndOfStreamException end) {
-						Logger.logger.Debug("Retry send failed "+end.ToString());
+					}
+					catch (EndOfStreamException end) {
+						Logger.logger.Debug("Retry send failed " + end.ToString());
 						unexpectedClose(end);
 						resetTimer = false;
-					} catch (Exception ex) {
+					}
+					catch (Exception ex) {
 						Logger.logger.Error("Cant send retry - eek " + ex.ToString());
 					}
 				} else {
@@ -756,7 +763,7 @@ namespace pe.pi.sctp4j.sctp.small {
 				}
 				if (resetTimer) {
 					SimpleSCTPTimer.setRunnable(run, getT3());
-					Logger.logger.Trace("Try again in a while  "+getT3());
+					Logger.logger.Trace("Try again in a while  " + getT3());
 
 				}
 			}
@@ -777,11 +784,11 @@ namespace pe.pi.sctp4j.sctp.small {
 		 parameter 'RTO.Initial'.
 		 */
 		// a guess at the round-trip time
-		private  void setRTOnonRFC(long r) {
+		private void setRTOnonRFC(long r) {
 			_rto = 0.2;
 		}
 
-		private  void setRTO(long r) {
+		private void setRTO(long r) {
 			double nrto = 1.0;
 			double cr = r / 1000.0;
 			/*
@@ -817,7 +824,7 @@ namespace pe.pi.sctp4j.sctp.small {
 				_srtt = (1 - _rtoAlpha) * _srtt + _rtoAlpha * cr;
 				nrto = _srtt + 4 * _rttvar;
 			}
-			Logger.logger.Debug("new r ="+r+"candidate  rto is " + nrto);
+			Logger.logger.Debug("new r =" + r + "candidate  rto is " + nrto);
 
 			if (nrto < _rtoMin) {
 				Logger.logger.Debug("clamping min rto as " + nrto + " < " + _rtoMin);
@@ -827,7 +834,7 @@ namespace pe.pi.sctp4j.sctp.small {
 				Logger.logger.Debug("clamping max rto as " + nrto + " > " + _rtoMax);
 				nrto = _rtoMax;
 			}
-			if ((nrto < _rtoMax) && (nrto > _rtoMin)){
+			if ((nrto < _rtoMax) && (nrto > _rtoMin)) {
 				// if still out of range (i.e. a NaN) ignore it.
 				_rto = nrto;
 			}

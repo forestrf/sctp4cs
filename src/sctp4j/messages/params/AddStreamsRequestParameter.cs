@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
 using SCTP4CS.Utils;
@@ -26,7 +26,7 @@ using SCTP4CS.Utils;
 namespace pe.pi.sctp4j.sctp.messages.Params {
 	public class AddStreamsRequestParameter : Unknown {
 		public AddStreamsRequestParameter(int t, string n) : base(t, n) { }
-		
+
 		/*
 		 0                   1                   2                   3
 		 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -42,13 +42,13 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 		uint reconfReqSeqNo;
 		int numNewStreams;
 		int reserved;
-		
+
 		public override void readBody(ByteBuffer body, int blen) {
 			reconfReqSeqNo = body.GetUInt();
 			numNewStreams = body.GetUShort();
 			reserved = body.GetUShort();
 		}
-		
+
 		public override void writeBody(ByteBuffer body) {
 			body.Put((uint) reconfReqSeqNo);
 			body.Put((ushort) numNewStreams);

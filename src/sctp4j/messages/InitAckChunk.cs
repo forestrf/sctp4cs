@@ -112,7 +112,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			: base(type, flags, length, pkt) {
 			if (_body.remaining() >= 16) {
 				_initiateTag = _body.GetInt();
-				_adRecWinCredit = _body.GetUInt();;
+				_adRecWinCredit = _body.GetUInt(); ;
 				_numOutStreams = _body.GetUShort();
 				_numInStreams = _body.GetUShort();
 				_initialTSN = _body.GetUInt();
@@ -146,7 +146,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			;
 			return ret;
 		}
-		
+
 		protected override void putFixedParams(ByteBuffer ret) {
 			ret.Put(_initiateTag);
 			ret.Put(_adRecWinCredit);

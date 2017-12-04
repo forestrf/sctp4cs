@@ -77,7 +77,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 				}
 			}
 		}
-		
+
 		protected override void putFixedParams(ByteBuffer ret) { }
 	}
 }

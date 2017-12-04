@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
 using SCTP4CS.Utils;
@@ -34,7 +34,7 @@ using System.Threading;
 namespace com.ipseorama.sctp {
 	[TestClass]
 	public class TestAssociation {
-		byte [] sampleDataOpen = { (byte)0x13, (byte)0x88, (byte)0x13, (byte)0x88, (byte)0x13, (byte)0xfc, (byte)0x3a, (byte)0x88, (byte)0x8d, (byte)0xa9
+		byte[] sampleDataOpen = { (byte)0x13, (byte)0x88, (byte)0x13, (byte)0x88, (byte)0x13, (byte)0xfc, (byte)0x3a, (byte)0x88, (byte)0x8d, (byte)0xa9
 			, (byte)0xa7, (byte)0x20, (byte)0x00, (byte)0x03, (byte)0x00, (byte)0x20, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x32, (byte)0x03, (byte)0x00
 			, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x04, (byte)0x00, (byte)0x00, (byte)0x63, (byte)0x68, (byte)0x61, (byte)0x74 };
 
@@ -94,10 +94,10 @@ namespace com.ipseorama.sctp {
 		}
 
 		[TestMethod]
-		public void testAss(){
+		public void testAss() {
 			DatagramTransportImpl mock = new DatagramTransportImpl(null);
 			AssociationListenerImpl al = new AssociationListenerImpl(null);
-			MockAssociation ass = new MockAssociation(mock,al);
+			MockAssociation ass = new MockAssociation(mock, al);
 			ass.setMyVerTag(335297160);
 			ByteBuffer b = ByteBuffer.wrap(sampleDataOpen);
 			Packet p = new Packet(b);
@@ -105,29 +105,29 @@ namespace com.ipseorama.sctp {
 
 			Packet ack = new Packet(mock.sent);
 			List<Chunk> chunks = ack.getChunkList();
-			Assert.AreEqual(1,chunks.Count, "Expecting 1 chunk ");
+			Assert.AreEqual(1, chunks.Count, "Expecting 1 chunk ");
 			DataChunk dat = chunks[0] as DataChunk;
-			Assert.AreEqual(dat.getType(),DataChunk.CType.DATA, "Expecting a Data chunk");
-			Console.WriteLine("got "+dat.GetType().Name + " chunk" + dat.ToString());
-			Assert.AreEqual(dat.getSSeqNo(),0, "Expecting seqno of zero");
-			Assert.AreEqual(dat.getStreamId(),0, "Expecting stream of zero");
-			Assert.AreEqual(dat.getPpid(),50, "Expecting an DCEP");
-			Assert.AreEqual(dat.getData(),null, "Data should be zero");
-			Assert.AreEqual(dat.getDCEP()!=null,true, "Expected  to parse a DCEP packet");
-			Assert.AreEqual(dat.getDCEP().isAck(),true, "Expected an ack DCEP packet ");
+			Assert.AreEqual(dat.getType(), DataChunk.CType.DATA, "Expecting a Data chunk");
+			Console.WriteLine("got " + dat.GetType().Name + " chunk" + dat.ToString());
+			Assert.AreEqual(dat.getSSeqNo(), 0, "Expecting seqno of zero");
+			Assert.AreEqual(dat.getStreamId(), 0, "Expecting stream of zero");
+			Assert.AreEqual(dat.getPpid(), 50, "Expecting an DCEP");
+			Assert.AreEqual(dat.getData(), null, "Data should be zero");
+			Assert.AreEqual(dat.getDCEP() != null, true, "Expected  to parse a DCEP packet");
+			Assert.AreEqual(dat.getDCEP().isAck(), true, "Expected an ack DCEP packet ");
 
 			Assert.AreEqual((al.stream == null), false, "expecting a stream");
 			al.stream.send("hello");
 			// ugh - uses a side effect on the sent buffer, which we capture.
 			Packet pack = new Packet(mock.sent);
 			chunks = pack.getChunkList();
-			Assert.AreEqual(1,chunks.Count, "Expecting 1 chunk ");
+			Assert.AreEqual(1, chunks.Count, "Expecting 1 chunk ");
 			dat = chunks[0] as DataChunk;
 			Assert.AreEqual(dat.getType(), Chunk.CType.DATA, "Expecting a Data chunk");
-			Console.WriteLine("got "+dat.GetType().Name+ " chunk" + dat.ToString());
-			Assert.AreEqual(dat.getSSeqNo(),1, "Expecting seqno of one"); // we've done a DCEP ack by now.
-			Assert.AreEqual(dat.getStreamId(),0, "Expecting stream of zero");   
-			Assert.AreEqual(dat.getDataAsString(),"hello", "Expecting hello in the data");   
+			Console.WriteLine("got " + dat.GetType().Name + " chunk" + dat.ToString());
+			Assert.AreEqual(dat.getSSeqNo(), 1, "Expecting seqno of one"); // we've done a DCEP ack by now.
+			Assert.AreEqual(dat.getStreamId(), 0, "Expecting stream of zero");
+			Assert.AreEqual(dat.getDataAsString(), "hello", "Expecting hello in the data");
 		}
 	}
 }

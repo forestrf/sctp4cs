@@ -84,12 +84,12 @@ namespace pe.pi.sctp4j.sctp.behave {
 			public CheckingStreamListener(List<string> results) {
 				_results = results;
 			}
-			
+
 			public void onMessage(SCTPStream s, string message) {
 				Assert.IsTrue(_results.Contains(message));
 				_results.Remove(message);
 			}
-			
+
 			public void close(SCTPStream aThis) {
 			}
 		};
@@ -162,7 +162,7 @@ namespace pe.pi.sctp4j.sctp.behave {
 			Console.WriteLine("--> deliver two");
 			SCTPStream s = mockStream();
 			SortedArray<DataChunk> stash = new SortedArray<DataChunk>();
-			string[] teststrings = {"Test string A", "Test string B"};
+			string[] teststrings = { "Test string A", "Test string B" };
 			List<string> result = new List<string>();
 			int n = 0;
 			foreach (string ts in teststrings) {
@@ -185,14 +185,14 @@ namespace pe.pi.sctp4j.sctp.behave {
 
 		[TestMethod]
 		public void testDeliverTwoPartMessage() {
-			string[] teststrings = {"Test string A, ", "Test string B."};
+			string[] teststrings = { "Test string A, ", "Test string B." };
 			Console.WriteLine("--> deliver two part message");
 			multiPartMessage(teststrings);
 		}
 
 		[TestMethod]
 		public void testDeliverThreePartMessage() {
-			string[] teststrings = {"Test string A, ", "Test string B ", "and Test string C"};
+			string[] teststrings = { "Test string A, ", "Test string B ", "and Test string C" };
 			Console.WriteLine("--> deliver three part message");
 			multiPartMessage(teststrings);
 		}
@@ -282,24 +282,24 @@ namespace pe.pi.sctp4j.sctp.behave {
 		[TestMethod]
 		public void testDeliverNoMissingPartMessage() {
 			Console.WriteLine("--> deliver no missing part message");
-			string[] teststrings = {"Test string A, ", "Test string B ", "and Test string C"};
+			string[] teststrings = { "Test string A, ", "Test string B ", "and Test string C" };
 
 			oneMissingPartMessages(teststrings, "", -1);
 		}
-	/*
-		// todo - fix this - 
-		[TestMethod]
-		public void testDeliverOneMissingPartMessage() {
-			Console.WriteLine("--> deliver one missing part message");
-			string teststrings[] = {"Test string A, ", "Test string B ", "and Test string C"};
+		/*
+			// todo - fix this - 
+			[TestMethod]
+			public void testDeliverOneMissingPartMessage() {
+				Console.WriteLine("--> deliver one missing part message");
+				string teststrings[] = {"Test string A, ", "Test string B ", "and Test string C"};
 
-			foreach (string es in teststrings) {
-				for (int ec = 0; ec < es.length(); ec++) {
-					oneMissingPartMessages(teststrings, es, ec);
+				foreach (string es in teststrings) {
+					for (int ec = 0; ec < es.length(); ec++) {
+						oneMissingPartMessages(teststrings, es, ec);
+					}
 				}
 			}
-		}
-	*/
+		*/
 		[TestMethod]
 		public void testDeliverUnorderedPackets() {
 			Console.WriteLine("--> deliver messages with random packet arrival");
@@ -310,8 +310,8 @@ namespace pe.pi.sctp4j.sctp.behave {
 
 		public void deliverUnorderedPackets(int seed) {
 			Random rand = new Random(seed); // deliberately not crypto random so test is repeatable 
-			// Console.WriteLine("seed = "+seed);
-			string[] teststrings = {"Test string A, ", "Test string B ", "and Test string C"};
+											// Console.WriteLine("seed = "+seed);
+			string[] teststrings = { "Test string A, ", "Test string B ", "and Test string C" };
 			SCTPStream s = mockStream();
 			List<string> result = new List<string>();
 			int n = 0;

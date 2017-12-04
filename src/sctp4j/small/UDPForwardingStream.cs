@@ -41,7 +41,7 @@ namespace pe.pi.sctp4j.sctp.small {
 			SCTPStreamBehaviour behave = mkBehave();
 			base.setBehave(behave);
 		}
-		
+
 		public void run() {
 			try {
 				_udpSock.ReceiveTimeout = 1000;
@@ -56,11 +56,13 @@ namespace pe.pi.sctp4j.sctp.small {
 						byte[] pkt = new byte[l];
 						Array.Copy(buff, 0, pkt, 0, l);
 						send(pkt);
-					} catch (SocketException stx) {
+					}
+					catch (SocketException stx) {
 						; // ignore - lets us check for close....
 					}
 				}
-			} catch (Exception x) {
+			}
+			catch (Exception x) {
 
 			}
 			// clean up here.....

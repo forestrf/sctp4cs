@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
 using pe.pi.sctp4j.sctp.messages;
@@ -43,7 +43,7 @@ namespace pe.pi.sctp4j.sctp {
 		public abstract void associate();
 
 
-		
+
 		/**
 		 * <code>
 		 *                     -----          -------- (from any state)
@@ -206,7 +206,8 @@ namespace pe.pi.sctp4j.sctp {
 			}
 			try {
 				send(replies.ToArray());
-			} catch (Exception end) {
+			}
+			catch (Exception end) {
 				unexpectedClose(end);
 				Logger.logger.Error(end.ToString());
 			}
@@ -214,7 +215,7 @@ namespace pe.pi.sctp4j.sctp {
 
 		void startRcv() {
 			Association me = this;
-			_rcv = new Thread(()=> {
+			_rcv = new Thread(() => {
 				try {
 					byte[] buf = new byte[_transp.GetReceiveLimit()];
 					while (_rcv != null) {
@@ -261,8 +262,8 @@ namespace pe.pi.sctp4j.sctp {
 		}
 
 		// default is server
-		public Association(DatagramTransport transport, AssociationListener al) : this(transport,  al, false) { }
-    
+		public Association(DatagramTransport transport, AssociationListener al) : this(transport, al, false) { }
+
 		public Association(DatagramTransport transport, AssociationListener al, bool client) {
 			//Log.setLevel(Log.ALL);
 			Logger.logger.Debug("Created an Associaction of type: " + this.GetType().Name);
@@ -408,7 +409,7 @@ namespace pe.pi.sctp4j.sctp {
 				if (null != _al) {
 					_al.onAssociated(this);
 				}
-				reconfigState = new ReconfigState(this,_farTSN);
+				reconfigState = new ReconfigState(this, _farTSN);
 
 			}
 			if ((oldState == State.ESTABLISHED) && (_state != State.ESTABLISHED)) {
@@ -496,7 +497,8 @@ namespace pe.pi.sctp4j.sctp {
 			this._state = State.COOKIEWAIT;
 			try {
 				this.send(s);
-			} catch (EndOfStreamException end) {
+			}
+			catch (EndOfStreamException end) {
 				unexpectedClose(end);
 				Logger.logger.Error(end.ToString());
 			} // todo need timer here.....
@@ -619,7 +621,8 @@ namespace pe.pi.sctp4j.sctp {
 				// _however_ this should be in behave -as mentioned above.
 				try {
 					_al.onDCEPStream(_in, _in.getLabel(), dc.getPpid());
-				} catch (Exception x){
+				}
+				catch (Exception x) {
 					closer = _in.immediateClose();
 					Logger.logger.Error(x.ToString());
 				}
@@ -632,7 +635,7 @@ namespace pe.pi.sctp4j.sctp {
 					rep.Add(r);
 				}
 			}
-			if (closer != null ){
+			if (closer != null) {
 				rep.Add(closer);
 			}
 			_in.inbound(dc);
@@ -642,7 +645,7 @@ namespace pe.pi.sctp4j.sctp {
 		private Chunk[] dataDeal(DataChunk dc) {
 			List<Chunk> rep = new List<Chunk>();
 			List<uint> duplicates = new List<uint>();
-			
+
 			uint tsn = dc.getTsn();
 			if (tsn > _farTSN) {
 				// put it in the pen.
@@ -677,8 +680,8 @@ namespace pe.pi.sctp4j.sctp {
 			rep.Add(sack);
 			return rep.ToArray();
 		}
-	// todo should be in a behave block
-	// then we wouldn't be messing with stream seq numbers.
+		// todo should be in a behave block
+		// then we wouldn't be messing with stream seq numbers.
 
 		private Chunk[] dcepDeal(SCTPStream s, DataChunk dc, DCOpen dcep) {
 			Chunk[] rep = null;
@@ -826,21 +829,21 @@ namespace pe.pi.sctp4j.sctp {
 		}
 
 		public void closeStream(SCTPStream st) {
-			Chunk []cs = new Chunk[1];
-			if (canSend()){
-				Logger.logger.Debug("due to reconfig stream "+st);
+			Chunk[] cs = new Chunk[1];
+			if (canSend()) {
+				Logger.logger.Debug("due to reconfig stream " + st);
 				cs[0] = reconfigState.makeClose(st);
 			}
 			this.send(cs);
 		}
 
-    
+
 		public SCTPStream mkStream(string label) {
 			int n = 1;
 			int tries = this._maxOutStreams;
 			do {
-				n = 2*_random.Next(this._maxOutStreams);
-				if (!_even) n+=1;
+				n = 2 * _random.Next(this._maxOutStreams);
+				if (!_even) n += 1;
 				if (--tries < 0) {
 					throw new StreamNumberInUseException();
 				}
@@ -867,7 +870,7 @@ namespace pe.pi.sctp4j.sctp {
 			_streams.Remove(s);
 			return st;
 		}
-    
+
 		public SCTPStream mkStream(int sno, string label) {
 			SCTPStream sout;
 			if (canSend()) {
@@ -882,10 +885,11 @@ namespace pe.pi.sctp4j.sctp {
 				DataChunk dcopen = DataChunk.mkDCOpen(label);
 				sout.outbound(dcopen);
 				dcopen.setTsn(_nearTSN++);
-				Chunk[] hack = {dcopen};
+				Chunk[] hack = { dcopen };
 				try {
 					send(hack);
-				} catch (Exception end) {
+				}
+				catch (Exception end) {
 					unexpectedClose(end);
 					Logger.logger.Error(end.ToString());
 				}

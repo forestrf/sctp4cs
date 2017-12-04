@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
 /**
@@ -23,6 +23,6 @@
  */
 namespace pe.pi.sctp4j.sctp.messages.Params {
 	public class AddOutgoingStreamsRequestParameter : AddStreamsRequestParameter {
-		public AddOutgoingStreamsRequestParameter(int t, string n) :base(t, n) { }
+		public AddOutgoingStreamsRequestParameter(int t, string n) : base(t, n) { }
 	}
 }

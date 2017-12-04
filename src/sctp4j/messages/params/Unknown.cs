@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
 using SCTP4CS.Utils;
@@ -28,25 +28,25 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 		protected byte[] _data;
 		protected int _type;
 		protected string _name;
-    
-		public Unknown(int t, string n){
+
+		public Unknown(int t, string n) {
 			_type = t;
 			_name = n;
 		}
-    
+
 		public virtual void readBody(ByteBuffer b, int len) {
 			_data = new byte[len];
 			b.GetBytes(_data, len);
 		}
-	
+
 		public virtual void writeBody(ByteBuffer b) {
 			b.Put(_data);
 		}
-	
+
 		public int getType() {
 			return _type;
 		}
-	
+
 		public string getName() {
 			return _name;
 		}

@@ -26,12 +26,12 @@ using pe.pi.sctp4j.sctp.messages;
  */
 namespace pe.pi.sctp4j.sctp.behave {
 	public class DCEPStreamBehaviour : SCTPStreamBehaviour {
-		
+
 		public Chunk[] respond(SCTPStream a) {
 			Logger.logger.Debug("in respond() for a opened stream " + a.getLabel());
 			return null;
 		}
-		
+
 		public void deliver(SCTPStream s, SortedArray<DataChunk> a, SCTPStreamListener l) {
 			Logger.logger.Debug("in deliver() for stream " + s.getLabel() + " with " + a.Count + " chunks. ");
 			// strictly this should be looking at flags etc, and bundling the result into a message

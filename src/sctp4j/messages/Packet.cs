@@ -136,7 +136,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			Chunk next = null;
 			while (null != (next = Chunk.mkChunk(pkt))) {
 				ret.Add(next);
-				Logger.logger.Debug("saw chunk: "+next.typeLookup());
+				Logger.logger.Debug("saw chunk: " + next.typeLookup());
 			}
 			return ret;
 		}
@@ -179,7 +179,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			if (calc != farsum) {
 				Logger.logger.Error("Checksums don't match " + calc.ToString("X4") + " vs " + farsum.ToString("X4"));
 				byte[] p = pkt.Data;
-				Logger.logger.Error("for packet "+getHex(p));
+				Logger.logger.Error("for packet " + getHex(p));
 				throw new ChecksumException();
 			}
 		}

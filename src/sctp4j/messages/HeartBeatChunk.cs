@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
 using SCTP4CS.Utils;
@@ -26,8 +26,8 @@ using pe.pi.sctp4j.sctp.messages.Params;
  */
 namespace pe.pi.sctp4j.sctp.messages {
 	public class HeartBeatChunk : Chunk {
-		public HeartBeatChunk(CType type, byte flags, int length, ByteBuffer pkt) 
-			:base(type, flags, length, pkt) {
+		public HeartBeatChunk(CType type, byte flags, int length, ByteBuffer pkt)
+			: base(type, flags, length, pkt) {
 			if (_body.remaining() >= 4) {
 				while (_body.hasRemaining()) {
 					VariableParam v = readVariable();
@@ -46,8 +46,8 @@ namespace pe.pi.sctp4j.sctp.messages {
 				throw new SctpPacketFormatException("Expected a heartbeatinfo in this packet");
 			}
 		}
-    
-		public Chunk[] mkReply(){
+
+		public Chunk[] mkReply() {
 			Chunk[] rep = new Chunk[1];
 			HeartBeatAckChunk dub = new HeartBeatAckChunk();
 			dub._varList = this._varList;

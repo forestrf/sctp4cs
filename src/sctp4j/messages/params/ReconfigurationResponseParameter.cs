@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
 using SCTP4CS.Utils;
@@ -80,7 +80,7 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 		public ReconfigurationResponseParameter(int t, string n) : base(t, n) { }
 
 		public ReconfigurationResponseParameter() : this(16, "ReconfigurationResponseParameter") { }
-		
+
 		public override void readBody(ByteBuffer body, int blen) {
 			this.seqNo = body.GetUInt();
 			this.result = body.GetUInt();
@@ -90,7 +90,7 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 				hasTSNs = true;
 			}
 		}
-		
+
 		public override void writeBody(ByteBuffer body) {
 			body.Put(seqNo);
 			body.Put(result);

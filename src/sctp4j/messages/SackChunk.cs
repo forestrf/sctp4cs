@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
 
@@ -95,10 +95,10 @@ namespace pe.pi.sctp4j.sctp.messages {
 				_start = (ushort) b.GetUShort();
 				_end = (ushort) b.GetUShort();
 			}
-			public GapBlock(ushort start){
+			public GapBlock(ushort start) {
 				_start = start;
 			}
-			public void setEnd(ushort end){
+			public void setEnd(ushort end) {
 				_end = end;
 			}
 
@@ -106,10 +106,10 @@ namespace pe.pi.sctp4j.sctp.messages {
 				b.Put(_start);
 				b.Put(_end);
 			}
-			public ushort getStart(){
+			public ushort getStart() {
 				return _start;
 			}
-			public ushort getEnd(){
+			public ushort getEnd() {
 				return _end;
 			}
 		}
@@ -127,46 +127,46 @@ namespace pe.pi.sctp4j.sctp.messages {
 			int nDTSNs = _body.GetUShort();
 			_gaps = new GapBlock[ngaps];
 			_duplicateTSNs = new uint[nDTSNs];
-			for (int i=0;i<ngaps;i++){
+			for (int i = 0; i < ngaps; i++) {
 				_gaps[i] = new GapBlock(_body);
 			}
-			for (int i=0;i<nDTSNs;i++){
+			for (int i = 0; i < nDTSNs; i++) {
 				_duplicateTSNs[i] = _body.GetUInt();
 			}
 		}
 
-		public GapBlock [] getGaps(){
+		public GapBlock[] getGaps() {
 			return _gaps;
 		}
-		public uint[] getDupTSNs(){
+		public uint[] getDupTSNs() {
 			return _duplicateTSNs;
 		}
 		public SackChunk() : base(Chunk.CType.SACK) {
 			_gaps = new GapBlock[0];
 			_duplicateTSNs = new uint[0];
 		}
-    
+
 		public void setDuplicates(List<uint> dups) {
 			_duplicateTSNs = new uint[dups.Count];
-			int i=0;
-			foreach (uint du in dups){
-				_duplicateTSNs[i++]= du;
+			int i = 0;
+			foreach (uint du in dups) {
+				_duplicateTSNs[i++] = du;
 			}
 		}
-    
-		public void setGaps(List<uint> seenTsns){
+
+		public void setGaps(List<uint> seenTsns) {
 			long cuTsn = _cumuTSNAck;
 			List<GapBlock> gaplist = new List<GapBlock>();
 			GapBlock currentGap = null;
 			ushort prevoff = (ushort) 0;
-			foreach(long t in seenTsns){
+			foreach (long t in seenTsns) {
 				ushort offs = (ushort) (t - cuTsn);
-				if (currentGap == null){
+				if (currentGap == null) {
 					currentGap = new GapBlock(offs);
 					currentGap.setEnd(offs);
 					gaplist.Add(currentGap);
 				} else {
-					if (offs == prevoff +1){
+					if (offs == prevoff + 1) {
 						currentGap.setEnd(offs);
 					} else {
 						currentGap = new GapBlock(offs);
@@ -177,35 +177,35 @@ namespace pe.pi.sctp4j.sctp.messages {
 				prevoff = offs;
 			}
 			_gaps = new GapBlock[gaplist.Count];
-			int i=0;
-			foreach (GapBlock g in gaplist){
+			int i = 0;
+			foreach (GapBlock g in gaplist) {
 				_gaps[i++] = g;
 			}
 		}
-    
+
 		protected override void putFixedParams(ByteBuffer ret) {
 			ret.Put(_cumuTSNAck);
 			ret.Put(_arWin);
-			ret.Put((ushort)_gaps.Length);
-			ret.Put((ushort)_duplicateTSNs.Length);
-			for (int i = 0; i < _gaps.Length; i++){
+			ret.Put((ushort) _gaps.Length);
+			ret.Put((ushort) _duplicateTSNs.Length);
+			for (int i = 0; i < _gaps.Length; i++) {
 				_gaps[i].put(ret);
 			}
 			for (int i = 0; i < _duplicateTSNs.Length; i++) {
 				ret.Put(_duplicateTSNs[i]);
 			}
 		}
-		public override string ToString(){
-			StringBuilder ret= new StringBuilder("SACK cumuTSNAck="+_cumuTSNAck)
+		public override string ToString() {
+			StringBuilder ret = new StringBuilder("SACK cumuTSNAck=" + _cumuTSNAck)
 					.Append(" _arWin=" + _arWin)
 					.Append(" _gaps=" + _gaps.Length + " [");
-					foreach (GapBlock g in _gaps){
-						ret.Append("\n\t{" + (int)g._start+"," + (int)g._end + "}");
-					}
-					ret.Append("]\n _duplicateTSNs="+_duplicateTSNs.Length);
-					foreach (long t in _duplicateTSNs){
-						ret.Append("\n\t"+t);
-					}
+			foreach (GapBlock g in _gaps) {
+				ret.Append("\n\t{" + (int) g._start + "," + (int) g._end + "}");
+			}
+			ret.Append("]\n _duplicateTSNs=" + _duplicateTSNs.Length);
+			foreach (long t in _duplicateTSNs) {
+				ret.Append("\n\t" + t);
+			}
 			return ret.ToString();
 		}
 	}

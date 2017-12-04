@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 using SCTP4CS.Utils;
 using System.Text;
@@ -64,7 +64,7 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 		public uint getReqSeqNo() {
 			return reqSeqNo;
 		}
-		
+
 		public override void readBody(ByteBuffer body, int blen) {
 			reqSeqNo = body.GetUInt();
 			respSeqNo = body.GetUInt();
@@ -74,7 +74,7 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 				streams[i] = body.GetUShort();
 			}
 		}
-		
+
 		public override void writeBody(ByteBuffer body) {
 			body.Put(reqSeqNo);
 			body.Put(respSeqNo);
@@ -85,7 +85,7 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 				}
 			}
 		}
-		
+
 		public override string ToString() {
 			StringBuilder ret = new StringBuilder();
 			ret.Append(this.GetType().Name).Append(" ");

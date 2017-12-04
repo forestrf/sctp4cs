@@ -187,8 +187,8 @@ namespace pe.pi.sctp4j.sctp.dataChannel.DECP {
 					behave = new UnorderedStreamBehaviour();
 					break;
 			}
-			if (behave != null){
-				Logger.logger.Debug(_label + " behaviour is " +behave.GetType().Name);
+			if (behave != null) {
+				Logger.logger.Debug(_label + " behaviour is " + behave.GetType().Name);
 			}
 
 			return behave;

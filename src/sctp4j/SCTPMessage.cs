@@ -155,7 +155,7 @@ namespace pe.pi.sctp4j.sctp {
 		public int getSeq() {
 			return _mseq;
 		}
-		
+
 		public void run() {
 			Logger.logger.Debug("delegated message delivery from stream of type " + _stream.GetType().Name);
 			byte[] data = _data;

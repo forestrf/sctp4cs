@@ -42,8 +42,8 @@ using pe.pi.sctp4j.sctp.messages.Params;
 namespace pe.pi.sctp4j.sctp.messages {
 	public class AbortChunk : Chunk {
 		public AbortChunk() : base(CType.ABORT) { }
-		
-		public AbortChunk(CType type, byte flags, int length, ByteBuffer pkt) 
+
+		public AbortChunk(CType type, byte flags, int length, ByteBuffer pkt)
 			: base(type, flags, length, pkt) {
 			if (_body.remaining() >= 4) {
 				Logger.logger.Trace("Abort" + this.ToString());
@@ -53,7 +53,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 				}
 			}
 		}
-		
+
 		protected override void putFixedParams(ByteBuffer ret) { }
 	}
 }

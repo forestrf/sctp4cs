@@ -70,7 +70,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		 \                                                               \
 		 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 		 */
-		
+
 		public enum CType : byte {
 			DATA = 0,
 			INIT = 1,
@@ -118,7 +118,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			{ CType.ASCONF, "ASCONF" },
 			{ CType.ASCONF_ACK, "ASCONF-ACK" }
 		};
-		
+
 
 
 
@@ -168,7 +168,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 						ret = new ReConfigChunk(type, flags, length, pkt);
 						break;
 					default:
-						Logger.logger.Warn("Default chunk type "+type+" read in ");
+						Logger.logger.Warn("Default chunk type " + type + " read in ");
 						ret = new FailChunk(type, flags, length, pkt);
 						break;
 				}
@@ -243,7 +243,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		protected ByteBuffer _body;
 		public List<VariableParam> _varList = new List<VariableParam>();
 
-		
+
 		protected Chunk(CType type) {
 			_type = type;
 		}
@@ -262,7 +262,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			_body.Limit = length - 4;
 			pkt.Position += (length - 4);
 		}
-	// sad ommission in MemoryStream 
+		// sad ommission in MemoryStream 
 
 		public void write(ByteBuffer ret) {
 			ret.Put((byte) _type);
@@ -306,7 +306,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		}
 		public static string chunksToNames(byte[] fse) {
 			StringBuilder ret = new StringBuilder();
-			foreach (CType f in fse){
+			foreach (CType f in fse) {
 				ret.Append(typeLookup(f));
 				ret.Append(" ");
 			}
@@ -370,7 +370,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 				case 1:
 					var = new HeartbeatInfo(1, "HeartbeatInfo");
 					break;
-	//      2-4	Unassigned	
+				//      2-4	Unassigned	
 				case 5:
 					var = new IPv4Address(5, "IPv4Address");
 					break;
@@ -386,7 +386,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 				case 9:
 					var = new CookiePreservative(9, "CookiePreservative");
 					break;
-	//      10	Unassigned	
+				//      10	Unassigned	
 				case 11:
 					var = new HostNameAddress(11, "HostNameAddress");
 					break;
@@ -411,7 +411,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 				case 18:
 					var = new AddIncomingStreamsRequestParameter(18, "AddIncomingStreamsRequestParameter");
 					break;
-	//      19-32767	Unassigned	
+				//      19-32767	Unassigned	
 				case 32768:
 					var = new Unknown(32768, "ReservedforECNCapable");
 					break;
@@ -430,7 +430,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 				case 32776:
 					var = new SupportedExtensions(32776, "SupportedExtensions");
 					break;
-	//      32777-49151	Unassigned	
+				//      32777-49151	Unassigned	
 				case 49152:
 					var = new ForwardTSNsupported(49152, "ForwardTSNsupported");
 					break;
@@ -459,7 +459,8 @@ namespace pe.pi.sctp4j.sctp.messages {
 			try {
 				var.readBody(_body, blen);
 				Logger.logger.Debug("variable type " + var.getType() + " name " + var.getName());
-			} catch (SctpPacketFormatException ex) {
+			}
+			catch (SctpPacketFormatException ex) {
 				Logger.logger.Error(ex.ToString());
 			}
 			if (_body.hasRemaining()) {
@@ -519,7 +520,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 				case 13:
 					var = new ProtocolViolationError(13, "ProtocolViolation");
 					break;//[RFC4460]
-				// 14-159,Unassigned,
+						  // 14-159,Unassigned,
 				case 160:
 					var = new KnownError(160, "RequesttoDeleteLastRemainingIPAddress");
 					break;//[RFC5061]
@@ -535,17 +536,18 @@ namespace pe.pi.sctp4j.sctp.messages {
 				case 164:
 					var = new KnownError(164, "Requestrefused-noauthorization");
 					break;//[RFC5061]
-				// 165-260,Unassigned,
+						  // 165-260,Unassigned,
 				case 261:
 					var = new KnownError(261, "UnsupportedHMACIdentifier");
 					break;//[RFC4895]
-				// 262-65535,Unassigned,
+						  // 262-65535,Unassigned,
 			}
 			try {
 				var.readBody(_body, blen);
 				Logger.logger.Trace("variable type " + var.getType() + " name " + var.getName());
 				Logger.logger.Trace("additional info " + var.ToString());
-			} catch (SctpPacketFormatException ex) {
+			}
+			catch (SctpPacketFormatException ex) {
 				Logger.logger.Error(ex.ToString());
 			}
 			if (_body.hasRemaining()) {
@@ -562,7 +564,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		protected abstract void putFixedParams(ByteBuffer ret);
 
 		public virtual void validate() { // todo be more specific in the Exception tree
-			// throw new Exception("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+										 // throw new Exception("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}
 
 		protected class HeartbeatInfo : KnownParam {

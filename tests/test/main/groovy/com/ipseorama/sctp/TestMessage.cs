@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 
 using System;
@@ -35,7 +35,7 @@ namespace com.ipseorama.sctp {
 		Association a;
 		SCTPStream stream;
 		int id;
-    
+
 		class SCTPStreamImpl : SCTPStream {
 			public SCTPStreamImpl(Association a, int id) : base(a, id) {
 			}
@@ -57,26 +57,26 @@ namespace com.ipseorama.sctp {
 		}
 
 		[TestInitialize]
-		public void setUp(){
+		public void setUp() {
 			a = null;
 			id = 1000;
 			stream = new SCTPStreamImpl(a, id);
 		}
-    
+
 		[TestMethod]
-		public void testMessFillSingle(){
+		public void testMessFillSingle() {
 			// assume capacity > 52        
-			SCTPMessage m = new SCTPMessage(data,stream);
+			SCTPMessage m = new SCTPMessage(data, stream);
 			List<DataChunk> chunks = new List<DataChunk>();
 			while (m.hasMoreData()) {
 				DataChunk dc = new DataChunk();
 				m.fill(dc);
 				chunks.Add(dc);
 			}
-			Console.WriteLine("chunks "+chunks.Count);
-			Assert.AreEqual (chunks.Count,1, "Wrong number of chunks");
-        
-			Assert.AreEqual (chunks[0].getFlags(),DataChunk.SINGLEFLAG, "First (and only) chunk should have single flag set");
+			Console.WriteLine("chunks " + chunks.Count);
+			Assert.AreEqual(chunks.Count, 1, "Wrong number of chunks");
+
+			Assert.AreEqual(chunks[0].getFlags(), DataChunk.SINGLEFLAG, "First (and only) chunk should have single flag set");
 
 		}
 
@@ -87,22 +87,22 @@ namespace com.ipseorama.sctp {
 		}
 
 		[TestMethod]
-		public void testMessFill1(){
-			SCTPMessage m = new SCTPMessage(data,stream);
+		public void testMessFill1() {
+			SCTPMessage m = new SCTPMessage(data, stream);
 			List<DataChunk> chunks = new List<DataChunk>();
 			while (m.hasMoreData()) {
 				DataChunk dc = new DataChunkImpl();
 				m.fill(dc);
 				chunks.Add(dc);
 			}
-			Console.WriteLine("chunks "+chunks.Count);
-			Assert.AreEqual (chunks.Count,data.Length, "Wrong number of chunks");
-        
-			Assert.AreEqual (chunks[0].getFlags(),DataChunk.BEGINFLAG,"Start chunk should have start flag set");
-			Assert.AreEqual (chunks[data.Length-1].getFlags(),DataChunk.ENDFLAG, "End chunk should have end flag set");
-			for (int i = 1; i< data.Length-1;i++){
-				Assert.AreEqual (chunks[i].getFlags(),0, "middle chunk should have no flag set");
-				Assert.AreEqual (chunks[i].getDataAsString(), data[i].ToString(), "middle data should match input");
+			Console.WriteLine("chunks " + chunks.Count);
+			Assert.AreEqual(chunks.Count, data.Length, "Wrong number of chunks");
+
+			Assert.AreEqual(chunks[0].getFlags(), DataChunk.BEGINFLAG, "Start chunk should have start flag set");
+			Assert.AreEqual(chunks[data.Length - 1].getFlags(), DataChunk.ENDFLAG, "End chunk should have end flag set");
+			for (int i = 1; i < data.Length - 1; i++) {
+				Assert.AreEqual(chunks[i].getFlags(), 0, "middle chunk should have no flag set");
+				Assert.AreEqual(chunks[i].getDataAsString(), data[i].ToString(), "middle data should match input");
 			}
 		}
 	}

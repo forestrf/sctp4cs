@@ -87,21 +87,21 @@ namespace pe.pi.sctp4j.sctp.messages {
 		public CookieEchoChunk() : base(CType.COOKIE_ECHO) { }
 
 		public override void validate() {
-			if (_cookieData.Length != Association.COOKIESIZE){
-				throw new SctpPacketFormatException("cookie Echo wrong length for our association "+ _cookieData.Length +" != "+ Association.COOKIESIZE);
+			if (_cookieData.Length != Association.COOKIESIZE) {
+				throw new SctpPacketFormatException("cookie Echo wrong length for our association " + _cookieData.Length + " != " + Association.COOKIESIZE);
 			}
 		}
-    
+
 		public void setCookieData(byte[] cd) {
 			_cookieData = cd;
 		}
-    
-		public byte [] getCookieData() {
+
+		public byte[] getCookieData() {
 			return _cookieData;
 		}
 
 		protected override void putFixedParams(ByteBuffer ret) {
-			Logger.logger.Debug("cookie is "+_cookieData +"and buffer is "+ret);
+			Logger.logger.Debug("cookie is " + _cookieData + "and buffer is " + ret);
 			ret.Put(_cookieData);
 		}
 	}

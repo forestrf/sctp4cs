@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
- // Modified by Andrés Leone Gámez
+// Modified by Andrés Leone Gámez
 
 using System;
 
@@ -23,13 +23,13 @@ using System;
  * @author Westhawk Ltd<thp@westhawk.co.uk>
  */
 public class StaleCookieException : Exception {
-    long _stale;
+	long _stale;
 
-    public StaleCookieException(long howstale) {
-        _stale = howstale;
-    }
+	public StaleCookieException(long howstale) {
+		_stale = howstale;
+	}
 
-    public long getStale() {
-        return _stale;
-    }
+	public long getStale() {
+		return _stale;
+	}
 }
