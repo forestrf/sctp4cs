@@ -340,7 +340,8 @@ namespace pe.pi.sctp4j.sctp.small {
 			SCTPStream s = instanceLeft.mkStream(id);
 			Assert.IsTrue(typeof(BlockingSCTPStream).IsAssignableFrom(s.GetType()));
 			string test = "Test message";
-			SCTPMessage m = instanceLeft.makeMessage(test.getBytes(), (BlockingSCTPStream) s);
+			var bbb = test.getBytes();
+			SCTPMessage m = instanceLeft.makeMessage(bbb, 0, bbb.Length, (BlockingSCTPStream) s);
 			instanceLeft.sendAndBlock(m);
 			lock (rightout) {
 				Monitor.Wait(rightout, 2000);

@@ -159,7 +159,7 @@ namespace pe.pi.sctp4j.sctp.dataChannel.DECP {
 					+ " _priority = " + _priority
 					+ " _reliablity = " + _reliablity
 					+ " _label = " + Encoding.ASCII.GetString(_label)
-					+ " _protocol = " + messages.Packet.getHex(_protocol);
+					+ " _protocol = " + _protocol.GetHex();
 		}
 
 		public bool isAck() {

@@ -40,7 +40,7 @@ namespace com.ipseorama.sctp {
 			public SCTPStreamImpl(Association a, int id) : base(a, id) {
 			}
 
-			public override void delivered(DataChunk d) {
+			internal override void delivered(DataChunk d) {
 				throw new NotImplementedException();
 			}
 
@@ -48,7 +48,7 @@ namespace com.ipseorama.sctp {
 				throw new NotImplementedException();
 			}
 
-			public override void send(byte[] message) {
+			public override void send(byte[] message, int offset, int length) {
 				throw new NotImplementedException();
 			}
 

@@ -33,9 +33,5 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 		public void setData(byte[] data) {
 			_data = data;
 		}
-
-		public override string ToString() {
-			return "Variable error " + this.getName() + " data " + Encoding.ASCII.GetString(_data) + " " + Packet.getHex(_data);
-		}
 	}
 }

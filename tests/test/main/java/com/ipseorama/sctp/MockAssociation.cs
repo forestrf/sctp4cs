@@ -33,7 +33,7 @@ namespace pe.pi.sctp4j.sctp {
 
 
 
-		public override void enqueue(DataChunk d) {
+		internal override void enqueue(DataChunk d) {
 			throw new Exception("[UnsupportedOperationException] Not supported yet. (enqueue)"); //To change body of generated methods, choose Tools | Templates.
 		}
 
@@ -41,7 +41,7 @@ namespace pe.pi.sctp4j.sctp {
 			public SCTPStreamImpl(Association a, int id) : base(a, id) {
 			}
 
-			public override void delivered(DataChunk d) { }
+			internal override void delivered(DataChunk d) { }
 
 			internal override void deliverMessage(SCTPMessage message) { }
 
@@ -50,7 +50,7 @@ namespace pe.pi.sctp4j.sctp {
 				_ass.sendAndBlock(m);
 			}
 
-			public override void send(byte[] message) { }
+			public override void send(byte[] message, int offset, int length) { }
 		}
 
 
@@ -70,11 +70,11 @@ namespace pe.pi.sctp4j.sctp {
 
 		}
 
-		internal override SCTPMessage makeMessage(byte[] bytes, BlockingSCTPStream aThis) {
+		internal override SCTPMessage makeMessage(byte[] bytes, int offset, int length, BlockingSCTPStream aThis) {
 			throw new Exception("[UnsupportedOperationException] Not supported yet. (makeMessage)"); //To change body of generated methods, choose Tools | Templates.
 		}
 
-		public override Chunk[] inboundInit(InitChunk i) {
+		internal override Chunk[] inboundInit(InitChunk i) {
 			return base.inboundInit(i);
 		}
 
@@ -86,7 +86,7 @@ namespace pe.pi.sctp4j.sctp {
 			throw new Exception("[UnsupportedOperationException] Not supported yet.(Make Message - string"); //To change body of generated methods, choose Tools | Templates.
 		}
 
-		protected override Chunk[] sackDeal(SackChunk sackChunk) {
+		internal override Chunk[] sackDeal(SackChunk sackChunk) {
 			throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}
 

@@ -221,7 +221,7 @@ namespace pe.pi.sctp4j.sctp {
 								Logger.Trace("Probably tick time out");
 								continue;
 							}
-							string b = Packet.getHex(buf, 0, length);
+							string b = buf.GetHex(0, length);
 							Logger.Trace("DTLS message received\n" + b);
 							ByteBuffer pbb = new ByteBuffer(buf);
 							pbb.Limit = length;
@@ -303,7 +303,7 @@ namespace pe.pi.sctp4j.sctp {
 		internal void send(Chunk[] c) {
 			if ((c != null) && (c.Length > 0)) {
 				ByteBuffer obb = mkPkt(c);
-				Logger.Trace("sending SCTP packet" + Packet.getHex(obb));
+				Logger.Trace("sending SCTP packet" + obb.GetHex());
 				lock (this) {
 					_transp.Send(obb.Data, obb.offset, obb.Limit);
 				}

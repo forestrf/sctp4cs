@@ -500,7 +500,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 
 			public override string ToString() {
 				string ret = " random value ";
-				ret += Packet.getHex(this.getData());
+				ret += this.getData().GetHex();
 				return base.ToString() + ret;
 			}
 		}

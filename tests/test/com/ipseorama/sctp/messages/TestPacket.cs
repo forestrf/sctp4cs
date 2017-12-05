@@ -108,7 +108,7 @@ namespace com.ipseorama.sctp.messages {
 			ByteBuffer b = ByteBuffer.wrap(sampleInit);
 			Packet p = new NonvalidatingPacket(b);
 			ByteBuffer bb = p.getByteBuffer();
-			Assert.AreEqual(Packet.getHex(b), Packet.getHex(bb), "Expecting same content in packets ");
+			Assert.AreEqual(b.GetHex(), bb.GetHex(), "Expecting same content in packets ");
 		}
 
 		[TestMethod]
@@ -130,7 +130,7 @@ namespace com.ipseorama.sctp.messages {
 			init.write(bout);
 			byte[] sin = new byte[sampleInit.Length - 12];
 			Array.Copy(sampleInit, 12, sin, 0, sin.Length);
-			Assert.AreEqual(Packet.getHex(sin), Packet.getHex(bout.Data), "Expected to re-make same packet");
+			Assert.AreEqual(sin.GetHex(), bout.GetHex(), "Expected to re-make same packet");
 		}
 
 		[TestMethod]

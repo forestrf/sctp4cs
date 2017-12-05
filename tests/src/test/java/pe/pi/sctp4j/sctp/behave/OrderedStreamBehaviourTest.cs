@@ -83,11 +83,11 @@ namespace pe.pi.sctp4j.sctp.behave {
 				message.run();
 			}
 
-			public override void send(byte[] message) {
+			public override void send(byte[] message, int offset, int length) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
 
-			public override void delivered(DataChunk d) {
+			internal override void delivered(DataChunk d) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
 		}

@@ -75,7 +75,7 @@ namespace pe.pi.sctp4j.sctp {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
 
-			public override void enqueue(DataChunk d) {
+			internal override void enqueue(DataChunk d) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
 
@@ -87,7 +87,7 @@ namespace pe.pi.sctp4j.sctp {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
 
-			internal override SCTPMessage makeMessage(byte[] bytes, BlockingSCTPStream aThis) {
+			internal override SCTPMessage makeMessage(byte[] bytes, int offset, int length, BlockingSCTPStream aThis) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
 
@@ -95,7 +95,7 @@ namespace pe.pi.sctp4j.sctp {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
 
-			protected override Chunk[] sackDeal(SackChunk sackChunk) {
+			internal override Chunk[] sackDeal(SackChunk sackChunk) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
 		}
@@ -111,11 +111,11 @@ namespace pe.pi.sctp4j.sctp {
 				message.run();
 			}
 
-			public override void send(byte[] message) {
+			public override void send(byte[] message, int offset, int length) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
 
-			public override void delivered(DataChunk d) {
+			internal override void delivered(DataChunk d) {
 				throw new Exception("[UnsupportedOperationException] Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 			}
 		}
@@ -173,7 +173,7 @@ namespace pe.pi.sctp4j.sctp {
 			Console.WriteLine("--> fill short blob ");
 			byte[] testBlob = new byte[21];
 			_rand.NextBytes(testBlob);
-			SCTPMessage instance = new SCTPMessage(testBlob, _fakeStream);
+			SCTPMessage instance = new SCTPMessage(testBlob, 0, testBlob.Length, _fakeStream);
 			SortedArray<DataChunk> chunks = new SortedArray<DataChunk>();
 			while (instance.hasMoreData()) {
 				DataChunk dc = new DataChunk();
@@ -234,7 +234,7 @@ namespace pe.pi.sctp4j.sctp {
 		public void testEmptyBlob() {
 			Console.WriteLine("--> fill empty blob");
 			byte[] testBlob = new byte[0];
-			SCTPMessage instance = new SCTPMessage(testBlob, _fakeStream);
+			SCTPMessage instance = new SCTPMessage(testBlob, 0, testBlob.Length, _fakeStream);
 			SortedArray<DataChunk> chunks = new SortedArray<DataChunk>();
 			long tsn = 111;
 

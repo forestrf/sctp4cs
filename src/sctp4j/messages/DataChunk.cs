@@ -114,7 +114,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 						_body.GetBytes(_data, _data.Length);
 						_dataOffset = 0;
 						_dataLength = _data.Length;
-						Logger.Trace("data is " + Packet.getHex(_data));
+						Logger.Trace("data is " + _data.GetHex());
 						break;
 
 					default:
@@ -139,7 +139,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 				case WEBRTCBINARY:
 					byte[] p = new byte[_dataLength];
 					Array.Copy(_data, _dataOffset, p, 0, _dataLength);
-					ret = Packet.getHex(_data);
+					ret = _data.GetHex();
 					break;
 				case WEBRTCBINARYEMPTY:
 					ret = "Empty binay message";

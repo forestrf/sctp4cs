@@ -48,7 +48,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		int _verTag;
 		uint _chksum;
 		List<Chunk> _chunks;
-		private static int SUMOFFSET = 8;
+		private const int SUMOFFSET = 8;
 
 		/**
 		 * Constructor used to parse an incoming packet
@@ -92,8 +92,6 @@ namespace pe.pi.sctp4j.sctp.messages {
 				Logger.Trace("padding by " + pad);
 				ret.Position += pad + cs.Position;// move us along.
 			}
-			/*Log.logger.verb("un padding by " + pad);
-			ret.position(ret.position() - pad);*/
 			ret = ret.flip();
 			setChecksum(ret);
 			return ret;
@@ -113,22 +111,6 @@ namespace pe.pi.sctp4j.sctp.messages {
 
 		public uint getChksum() {
 			return _chksum;
-		}
-
-		public static string getHex(ByteBuffer _in, string separation = "") {
-			return getHex(_in.Data, (uint) _in.offset, _in.Length, separation);
-		}
-		public static string getHex(byte[] _in, string separation = "") {
-			return getHex(_in, 0, _in.Length, separation);
-		}
-		public static string getHex(byte[] _in, uint off, int len, string separation = "") {
-			StringBuilder ret = new StringBuilder("");
-			int top = Math.Min(_in.Length, len);
-			for (int i = (int) off; i < top; i++) {
-				ret.AppendFormat("{0:x2}", _in[i]);
-				if (i < top - 1) ret.Append(separation);
-			}
-			return ret.ToString().ToUpper();
 		}
 
 		private List<Chunk> mkChunks(ByteBuffer pkt) {
@@ -178,7 +160,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			if (calc != farsum) {
 				Logger.Error("Checksums don't match " + calc.ToString("X4") + " vs " + farsum.ToString("X4"));
 				byte[] p = pkt.Data;
-				Logger.Error("for packet " + getHex(p));
+				Logger.Error("for packet " + p.GetHex());
 				throw new ChecksumException();
 			}
 		}
