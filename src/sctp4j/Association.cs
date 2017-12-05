@@ -155,11 +155,8 @@ namespace pe.pi.sctp4j.sctp {
 		byte[] getUnionSupportedExtensions(byte[] far) {
 			ByteBuffer unionbb = new ByteBuffer(new byte[far.Length]);
 			for (int f = 0; f < far.Length; f++) {
-				Logger.Trace("offered extension " + Chunk.typeLookup((Chunk.CType) far[f]));
 				for (int n = 0; n < _supportedExtensions.Length; n++) {
-					Logger.Trace("supported extension " + Chunk.typeLookup((Chunk.CType) _supportedExtensions[n]));
 					if (_supportedExtensions[n] == far[f]) {
-						Logger.Trace("matching extension " + Chunk.typeLookup((Chunk.CType) _supportedExtensions[n]));
 						unionbb.Put(far[f]);
 					}
 				}
@@ -167,7 +164,6 @@ namespace pe.pi.sctp4j.sctp {
 			byte[] res = new byte[unionbb.Position];
 			unionbb.Position = 0;
 			unionbb.GetBytes(res, res.Length);
-			Logger.Trace("union of extensions contains :" + Chunk.chunksToNames(res));
 			return res;
 		}
 

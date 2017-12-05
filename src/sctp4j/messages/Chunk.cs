@@ -16,42 +16,12 @@
  */
 // Modified by Andrés Leone Gámez
 
-
 using SCTP4CS;
 using SCTP4CS.Utils;
 using pe.pi.sctp4j.sctp.messages.Params;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
-
-/*
-import pe.pi.sctp4j.sctp.messages.params.RequestedHMACAlgorithmParameter;
-import pe.pi.sctp4j.sctp.messages.params.AddIncomingStreamsRequestParameter;
-import pe.pi.sctp4j.sctp.messages.params.AddOutgoingStreamsRequestParameter;
-import pe.pi.sctp4j.sctp.messages.params.ReconfigurationResponseParameter;
-import pe.pi.sctp4j.sctp.messages.params.SSNTSNResetRequestParameter;
-import pe.pi.sctp4j.sctp.messages.params.CookiePreservative;
-import pe.pi.sctp4j.sctp.messages.params.UnrecognizedParameters;
-import pe.pi.sctp4j.sctp.messages.params.StateCookie;
-import pe.pi.sctp4j.sctp.messages.params.IPv6Address;
-import pe.pi.sctp4j.sctp.messages.params.IPv4Address;
-import pe.pi.sctp4j.sctp.messages.exceptions.SctpPacketFormatException;
-import pe.pi.sctp4j.sctp.messages.params.HostNameAddress;
-import pe.pi.sctp4j.sctp.messages.params.IncomingSSNResetRequestParameter;
-import pe.pi.sctp4j.sctp.messages.params.KnownError;
-import pe.pi.sctp4j.sctp.messages.params.KnownParam;
-import pe.pi.sctp4j.sctp.messages.params.OutgoingSSNResetRequestParameter;
-import pe.pi.sctp4j.sctp.messages.params.ProtocolViolationError;
-import pe.pi.sctp4j.sctp.messages.params.StaleCookieError;
-import pe.pi.sctp4j.sctp.messages.params.SupportedAddressTypes;
-import pe.pi.sctp4j.sctp.messages.params.Unknown;
-import pe.pi.sctp4j.sctp.messages.params.VariableParam;
-import com.phono.srtplight.Log;
-import java.nio.MemoryStream;
-import java.util.List;
-import java.util.HashMap;
-*/
+using System;
 
 /**
  *
@@ -94,32 +64,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			ASCONF = 193,
 			ASCONF_ACK = 128,
 		}
-
-		static readonly Dictionary<CType, string> _typeLookup = new Dictionary<CType, string>() {
-			{ CType.DATA, "DATA" },
-			{ CType.INIT, "INIT" },
-			{ CType.INITACK, "INIT ACK" },
-			{ CType.SACK, "SACK" },
-			{ CType.HEARTBEAT, "HEARTBEAT" },
-			{ CType.HEARTBEAT_ACK, "HEARTBEAT ACK" },
-			{ CType.ABORT, "ABORT" },
-			{ CType.SHUTDOWN, "SHUTDOWN" },
-			{ CType.SHUTDOWN_ACK, "SHUTDOWN ACK" },
-			{ CType.ERROR, "ERROR" },
-			{ CType.COOKIE_ECHO, "COOKIE ECHO" },
-			{ CType.COOKIE_ACK, "COOKIE ACK" },
-			{ CType.ECNE, "ECNE" },
-			{ CType.CWR, "CWR" },
-			{ CType.SHUTDOWN_COMPLETE, "SHUTDOWN COMPLETE" },
-			{ CType.AUTH, "AUTH" },
-			{ CType.PKTDROP, "PKTDROP" },
-			{ CType.RE_CONFIG, "RE-CONFIG" },
-			{ CType.FORWARDTSN, "FORWARDTSN" },
-			{ CType.ASCONF, "ASCONF" },
-			{ CType.ASCONF_ACK, "ASCONF-ACK" }
-		};
-
-
+		
 
 
 		public const byte TBIT = 1;
@@ -291,29 +236,6 @@ namespace pe.pi.sctp4j.sctp.messages {
 			// and push the new length into place.
 			ret.Put(2, (ushort) ret.Position);
 			//Console.WriteLine("setting chunk length to " + ret.position());
-		}
-
-		public string typeLookup() {
-			return typeLookup(this._type);
-		}
-
-		public static string typeLookup(CType t) {
-			string ret;
-			if (!_typeLookup.TryGetValue(t, out ret) || ret == null) {
-				ret = "unknown(" + t + ")";
-			}
-			return ret;
-		}
-		public static string chunksToNames(byte[] fse) {
-			StringBuilder ret = new StringBuilder();
-			foreach (CType f in fse) {
-				ret.Append(typeLookup(f));
-				ret.Append(" ");
-			}
-			return ret.ToString();
-		}
-		public override string ToString() {
-			return "Chunk : type " + typeLookup(_type) + " flags " + ((0xff) & _flags).ToString("X4") + " length = " + _length;
 		}
 
 		public CType getType() {
@@ -592,7 +514,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 				string ret = " ChunksTypes ";
 				byte[] data = this.getData();
 				for (int i = 0; i < data.Length; i++) {
-					ret += " " + typeLookup((CType) data[i]);
+					ret += " " + Enum.GetName(typeof(CType), data[i]);
 				}
 				return base.ToString() + ret;
 			}
@@ -607,7 +529,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 				string ret = " ChunksTypes ";
 				byte[] data = this.getData();
 				for (int i = 0; i < data.Length; i++) {
-					ret += " " + typeLookup((CType) data[i]);
+					ret += " " + Enum.GetName(typeof(CType), data[i]);
 				}
 				return base.ToString() + ret;
 			}

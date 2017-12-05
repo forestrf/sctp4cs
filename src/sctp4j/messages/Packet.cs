@@ -136,7 +136,6 @@ namespace pe.pi.sctp4j.sctp.messages {
 			Chunk next = null;
 			while (null != (next = Chunk.mkChunk(pkt))) {
 				ret.Add(next);
-				Logger.Debug("saw chunk: " + next.typeLookup());
 			}
 			return ret;
 		}
@@ -274,7 +273,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			bool t = ((Chunk.TBIT & chunk._flags) > 0);
 			int cverTag = t ? ass.getPeerVerTag() : ass.getMyVerTag();
 			if (cverTag != _verTag) {
-				throw new InvalidSCTPPacketException("VerTag on an " + chunk.typeLookup() + " doesn't match " + (t ? "their " : "our ") + " vertag " + _verTag + " != " + cverTag);
+				throw new InvalidSCTPPacketException("VerTag doesn't match " + (t ? "their " : "our ") + " vertag " + _verTag + " != " + cverTag);
 			}
 		}
 

@@ -94,18 +94,6 @@ namespace pe.pi.sctp4j.sctp.messages {
 			}
 		}
 
-		public override string ToString() {
-			string ret = base.ToString();
-			ret += " initiateTag : " + _initiateTag
-					+ " adRecWinCredit : " + _adRecWinCredit
-					+ " numOutStreams : " + _numOutStreams
-					+ " numInStreams : " + _numInStreams
-					+ " initialTSN : " + _initialTSN
-					+ " farForwardTSNsupported : " + _farForwardTSNsupported
-					+ ((_farSupportedExtensions == null) ? " no supported extensions" : " supported extensions are: " + chunksToNames(_farSupportedExtensions));
-			return ret;
-		}
-
 		protected override void putFixedParams(ByteBuffer ret) {
 			ret.Put((int) _initiateTag);
 			ret.Put(_adRecWinCredit);
