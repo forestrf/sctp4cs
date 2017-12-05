@@ -17,14 +17,16 @@
 // Modified by Andrés Leone Gámez
 
 
+
+using pe.pi.sctp4j.sctp.messages;
 /**
- *
- * @author Westhawk Ltd<thp@westhawk.co.uk>
- */
+*
+* @author Westhawk Ltd<thp@westhawk.co.uk>
+*/
 namespace pe.pi.sctp4j.sctp {
 	public interface AssociationListener {
 		void onAssociated(Association a);
 		void onDisAssociated(Association a);
-		void onDCEPStream(SCTPStream s, string label, int type);
+		void onDCEPStream(SCTPStream s, string label, SCTP_PPID type);
 	}
 }

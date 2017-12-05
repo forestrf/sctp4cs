@@ -196,18 +196,16 @@ namespace com.ipseorama.sctp.messages {
 			ByteBuffer b = ByteBuffer.wrap(sampleData);
 			Packet p = new Packet(b);
 			List<Chunk> chunks = p.getChunkList();
-			Assert.AreEqual(1, chunks.Count, "Expecting 1 chunk ");
+			Assert.AreEqual(1, chunks.Count, "Expecting 1 chunk");
 			DataChunk dat = chunks[0] as DataChunk;
 			Assert.AreEqual(dat.getType(), Chunk.CType.DATA, "Expecting a Data chunk");
-			Console.WriteLine("got " + dat.GetType().Name + " chunk" + dat.ToString());
-			Assert.AreEqual(dat.getSSeqNo(), 0, "Expecting seqno of zero");
+			Console.WriteLine("got " + dat.GetType().Name + " chunk " + dat.ToString());
+			Assert.AreEqual(dat.sSeqNo, 0, "Expecting seqno of zero");
 			Assert.AreEqual(dat.getStreamId(), 0, "Expecting stream of zero");
-			Assert.AreEqual(dat.getPpid(), 50, "Expecting an DCEP");
+			Assert.AreEqual(dat.ppid, (SCTP_PPID) 50, "Expecting an DCEP");
 			Assert.AreEqual(dat.getData(), null, "Data should be zero");
 			Assert.AreEqual(dat.getDCEP() != null, true, "Expected  to parse a DCEP packet");
-			Assert.AreEqual(dat.getDCEP().isAck(), false, "Expected an open DCEP packet ");
-
-
+			Assert.AreEqual(dat.getDCEP().isAck(), false, "Expected an open DCEP packet");
 		}
 
 		[TestMethod]

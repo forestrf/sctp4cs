@@ -124,11 +124,11 @@ namespace pe.pi.sctp4j.sctp.messages {
 
 				foreach (VariableParam v in _varList) {
 					// now look for variables we are expecting...
-					Logger.Trace("variable of type: " + v.getName() + " " + v.ToString());
+					Logger.Trace("variable of type: " + v.name + " " + v.ToString());
 					if (typeof(StateCookie).IsAssignableFrom(v.GetType())) {
 						_cookie = ((StateCookie) v).getData();
 					} else {
-						Logger.Trace("ignored variable of type: " + v.getName());
+						Logger.Trace("ignored variable of type: " + v.name);
 					}
 				}
 

@@ -165,8 +165,8 @@ namespace pe.pi.sctp4j.sctp {
 				chunks.Add(dc);
 			}
 			Assert.AreEqual(chunks.Count, 1);
-			int ppid = ((DataChunk) chunks.First).getPpid();
-			Assert.AreEqual(ppid, DataChunk.WEBRTCstring);
+			var ppid = ((DataChunk) chunks.First).ppid;
+			Assert.AreEqual(ppid, SCTP_PPID.WEBRTCstring);
 		}
 		[TestMethod]
 		public void testFillShortBlob() {
@@ -181,8 +181,8 @@ namespace pe.pi.sctp4j.sctp {
 				chunks.Add(dc);
 			}
 			Assert.AreEqual(chunks.Count, 1);
-			int ppid = ((DataChunk) chunks.First).getPpid();
-			Assert.AreEqual(ppid, DataChunk.WEBRTCBINARY);
+			var ppid = ((DataChunk) chunks.First).ppid;
+			Assert.AreEqual(ppid, SCTP_PPID.WEBRTCBINARY);
 		}
 		[TestMethod]
 		public void testFillLongstring() {
@@ -199,7 +199,7 @@ namespace pe.pi.sctp4j.sctp {
 
 			while (instance.hasMoreData()) {
 				DataChunk dc = new DataChunk();
-				dc.setTsn((uint) tsn++);
+				dc.tsn = (uint) tsn++;
 				instance.fill(dc);
 				chunks.Add(dc);
 			}
@@ -219,15 +219,15 @@ namespace pe.pi.sctp4j.sctp {
 
 			while (instance.hasMoreData()) {
 				DataChunk dc = new DataChunk();
-				dc.setTsn((uint) tsn++);
+				dc.tsn = (uint) tsn++;
 				instance.fill(dc);
 				chunks.Add(dc);
 			}
 			int pktsz = chunks.First.getDataSize();
 			Assert.AreEqual(chunks.Count, 1);
 			Assert.AreEqual(pktsz, 1);
-			int ppid = ((DataChunk) chunks.First).getPpid();
-			Assert.AreEqual(ppid, DataChunk.WEBRTCstringEMPTY);
+			var ppid = ((DataChunk) chunks.First).ppid;
+			Assert.AreEqual(ppid, SCTP_PPID.WEBRTCstringEMPTY);
 		}
 
 		[TestMethod]
@@ -240,15 +240,15 @@ namespace pe.pi.sctp4j.sctp {
 
 			while (instance.hasMoreData()) {
 				DataChunk dc = new DataChunk();
-				dc.setTsn((uint) tsn++);
+				dc.tsn = (uint) tsn++;
 				instance.fill(dc);
 				chunks.Add(dc);
 			}
 			Assert.AreEqual(chunks.Count, 1);
 			int pktsz = chunks.First.getDataSize();
 			Assert.AreEqual(pktsz, 1);
-			int ppid = ((DataChunk) chunks.First).getPpid();
-			Assert.AreEqual(ppid, DataChunk.WEBRTCBINARYEMPTY);
+			var ppid = ((DataChunk) chunks.First).ppid;
+			Assert.AreEqual(ppid, SCTP_PPID.WEBRTCBINARYEMPTY);
 		}
 
 		/**

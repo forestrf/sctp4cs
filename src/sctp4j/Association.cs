@@ -119,8 +119,8 @@ namespace pe.pi.sctp4j.sctp {
 		 */
 		protected DatagramTransport _transp;
 		private Thread _rcv;
-		private int _peerVerTag;
-		protected int _myVerTag;
+		public int peerVerTag { get; private set; }
+		internal int myVerTag;
 		private SecureRandom _random;
 		private long _winCredit;
 		private uint _farTSN;
@@ -265,7 +265,7 @@ namespace pe.pi.sctp4j.sctp {
 			Logger.Debug("Created an Associaction of type: " + this.GetType().Name);
 			_al = al;
 			_random = new SecureRandom();
-			_myVerTag = _random.NextInt();
+			myVerTag = _random.NextInt();
 			_transp = transport;
 			_streams = new Dictionary<int, SCTPStream>();
 			_outbound = new Dictionary<long, DataChunk>();
@@ -417,7 +417,7 @@ namespace pe.pi.sctp4j.sctp {
 		}
 
 		internal ByteBuffer mkPkt(Chunk[] cs) {
-			Packet ob = new Packet(_srcPort, _destPort, _peerVerTag);
+			Packet ob = new Packet(_srcPort, _destPort, peerVerTag);
 			foreach (Chunk r in cs) {
 				Logger.Debug("adding chunk to outbound packet: " + r.ToString());
 				ob.getChunkList().Add(r);
@@ -425,14 +425,6 @@ namespace pe.pi.sctp4j.sctp {
 			}
 			ByteBuffer obb = ob.getByteBuffer();
 			return obb;
-		}
-
-		internal int getPeerVerTag() {
-			return _peerVerTag;
-		}
-
-		internal int getMyVerTag() {
-			return _myVerTag;
 		}
 
 		/*
@@ -483,11 +475,11 @@ namespace pe.pi.sctp4j.sctp {
 
 		internal void sendInit() {
 			InitChunk c = new InitChunk();
-			c.setInitialTSN(this._nearTSN);
-			c.setNumInStreams(this.MAXSTREAMS);
-			c.setNumOutStreams(this.MAXSTREAMS);
-			c.setAdRecWinCredit(MAXBUFF);
-			c.setInitiate(this.getMyVerTag());
+			c.initialTSN = this._nearTSN;
+			c.numInStreams = this.MAXSTREAMS;
+			c.numOutStreams = this.MAXSTREAMS;
+			c.adRecWinCredit = MAXBUFF;
+			c.initiateTag = this.myVerTag;
 			Chunk[] s = new Chunk[1];
 			s[0] = c;
 			this._state = State.COOKIEWAIT;
@@ -511,7 +503,7 @@ namespace pe.pi.sctp4j.sctp {
 			 NOT HERE
 			 */
 
-			_peerVerTag = iack.getInitiateTag();
+			peerVerTag = iack.getInitiateTag();
 			_winCredit = iack.getAdRecWinCredit();
 			_farTSN = iack.getInitialTSN() - 1;
 			_maxOutStreams = Math.Min(iack.getNumInStreams(), MAXSTREAMS);
@@ -568,18 +560,18 @@ namespace pe.pi.sctp4j.sctp {
 		 */
 		internal virtual Chunk[] inboundInit(InitChunk init) {
 			Chunk[] reply = null;
-			_peerVerTag = init.getInitiateTag();
-			_winCredit = init.getAdRecWinCredit();
-			_farTSN = (uint) (init.getInitialTSN() - 1);
+			peerVerTag = init.initiateTag;
+			_winCredit = init.adRecWinCredit;
+			_farTSN = (uint) (init.initialTSN - 1);
 
-			_maxOutStreams = Math.Min(init.getNumInStreams(), MAXSTREAMS);
-			_maxInStreams = Math.Min(init.getNumOutStreams(), MAXSTREAMS);
+			_maxOutStreams = Math.Min(init.numInStreams, MAXSTREAMS);
+			_maxInStreams = Math.Min(init.numOutStreams, MAXSTREAMS);
 			InitAckChunk iac = new InitAckChunk();
 			iac.setAdRecWinCredit(MAXBUFF);
 			iac.setNumInStreams(_maxInStreams);
 			iac.setNumOutStreams(_maxOutStreams);
 			iac.setInitialTSN(_nearTSN);
-			iac.setInitiateTag(_myVerTag);
+			iac.setInitiateTag(myVerTag);
 			CookieHolder cookie = new CookieHolder();
 			cookie.cookieData = new byte[Association.COOKIESIZE];
 			cookie.cookieTime = Time.CurrentTimeMillis();
@@ -587,7 +579,7 @@ namespace pe.pi.sctp4j.sctp {
 			iac.setCookie(cookie.cookieData);
 			_cookies.Add(cookie);
 
-			byte[] fse = init.getFarSupportedExtensions();
+			byte[] fse = init.farSupportedExtensions;
 			if (fse != null) {
 				iac.setSupportedExtensions(this.getUnionSupportedExtensions(fse));
 			}
@@ -602,7 +594,7 @@ namespace pe.pi.sctp4j.sctp {
 			Logger.Trace("ingesting " + dc.ToString());
 			Chunk closer = null;
 			int sno = dc.getStreamId();
-			uint tsn = dc.getTsn();
+			uint tsn = dc.tsn;
 			SCTPStream _in;
 			if (!_streams.TryGetValue(sno, out _in)) {
 				_in = mkStream(sno);
@@ -615,7 +607,7 @@ namespace pe.pi.sctp4j.sctp {
 				// delay 'till after first packet so we can get the label etc set 
 				// _however_ this should be in behave -as mentioned above.
 				try {
-					_al.onDCEPStream(_in, _in.getLabel(), dc.getPpid());
+					_al.onDCEPStream(_in, _in.getLabel(), dc.ppid);
 				}
 				catch (Exception x) {
 					closer = _in.immediateClose();
@@ -641,7 +633,7 @@ namespace pe.pi.sctp4j.sctp {
 			List<Chunk> rep = new List<Chunk>();
 			List<uint> duplicates = new List<uint>();
 
-			uint tsn = dc.getTsn();
+			uint tsn = dc.tsn;
 			if (tsn > _farTSN) {
 				// put it in the pen.
 				Logger.Trace("TSN:::" + tsn);
@@ -696,7 +688,7 @@ namespace pe.pi.sctp4j.sctp {
 				rep = new Chunk[1];
 				DataChunk ack = dc.mkAck(dcep);
 				s.outbound(ack);
-				ack.setTsn(_nearTSN++);
+				ack.tsn = _nearTSN++;
 				// check rollover - will break at maxint.
 				rep[0] = ack;
 
@@ -881,7 +873,7 @@ namespace pe.pi.sctp4j.sctp {
 				}// todo - move this to behave
 				DataChunk dcopen = DataChunk.mkDCOpen(label);
 				sout.outbound(dcopen);
-				dcopen.setTsn(_nearTSN++);
+				dcopen.tsn = _nearTSN++;
 				Chunk[] hack = { dcopen };
 				try {
 					send(hack);

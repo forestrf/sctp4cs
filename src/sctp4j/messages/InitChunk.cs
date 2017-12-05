@@ -47,12 +47,12 @@ namespace pe.pi.sctp4j.sctp.messages {
 		 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 		 */
 
-		long _initiateTag;
-		uint _adRecWinCredit;
-		int _numOutStreams;
-		int _numInStreams;
-		uint _initialTSN;
-		byte[] _farSupportedExtensions;
+		public int initiateTag;
+		public uint adRecWinCredit;
+		public int numOutStreams;
+		public int numInStreams;
+		public uint initialTSN;
+		public readonly byte[] farSupportedExtensions;
 		byte[] _farRandom;
 		bool _farForwardTSNsupported;
 		byte[] _farHmacs;
@@ -63,11 +63,11 @@ namespace pe.pi.sctp4j.sctp.messages {
 		public InitChunk(CType type, byte flags, int length, ByteBuffer pkt)
 			: base(type, flags, length, pkt) {
 			if (_body.remaining() >= 16) {
-				_initiateTag = _body.GetInt();
-				_adRecWinCredit = _body.GetUInt();
-				_numOutStreams = _body.GetUShort();
-				_numInStreams = _body.GetUShort();
-				_initialTSN = _body.GetUInt();
+				initiateTag = _body.GetInt();
+				adRecWinCredit = _body.GetUInt();
+				numOutStreams = _body.GetUShort();
+				numInStreams = _body.GetUShort();
+				initialTSN = _body.GetUInt();
 				Logger.Trace("Init " + this.ToString());
 				while (_body.hasRemaining()) {
 					VariableParam v = readVariable();
@@ -75,9 +75,9 @@ namespace pe.pi.sctp4j.sctp.messages {
 				}
 				foreach (VariableParam v in _varList) {
 					// now look for variables we are expecting...
-					Logger.Trace("variable of type: " + v.getName() + " " + v.ToString());
+					Logger.Trace("variable of type: " + v.name + " " + v.ToString());
 					if (typeof(SupportedExtensions).IsAssignableFrom(v.GetType())) {
-						_farSupportedExtensions = ((SupportedExtensions) v).getData();
+						farSupportedExtensions = ((SupportedExtensions) v).getData();
 					} else if (typeof(RandomParam).IsAssignableFrom(v.GetType())) {
 						_farRandom = ((RandomParam) v).getData();
 					} else if (typeof(ForwardTSNsupported).IsAssignableFrom(v.GetType())) {
@@ -87,54 +87,18 @@ namespace pe.pi.sctp4j.sctp.messages {
 					} else if (typeof(ChunkListParam).IsAssignableFrom(v.GetType())) {
 						_farChunks = ((ChunkListParam) v).getData();
 					} else {
-						Logger.Trace("unexpected variable of type: " + v.getName());
+						Logger.Trace("unexpected variable of type: " + v.name);
 					}
 				}
 			}
 		}
 
 		protected override void putFixedParams(ByteBuffer ret) {
-			ret.Put((int) _initiateTag);
-			ret.Put(_adRecWinCredit);
-			ret.Put((ushort) _numOutStreams);
-			ret.Put((ushort) _numInStreams);
-			ret.Put(_initialTSN);
-		}
-
-		public int getInitiateTag() {
-			return (int) _initiateTag;
-		}
-
-		public long getAdRecWinCredit() {
-			return _adRecWinCredit;
-		}
-		public int getNumOutStreams() {
-			return _numOutStreams;
-		}
-		public int getNumInStreams() {
-			return _numInStreams;
-		}
-		public long getInitialTSN() {
-			return _initialTSN;
-		}
-		public void setInitialTSN(uint tsn) {
-			_initialTSN = tsn;
-		}
-		public void setAdRecWinCredit(uint credit) {
-			_adRecWinCredit = credit;
-		}
-		public void setNumOutStreams(int outn) {
-			_numOutStreams = outn;
-		}
-		public void setNumInStreams(int inn) {
-			_numInStreams = inn;
-		}
-		public byte[] getFarSupportedExtensions() {
-			return _farSupportedExtensions;
-		}
-
-		public void setInitiate(long tag) {
-			this._initiateTag = tag;
+			ret.Put((int) initiateTag);
+			ret.Put(adRecWinCredit);
+			ret.Put((ushort) numOutStreams);
+			ret.Put((ushort) numInStreams);
+			ret.Put(initialTSN);
 		}
 	}
 }

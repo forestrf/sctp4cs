@@ -56,7 +56,7 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 
 		public override void readBody(ByteBuffer body, int blen) {
 			if (blen < 4) {
-				Logger.Error("Huh ? No body to this " + this.getName());
+				Logger.Error("Huh ? No body to this " + this.name);
 				return;
 			}
 			reqSeqNo = body.GetUInt();

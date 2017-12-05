@@ -26,12 +26,12 @@ using SCTP4CS.Utils;
 namespace pe.pi.sctp4j.sctp.messages.Params {
 	public class Unknown : VariableParam {
 		protected byte[] _data;
-		protected int _type;
-		protected string _name;
+		public int type { get; private set; }
+		public string name { get; private set; }
 
 		public Unknown(int t, string n) {
-			_type = t;
-			_name = n;
+			type = t;
+			name = n;
 		}
 
 		public virtual void readBody(ByteBuffer b, int len) {
@@ -41,14 +41,6 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 
 		public virtual void writeBody(ByteBuffer b) {
 			b.Put(_data);
-		}
-
-		public int getType() {
-			return _type;
-		}
-
-		public string getName() {
-			return _name;
 		}
 	}
 }

@@ -217,10 +217,10 @@ namespace pe.pi.sctp4j.sctp.messages {
 			int pad = 0;
 			if (_varList != null) {
 				foreach (VariableParam v in this._varList) {
-					Logger.Debug("var " + v.getName() + " at " + ret.Position);
+					Logger.Debug("var " + v.name + " at " + ret.Position);
 
 					ByteBuffer var = ret.slice();
-					var.Put((ushort) v.getType());
+					var.Put((ushort) v.type);
 					var.Put((ushort) 4); // length holder.
 					v.writeBody(var);
 					var.Put(2, (ushort) var.Position);
@@ -291,7 +291,6 @@ namespace pe.pi.sctp4j.sctp.messages {
 				case 1:
 					var = new HeartbeatInfo(1, "HeartbeatInfo");
 					break;
-				//      2-4	Unassigned	
 				case 5:
 					var = new IPv4Address(5, "IPv4Address");
 					break;
@@ -307,7 +306,6 @@ namespace pe.pi.sctp4j.sctp.messages {
 				case 9:
 					var = new CookiePreservative(9, "CookiePreservative");
 					break;
-				//      10	Unassigned	
 				case 11:
 					var = new HostNameAddress(11, "HostNameAddress");
 					break;
@@ -332,7 +330,6 @@ namespace pe.pi.sctp4j.sctp.messages {
 				case 18:
 					var = new AddIncomingStreamsRequestParameter(18, "AddIncomingStreamsRequestParameter");
 					break;
-				//      19-32767	Unassigned	
 				case 32768:
 					var = new Unknown(32768, "ReservedforECNCapable");
 					break;
@@ -351,7 +348,6 @@ namespace pe.pi.sctp4j.sctp.messages {
 				case 32776:
 					var = new SupportedExtensions(32776, "SupportedExtensions");
 					break;
-				//      32777-49151	Unassigned	
 				case 49152:
 					var = new ForwardTSNsupported(49152, "ForwardTSNsupported");
 					break;
@@ -379,7 +375,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			}
 			try {
 				var.readBody(_body, blen);
-				Logger.Debug("variable type " + var.getType() + " name " + var.getName());
+				Logger.Debug("variable type " + var.type + " name " + var.name);
 			}
 			catch (SctpPacketFormatException ex) {
 				Logger.Error(ex.ToString());
@@ -464,7 +460,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			}
 			try {
 				var.readBody(_body, blen);
-				Logger.Trace("variable type " + var.getType() + " name " + var.getName());
+				Logger.Trace("variable type " + var.type + " name " + var.name);
 				Logger.Trace("additional info " + var.ToString());
 			}
 			catch (SctpPacketFormatException ex) {

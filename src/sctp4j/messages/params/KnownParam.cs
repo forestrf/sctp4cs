@@ -33,7 +33,7 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 		}
 
 		public override string ToString() {
-			return "Variable param " + this.getName();
+			return "Variable param " + this.name;
 		}
 	}
 }

@@ -59,7 +59,7 @@ namespace pe.pi.sctp4j.sctp.small {
 		internal override void delivered(DataChunk d) {
 			int f = d.getFlags();
 			if ((f & DataChunk.ENDFLAG) > 0) {
-				int ssn = d.getSSeqNo();
+				int ssn = d.sSeqNo;
 				SCTPMessage st;
 				if (undeliveredOutboundMessages.TryGetValue(ssn, out st)) {
 					undeliveredOutboundMessages.Remove(ssn);

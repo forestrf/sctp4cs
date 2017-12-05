@@ -31,7 +31,7 @@ namespace pe.pi.sctp4j.sctp {
 		private SCTPStream _stream;
 		private byte[] _data;
 		private int _offset = 0;
-		private int _pPid = 0;
+		private SCTP_PPID _pPid = 0;
 		private int _mseq; // note do we need these ?
 		private SCTPStreamListener _li;
 		private bool _delivered;
@@ -47,13 +47,13 @@ namespace pe.pi.sctp4j.sctp {
 			_data = new byte[length];
 			Buffer.BlockCopy(data, offset, _data, 0, length);
 			_stream = s;
-			_pPid = (data.Length > 0) ? DataChunk.WEBRTCBINARY : DataChunk.WEBRTCBINARYEMPTY;
+			_pPid = (data.Length > 0) ? SCTP_PPID.WEBRTCBINARY : SCTP_PPID.WEBRTCBINARYEMPTY;
 		}
 
 		public SCTPMessage(string data, SCTPStream s) {
 			_data = (data.Length > 0) ? System.Text.Encoding.ASCII.GetBytes(data) : new byte[1];
 			_stream = s;
-			_pPid = (data.Length > 0) ? DataChunk.WEBRTCstring : DataChunk.WEBRTCstringEMPTY;
+			_pPid = (data.Length > 0) ? SCTP_PPID.WEBRTCstring : SCTP_PPID.WEBRTCstringEMPTY;
 		}
 
 		public SCTPMessage(SCTPStream s, SortedArray<DataChunk> chunks) {
@@ -65,12 +65,12 @@ namespace pe.pi.sctp4j.sctp {
 			if ((chunks.Last.getFlags() & DataChunk.ENDFLAG) == 0) {
 				throw new Exception("[IllegalArgumentException] must end with 'end' chunk");
 			}
-			_pPid = chunks.First.getPpid();
+			_pPid = chunks.First.ppid;
 			foreach (DataChunk dc in chunks) {
 				tot += dc.getDataSize();
-				if (_pPid != dc.getPpid()) {
+				if (_pPid != dc.ppid) {
 					// aaagh 
-					throw new Exception("[IllegalArgumentException] chunk has wrong ppid" + dc.getPpid() + " vs " + _pPid);
+					throw new Exception("[IllegalArgumentException] chunk has wrong ppid" + dc.ppid + " vs " + _pPid);
 				}
 			}
 			_data = new byte[tot];
@@ -86,7 +86,7 @@ namespace pe.pi.sctp4j.sctp {
 			int flags = singleChunk.getFlags();
 			if ((flags & DataChunk.SINGLEFLAG) > 0) {
 				_data = singleChunk.getData();
-				_pPid = singleChunk.getPpid();
+				_pPid = singleChunk.ppid;
 			} else {
 				throw new Exception("[IllegalArgumentException] must use a 'single' chunk");
 			}
@@ -133,8 +133,8 @@ namespace pe.pi.sctp4j.sctp {
 				dc.setData(_data, _offset, dsz);
 				_offset += dsz;
 			}
-			dc.setPpid(_pPid);
-			dc.setsSeqNo(_mseq);
+			dc.ppid = _pPid;
+			dc.sSeqNo = _mseq;
 			_stream.outbound(dc);
 		}
 
@@ -162,19 +162,19 @@ namespace pe.pi.sctp4j.sctp {
 			byte[] data = _data;
 			if (_li != null) {
 				switch (_pPid) {
-					case DataChunk.WEBRTCBINARYEMPTY:
+					case SCTP_PPID.WEBRTCBINARYEMPTY:
 						data = new byte[0];
-						goto case DataChunk.WEBRTCBINARY;
-					case DataChunk.WEBRTCBINARY:
+						goto case SCTP_PPID.WEBRTCBINARY;
+					case SCTP_PPID.WEBRTCBINARY:
 						if (typeof(SCTPByteStreamListener).IsAssignableFrom(_li.GetType())) {
 							((SCTPByteStreamListener) _li).onMessage(_stream, data);
 							_delivered = true;
 						}
 						break;
-					case DataChunk.WEBRTCstringEMPTY:
+					case SCTP_PPID.WEBRTCstringEMPTY:
 						data = new byte[0];
-						goto case DataChunk.WEBRTCstring;
-					case DataChunk.WEBRTCstring:
+						goto case SCTP_PPID.WEBRTCstring;
+					case SCTP_PPID.WEBRTCstring:
 						_li.onMessage(_stream, System.Text.Encoding.ASCII.GetString(_data));
 						_delivered = true;
 						break;

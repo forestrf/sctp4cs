@@ -102,10 +102,10 @@ namespace pe.pi.sctp4j.sctp.behave {
 			DataChunk single = new DataChunk();
 			string teststring = "Test string";
 			single.setData(teststring.getBytes());
-			single.setPpid(DataChunk.WEBRTCstring);
+			single.ppid = SCTP_PPID.WEBRTCstring;
 			single.setFlags(DataChunk.SINGLEFLAG);
-			single.setTsn((uint) _tsn++);
-			single.setsSeqNo(0);
+			single.tsn = (uint) _tsn++;
+			single.sSeqNo = 0;
 			stash.Add(single);
 			List<string> result = new List<string>();
 			result.Add(teststring);
@@ -143,10 +143,10 @@ namespace pe.pi.sctp4j.sctp.behave {
 			DataChunk single = new DataChunk();
 			string teststring = "Test string";
 			single.setData(teststring.getBytes());
-			single.setPpid(DataChunk.WEBRTCstring);
+			single.ppid = SCTP_PPID.WEBRTCstring;
 			single.setFlags(flag);
-			single.setTsn((uint) _tsn++);
-			single.setsSeqNo(0);
+			single.tsn = (uint) _tsn++;
+			single.sSeqNo = 0;
 			stash.Add(single);
 			List<string> result = new List<string>();
 			result.Add(teststring);
@@ -167,10 +167,10 @@ namespace pe.pi.sctp4j.sctp.behave {
 			int n = 0;
 			foreach (string ts in teststrings) {
 				DataChunk single = new DataChunk();
-				single.setTsn((uint) _tsn++);
-				single.setsSeqNo(0);
+				single.tsn = (uint) _tsn++;
+				single.sSeqNo = 0;
 				single.setData(ts.getBytes());
-				single.setPpid(DataChunk.WEBRTCstring);
+				single.ppid = SCTP_PPID.WEBRTCstring;
 				single.setFlags(DataChunk.SINGLEFLAG);
 				stash.Add(single);
 				result.Add(ts);
@@ -215,10 +215,10 @@ namespace pe.pi.sctp4j.sctp.behave {
 			StringBuilder bs = new StringBuilder();
 			foreach (string ts in teststrings) {
 				DataChunk single = new DataChunk();
-				single.setTsn((uint) _tsn++);
-				single.setsSeqNo(0);
+				single.tsn = (uint) _tsn++;
+				single.sSeqNo = 0;
 				single.setData(ts.getBytes());
-				single.setPpid(DataChunk.WEBRTCstring);
+				single.ppid = SCTP_PPID.WEBRTCstring;
 				if (n == 0) {
 					single.setFlags(DataChunk.BEGINFLAG);
 				} else if (n == teststrings.Length - 1) {
@@ -246,11 +246,11 @@ namespace pe.pi.sctp4j.sctp.behave {
 			foreach (string ts in teststrings) {
 				for (int i = 0; i < ts.Length; i++) {
 					DataChunk single = new DataChunk();
-					single.setsSeqNo(n);
-					single.setTsn((uint) _tsn++);
+					single.sSeqNo = n;
+					single.tsn = (uint) _tsn++;
 					string letter = ts.Substring(i, 1);
 					single.setData(letter.getBytes());
-					single.setPpid(DataChunk.WEBRTCstring);
+					single.ppid = SCTP_PPID.WEBRTCstring;
 					if (i == 0) {
 						single.setFlags(DataChunk.BEGINFLAG);
 					} else if (i == ts.Length - 1) {
@@ -319,11 +319,11 @@ namespace pe.pi.sctp4j.sctp.behave {
 			foreach (string ts in teststrings) {
 				for (int i = 0; i < ts.Length; i++) {
 					DataChunk single = new DataChunk();
-					single.setsSeqNo(n);
-					single.setTsn((uint) _tsn++);
+					single.sSeqNo = n;
+					single.tsn = (uint) _tsn++;
 					string letter = ts.Substring(i, 1);
 					single.setData(letter.getBytes());
-					single.setPpid(DataChunk.WEBRTCstring);
+					single.ppid = SCTP_PPID.WEBRTCstring;
 					if (i == 0) {
 						single.setFlags(DataChunk.BEGINFLAG);
 					} else if (i == ts.Length - 1) {

@@ -223,7 +223,7 @@ namespace pe.pi.sctp4j.sctp.small {
 
 			lock (this) {
 				long now = Time.CurrentTimeMillis();
-				d.setTsn(_nearTSN++);
+				d.tsn = _nearTSN++;
 				d.setGapAck(false);
 				d.setRetryTime(now + getT3() - 1);
 				d.setSentTime(now);
@@ -236,11 +236,11 @@ namespace pe.pi.sctp4j.sctp.small {
 				Chunk[] toSend = addSackIfNeeded(d);
 				try {
 					send(toSend);
-					Logger.Trace("sent, syncing on inFlight... " + d.getTsn());
+					Logger.Trace("sent, syncing on inFlight... " + d.tsn);
 					lock (_inFlight) {
-						_inFlight.Add(d.getTsn(), d);
+						_inFlight.Add(d.tsn, d);
 					}
-					Logger.Trace("added to inFlight... " + d.getTsn());
+					Logger.Trace("added to inFlight... " + d.tsn);
 
 				}
 				catch (SctpPacketFormatException ex) {
@@ -256,7 +256,7 @@ namespace pe.pi.sctp4j.sctp.small {
 					Logger.Error(ex.ToString());
 				}
 			}
-			Logger.Trace("leaving enqueue" + d.getTsn());
+			Logger.Trace("leaving enqueue" + d.tsn);
 
 		}
 
@@ -267,7 +267,7 @@ namespace pe.pi.sctp4j.sctp.small {
 					dc = _freeBlocks.Count > 0 ? _freeBlocks.Dequeue() : new DataChunk();
 				}
 				m.fill(dc);
-				Logger.Trace("thinking about waiting for congestion " + dc.getTsn());
+				Logger.Trace("thinking about waiting for congestion " + dc.tsn);
 
 				lock (_congestion) {
 					Logger.Trace("In congestion sync block ");
@@ -379,7 +379,7 @@ namespace pe.pi.sctp4j.sctp.small {
 		 peer specified in the INIT or INIT ACK.
 		 */
 		internal override Chunk[] inboundInit(InitChunk init) {
-			_rwnd = init.getAdRecWinCredit();
+			_rwnd = init.adRecWinCredit;
 			setSsthresh(init);
 			return base.inboundInit(init);
 		}
@@ -570,7 +570,7 @@ namespace pe.pi.sctp4j.sctp.small {
 		 */
 
 		void setSsthresh(InitChunk init) {
-			this._ssthresh = init.getAdRecWinCredit();
+			this._ssthresh = init.adRecWinCredit;
 		}
 
 		/*
@@ -719,7 +719,7 @@ namespace pe.pi.sctp4j.sctp.small {
 						DataChunk d = kvp.Value;
 						long k = kvp.Key;
 						if (d.getGapAck()) {
-							Logger.Trace("skipping gap-acked tsn " + d.getTsn());
+							Logger.Trace("skipping gap-acked tsn " + d.tsn);
 							continue;
 						}
 						if (d.getRetryTime() <= now) {

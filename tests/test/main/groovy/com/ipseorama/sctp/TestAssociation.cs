@@ -76,7 +76,7 @@ namespace com.ipseorama.sctp {
 
 			}
 
-			public void onDCEPStream(SCTPStream s, string label, int type) {
+			public void onDCEPStream(SCTPStream s, string label, SCTP_PPID type) {
 			}
 
 			public void onDisAssociated(Association a) {
@@ -98,7 +98,7 @@ namespace com.ipseorama.sctp {
 			DatagramTransportImpl mock = new DatagramTransportImpl(null);
 			AssociationListenerImpl al = new AssociationListenerImpl(null);
 			MockAssociation ass = new MockAssociation(mock, al);
-			ass.setMyVerTag(335297160);
+			ass.myVerTag = 335297160;
 			ByteBuffer b = ByteBuffer.wrap(sampleDataOpen);
 			Packet p = new Packet(b);
 			ass.deal(p);
@@ -109,9 +109,9 @@ namespace com.ipseorama.sctp {
 			DataChunk dat = chunks[0] as DataChunk;
 			Assert.AreEqual(dat.getType(), DataChunk.CType.DATA, "Expecting a Data chunk");
 			Console.WriteLine("got " + dat.GetType().Name + " chunk" + dat.ToString());
-			Assert.AreEqual(dat.getSSeqNo(), 0, "Expecting seqno of zero");
+			Assert.AreEqual(dat.sSeqNo, 0, "Expecting seqno of zero");
 			Assert.AreEqual(dat.getStreamId(), 0, "Expecting stream of zero");
-			Assert.AreEqual(dat.getPpid(), 50, "Expecting an DCEP");
+			Assert.AreEqual(dat.ppid, (SCTP_PPID) 50, "Expecting an DCEP");
 			Assert.AreEqual(dat.getData(), null, "Data should be zero");
 			Assert.AreEqual(dat.getDCEP() != null, true, "Expected  to parse a DCEP packet");
 			Assert.AreEqual(dat.getDCEP().isAck(), true, "Expected an ack DCEP packet ");
@@ -125,7 +125,7 @@ namespace com.ipseorama.sctp {
 			dat = chunks[0] as DataChunk;
 			Assert.AreEqual(dat.getType(), Chunk.CType.DATA, "Expecting a Data chunk");
 			Console.WriteLine("got " + dat.GetType().Name + " chunk" + dat.ToString());
-			Assert.AreEqual(dat.getSSeqNo(), 1, "Expecting seqno of one"); // we've done a DCEP ack by now.
+			Assert.AreEqual(dat.sSeqNo, 1, "Expecting seqno of one"); // we've done a DCEP ack by now.
 			Assert.AreEqual(dat.getStreamId(), 0, "Expecting stream of zero");
 			Assert.AreEqual(dat.getDataAsString(), "hello", "Expecting hello in the data");
 		}

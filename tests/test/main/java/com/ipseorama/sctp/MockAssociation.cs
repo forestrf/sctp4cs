@@ -63,7 +63,7 @@ namespace pe.pi.sctp4j.sctp {
 
 			DataChunk dc = new DataChunk();
 			m.fill(dc);
-			dc.setTsn(_nearTSN++);
+			dc.tsn = _nearTSN++;
 			// check rollover - will break at maxint.
 			dar[0] = dc;
 			send(dar);
@@ -76,10 +76,6 @@ namespace pe.pi.sctp4j.sctp {
 
 		internal override Chunk[] inboundInit(InitChunk i) {
 			return base.inboundInit(i);
-		}
-
-		public void setMyVerTag(int v) {
-			base._myVerTag = v;
 		}
 
 		internal override SCTPMessage makeMessage(string s, BlockingSCTPStream aThis) {

@@ -253,7 +253,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		private void reflectedVerify(int cno, Association ass) {
 			Chunk chunk = _chunks[cno];
 			bool t = ((Chunk.TBIT & chunk._flags) > 0);
-			int cverTag = t ? ass.getPeerVerTag() : ass.getMyVerTag();
+			int cverTag = t ? ass.peerVerTag : ass.myVerTag;
 			if (cverTag != _verTag) {
 				throw new InvalidSCTPPacketException("VerTag doesn't match " + (t ? "their " : "our ") + " vertag " + _verTag + " != " + cverTag);
 			}
@@ -287,8 +287,8 @@ namespace pe.pi.sctp4j.sctp.messages {
 							}
 						} else {
 							// somewhat hidden here - but this is the normal case - not init abort or shutdown complete 
-							if (_verTag != ass.getMyVerTag()) {
-								throw new InvalidSCTPPacketException("VerTag on plain packet expected to match ours " + _verTag + " != " + ass.getMyVerTag());
+							if (_verTag != ass.myVerTag) {
+								throw new InvalidSCTPPacketException("VerTag on plain packet expected to match ours " + _verTag + " != " + ass.myVerTag);
 							}
 						}
 					}

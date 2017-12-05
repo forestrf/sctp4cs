@@ -25,11 +25,10 @@ using SCTP4CS.Utils;
  */
 namespace pe.pi.sctp4j.sctp.messages.Params {
 	public interface VariableParam {
+		int type { get; }
+		string name { get; }
+
 		void readBody(ByteBuffer b, int len);
 		void writeBody(ByteBuffer b);
-
-		int getType();
-
-		string getName();
 	}
 }

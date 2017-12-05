@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
+using pe.pi.sctp4j.sctp.messages;
 
 /**
 *
@@ -85,7 +86,7 @@ namespace pe.pi.sctp4j.sctp.small {
 				}
 			}
 
-			public virtual void onDCEPStream(SCTPStream s, string label, int type) {
+			public virtual void onDCEPStream(SCTPStream s, string label, SCTP_PPID type) {
 				Console.WriteLine("dcep stream");
 			}
 
@@ -388,7 +389,7 @@ namespace pe.pi.sctp4j.sctp.small {
 		 * Test of makeMessage method, of class ThreadedAssociation.
 		 */
 		class MockAssociationListenerImpl2 : MockAssociationListener {
-			public override void onDCEPStream(SCTPStream s, string label, int type) {
+			public override void onDCEPStream(SCTPStream s, string label, SCTP_PPID type) {
 			}
 		}
 		class MockAssociationListenerImpl3 : MockAssociationListener {
@@ -400,7 +401,7 @@ namespace pe.pi.sctp4j.sctp.small {
 				this.rsl = rsl;
 			}
 
-			public override void onDCEPStream(SCTPStream s, string label, int type) {
+			public override void onDCEPStream(SCTPStream s, string label, SCTP_PPID type) {
 				s.setSCTPStreamListener(rsl);
 				rightLabel.Append(label);
 			}

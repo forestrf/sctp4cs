@@ -16,7 +16,6 @@
  */
 // Modified by Andrés Leone Gámez
 
-
 using SCTP4CS;
 using SCTP4CS.Utils;
 using pe.pi.sctp4j.sctp.dataChannel.DECP;
@@ -29,40 +28,40 @@ using System.Text;
  * @author Westhawk Ltd<thp@westhawk.co.uk>
  */
 namespace pe.pi.sctp4j.sctp.messages {
+	/*
+   +-------------------------------+----------+-----------+------------+
+   | Value                         | SCTP     | Reference | Date       |
+   |                               | PPID     |           |            |
+   +-------------------------------+----------+-----------+------------+
+   | WebRTC string                 | 51       | [RFCXXXX] | 2013-09-20 |
+   | WebRTC Binary Partial         | 52       | [RFCXXXX] | 2013-09-20 |
+   | (Deprecated)                  |          |           |            |
+   | WebRTC Binary                 | 53       | [RFCXXXX] | 2013-09-20 |
+   | WebRTC string Partial         | 54       | [RFCXXXX] | 2013-09-20 |
+   | (Deprecated)                  |          |           |            |
+   | WebRTC string Empty           | 56       | [RFCXXXX] | 2014-08-22 |
+   | WebRTC Binary Empty           | 57       | [RFCXXXX] | 2014-08-22 |
+   +-------------------------------+----------+-----------+------------+
+
+	 */
+	public enum SCTP_PPID {
+		WEBRTCCONTROL = 50,
+		WEBRTCstring = 51,
+		WEBRTCBINARY = 53,
+		WEBRTCstringEMPTY = 56,
+		WEBRTCBINARYEMPTY = 57
+	}
+
 	internal class DataChunk : Chunk, IComparer<DataChunk>, IComparable<DataChunk> {
-
-		/*
-	   +-------------------------------+----------+-----------+------------+
-	   | Value                         | SCTP     | Reference | Date       |
-	   |                               | PPID     |           |            |
-	   +-------------------------------+----------+-----------+------------+
-	   | WebRTC string                 | 51       | [RFCXXXX] | 2013-09-20 |
-	   | WebRTC Binary Partial         | 52       | [RFCXXXX] | 2013-09-20 |
-	   | (Deprecated)                  |          |           |            |
-	   | WebRTC Binary                 | 53       | [RFCXXXX] | 2013-09-20 |
-	   | WebRTC string Partial         | 54       | [RFCXXXX] | 2013-09-20 |
-	   | (Deprecated)                  |          |           |            |
-	   | WebRTC string Empty           | 56       | [RFCXXXX] | 2014-08-22 |
-	   | WebRTC Binary Empty           | 57       | [RFCXXXX] | 2014-08-22 |
-	   +-------------------------------+----------+-----------+------------+
-
-		 */
-
-		public const int WEBRTCCONTROL = 50;
-		public const int WEBRTCstring = 51;
-		public const int WEBRTCBINARY = 53;
-		public const int WEBRTCstringEMPTY = 56;
-		public const int WEBRTCBINARYEMPTY = 57;
-
 		public const int BEGINFLAG = 2;
 		public const int ENDFLAG = 1;
 		public const int SINGLEFLAG = 3;
 		public const int UNORDERED = 4;
 
-		private uint _tsn;
+		public uint tsn;
 		private int _streamId;
-		private int _sSeqNo;
-		private int _ppid;
+		public int sSeqNo;
+		public SCTP_PPID ppid;
 		private byte[] _data;
 		private int _dataOffset;
 		private int _dataLength;
@@ -79,19 +78,19 @@ namespace pe.pi.sctp4j.sctp.messages {
 			Logger.Debug("body remaining " + _body.remaining());
 
 			if (_body.remaining() >= 12) {
-				_tsn = _body.GetUInt();
+				tsn = _body.GetUInt();
 				_streamId = _body.GetUShort();
-				_sSeqNo = _body.GetUShort();
-				_ppid = _body.GetInt();
+				sSeqNo = _body.GetUShort();
+				ppid = (SCTP_PPID) _body.GetInt();
 
-				Logger.Debug(" _tsn : " + _tsn
+				Logger.Debug(" _tsn : " + tsn
 						+ " _streamId : " + _streamId
-						+ " _sSeqNo : " + _sSeqNo
-						+ " _ppid : " + _ppid);
+						+ " _sSeqNo : " + sSeqNo
+						+ " _ppid : " + ppid);
 				Logger.Debug("data size remaining " + _body.remaining());
 
-				switch (_ppid) {
-					case WEBRTCCONTROL:
+				switch (ppid) {
+					case SCTP_PPID.WEBRTCCONTROL:
 						ByteBuffer bb = _body.slice();
 						try {
 							_open = new DCOpen(bb);
@@ -101,7 +100,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 						}
 						Logger.Trace("Got an DCEP " + _open);
 						break;
-					case WEBRTCstring:
+					case SCTP_PPID.WEBRTCstring:
 						// what format is a string ?
 						_data = new byte[_body.remaining()];
 						_body.GetBytes(_data, _data.Length);
@@ -109,7 +108,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 						_dataLength = _data.Length;
 						Logger.Trace("string data is " + Encoding.ASCII.GetString(_data));
 						break;
-					case WEBRTCBINARY:
+					case SCTP_PPID.WEBRTCBINARY:
 						_data = new byte[_body.remaining()];
 						_body.GetBytes(_data, _data.Length);
 						_dataOffset = 0;
@@ -118,7 +117,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 						break;
 
 					default:
-						_invalid = new InvalidDataChunkException("Invalid Protocol Id in data Chunk " + _ppid);
+						_invalid = new InvalidDataChunkException("Invalid Protocol Id in data Chunk " + ppid);
 						break;
 				}
 			}
@@ -126,26 +125,26 @@ namespace pe.pi.sctp4j.sctp.messages {
 
 		public string getDataAsString() {
 			string ret;
-			switch (_ppid) {
-				case WEBRTCCONTROL:
+			switch (ppid) {
+				case SCTP_PPID.WEBRTCCONTROL:
 					ret = "Got an DCEP " + _open;
 					break;
-				case WEBRTCstring:
+				case SCTP_PPID.WEBRTCstring:
 					ret = Encoding.ASCII.GetString(_data, _dataOffset, _dataLength);
 					break;
-				case WEBRTCstringEMPTY:
+				case SCTP_PPID.WEBRTCstringEMPTY:
 					ret = "Empty string message";
 					break;
-				case WEBRTCBINARY:
+				case SCTP_PPID.WEBRTCBINARY:
 					byte[] p = new byte[_dataLength];
 					Array.Copy(_data, _dataOffset, p, 0, _dataLength);
 					ret = _data.GetHex();
 					break;
-				case WEBRTCBINARYEMPTY:
+				case SCTP_PPID.WEBRTCBINARYEMPTY:
 					ret = "Empty binay message";
 					break;
 				default:
-					ret = "Invalid Protocol Id in data Chunk " + _ppid;
+					ret = "Invalid Protocol Id in data Chunk " + ppid;
 					break;
 			}
 			return ret;
@@ -181,20 +180,8 @@ namespace pe.pi.sctp4j.sctp.messages {
 
 		 */
 
-		public uint getTsn() {
-			return _tsn;
-		}
-
 		public int getStreamId() {
 			return this._streamId;
-		}
-
-		public int getSSeqNo() {
-			return this._sSeqNo;
-		}
-
-		public int getPpid() {
-			return this._ppid;
 		}
 
 		public byte[] getData() {
@@ -204,11 +191,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		public DCOpen getDCEP() {
 			return this._open;
 		}
-
-		public void setPpid(int pp) {
-			_ppid = pp;
-		}
-
+		
 		public int getDataSize() {
 			return _dataLength;
 		}
@@ -223,18 +206,11 @@ namespace pe.pi.sctp4j.sctp.messages {
 		}
 
 		protected override void putFixedParams(ByteBuffer ret) {
-			ret.Put(_tsn);// = _body.getInt();
+			ret.Put(tsn);// = _body.getInt();
 			ret.Put((ushort) _streamId);// = _body.getushort();
-			ret.Put((ushort) _sSeqNo);// = _body.getushort();
-			ret.Put(_ppid);// = _body.getInt();
+			ret.Put((ushort) sSeqNo);// = _body.getushort();
+			ret.Put((int) ppid);// = _body.getInt();
 			ret.Put(_data, _dataOffset, _dataLength);
-		}
-
-		/**
-		 * @param _tsn the _tsn to set
-		 */
-		public void setTsn(uint tsn) {
-			_tsn = tsn;
 		}
 
 		/**
@@ -244,17 +220,10 @@ namespace pe.pi.sctp4j.sctp.messages {
 			_streamId = streamId;
 		}
 
-		/**
-		 * @param _sSeqNo the _sSeqNo to set
-		 */
-		public void setsSeqNo(int sSeqNo) {
-			_sSeqNo = sSeqNo;
-		}
-
 		public DataChunk mkAck(DCOpen dcep) {
 			DataChunk ack = new DataChunk();
 			ack.setData(dcep.mkAck());
-			ack._ppid = WEBRTCCONTROL;
+			ack.ppid = SCTP_PPID.WEBRTCCONTROL;
 			ack.setFlags(DataChunk.SINGLEFLAG);
 
 			return ack;
@@ -264,7 +233,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			DataChunk open = new DataChunk();
 			DCOpen dope = new DCOpen(label);
 			open.setData(dope.getBytes());
-			open._ppid = WEBRTCCONTROL;
+			open.ppid = SCTP_PPID.WEBRTCCONTROL;
 			open.setFlags(DataChunk.SINGLEFLAG);
 			return open;
 		}
@@ -278,7 +247,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		 */
 		public override string ToString() {
 			string ret = base.ToString();
-			ret += " ppid = " + _ppid + "seqn " + _sSeqNo + " streamId " + _streamId + " tsn " + _tsn
+			ret += " ppid = " + ppid + "seqn " + sSeqNo + " streamId " + _streamId + " tsn " + tsn
 					+ " retry " + _retryTime + " gap acked " + _gapAck;
 			return ret;
 		}
@@ -337,7 +306,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		}
 
 		public int Compare(DataChunk o1, DataChunk o2) {
-			return (int) (o1._tsn - o2._tsn);
+			return (int) (o1.tsn - o2.tsn);
 		}
 
 		public long getSentTime() {

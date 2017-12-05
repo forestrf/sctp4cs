@@ -39,7 +39,7 @@ namespace pe.pi.sctp4j.sctp.behave {
 			if (stash.Count == 0) {
 				return; // I'm not fond of these early returns 
 			}
-			long expectedTsn = stash.First.getTsn(); // This ignores gaps - but _hopefully_ messageNo will catch any
+			long expectedTsn = stash.First.tsn; // This ignores gaps - but _hopefully_ messageNo will catch any
 													 // gaps we care about - ie gaps in the sequence for _this_ stream 
 													 // we can deliver ordered messages on this stream even if earlier messages from other streams are missing
 													 // - this does assume that the tsn's of a message are contiguous -which is odd.
@@ -49,7 +49,7 @@ namespace pe.pi.sctp4j.sctp.behave {
 				int messageNo = s.getNextMessageSeqIn();
 
 				int flags = dc.getFlags() & DataChunk.SINGLEFLAG; // mask to the bits we want
-				long tsn = dc.getTsn();
+				long tsn = dc.tsn;
 				bool lookingForOrderedMessages = _ordered || (message != null);
 				// which is to say for unordered messages we can tolerate gaps _between_ messages
 				// but not within them
@@ -60,8 +60,8 @@ namespace pe.pi.sctp4j.sctp.behave {
 				switch (flags) {
 					case DataChunk.SINGLEFLAG:
 						// singles are easy - just dispatch.
-						if (_ordered && (messageNo != dc.getSSeqNo())) {
-							Logger.Debug("Hole (single) in message sequence  " + dc.getSSeqNo() + " expected " + messageNo);
+						if (_ordered && (messageNo != dc.sSeqNo)) {
+							Logger.Debug("Hole (single) in message sequence  " + dc.sSeqNo + " expected " + messageNo);
 							break; // not the message we are looking for...
 						}
 						SCTPMessage single = new SCTPMessage(s, dc);
@@ -72,27 +72,27 @@ namespace pe.pi.sctp4j.sctp.behave {
 						}
 						break;
 					case DataChunk.BEGINFLAG:
-						if (_ordered && (messageNo != dc.getSSeqNo())) {
-							Logger.Debug("Hole (begin) in message sequence  " + dc.getSSeqNo() + " expected " + messageNo);
+						if (_ordered && (messageNo != dc.sSeqNo)) {
+							Logger.Debug("Hole (begin) in message sequence  " + dc.sSeqNo + " expected " + messageNo);
 							break; // not the message we are looking for...
 						}
 						message = new SortedArray<DataChunk>();
 						message.Add(dc);
-						Logger.Trace("new message no" + dc.getSSeqNo() + " starts with  " + dc.getTsn());
+						Logger.Trace("new message no" + dc.sSeqNo + " starts with  " + dc.tsn);
 						break;
 					case 0: // middle 
 						if (message != null) {
 							message.Add(dc);
-							Logger.Trace("continued message no" + dc.getSSeqNo() + " with  " + dc.getTsn());
+							Logger.Trace("continued message no" + dc.sSeqNo + " with  " + dc.tsn);
 						} else {
 							// perhaps check sno ?
-							Logger.Debug("Middle with no start" + dc.getSSeqNo() + " tsn " + dc.getTsn());
+							Logger.Debug("Middle with no start" + dc.sSeqNo + " tsn " + dc.tsn);
 						}
 						break;
 					case DataChunk.ENDFLAG:
 						if (message != null) {
 							message.Add(dc);
-							Logger.Trace("finished message no" + dc.getSSeqNo() + " with  " + dc.getTsn());
+							Logger.Trace("finished message no" + dc.sSeqNo + " with  " + dc.tsn);
 							SCTPMessage deliverable = new SCTPMessage(s, message);
 							if (deliverable.deliver(l)) {
 								message.AddToList(delivered);
@@ -101,7 +101,7 @@ namespace pe.pi.sctp4j.sctp.behave {
 							}
 							message = null;
 						} else {
-							Logger.Debug("End with no start" + dc.getSSeqNo() + " tsn " + dc.getTsn());
+							Logger.Debug("End with no start" + dc.sSeqNo + " tsn " + dc.tsn);
 							message = null;
 						}
 						break;
