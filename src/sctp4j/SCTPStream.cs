@@ -145,7 +145,7 @@ namespace pe.pi.sctp4j.sctp {
 
 		abstract public void send(string message);
 
-		abstract public void send(byte[] message);
+		abstract public void send(byte[] message, int offset, int length);
 
 		public Association getAssociation() {
 			return _ass;

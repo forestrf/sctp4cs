@@ -43,8 +43,9 @@ namespace pe.pi.sctp4j.sctp {
 		 * @param data
 		 * @param s
 		 */
-		public SCTPMessage(byte[] data, SCTPStream s) {
-			_data = (data.Length > 0) ? data : new byte[1];
+		public SCTPMessage(byte[] data, int offset, int length, SCTPStream s) {
+			_data = new byte[length];
+			Buffer.BlockCopy(data, offset, _data, 0, length);
 			_stream = s;
 			_pPid = (data.Length > 0) ? DataChunk.WEBRTCBINARY : DataChunk.WEBRTCBINARYEMPTY;
 		}

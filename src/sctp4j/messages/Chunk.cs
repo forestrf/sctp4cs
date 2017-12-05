@@ -286,7 +286,6 @@ namespace pe.pi.sctp4j.sctp.messages {
 			int type = _body.GetUShort();
 			int len = _body.GetUShort();
 			int blen = len - 4;
-			byte[] data;
 			Unknown var;
 			switch (type) {
 				case 1:
@@ -400,7 +399,6 @@ namespace pe.pi.sctp4j.sctp.messages {
 			int type = _body.GetUShort();
 			int len = _body.GetUShort();
 			int blen = len - 4;
-			byte[] data;
 			KnownError var = null;
 			switch (type) {
 				case 1:

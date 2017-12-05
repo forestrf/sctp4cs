@@ -43,10 +43,10 @@ namespace pe.pi.sctp4j.sctp.small {
 			}
 		}
 
-		public override void send(byte[] message) {
+		public override void send(byte[] message, int offset, int length) {
 			lock (this) {
 				Association a = base.getAssociation();
-				SCTPMessage m = a.makeMessage(message, this);
+				SCTPMessage m = a.makeMessage(message, offset, length, this);
 				undeliveredOutboundMessages.Add(m.getSeq(), m);
 				a.sendAndBlock(m);
 			}

@@ -57,7 +57,6 @@ namespace pe.pi.sctp4j.sctp.messages {
 		bool _farForwardTSNsupported;
 		byte[] _farHmacs;
 		byte[] _farChunks;
-		public int _outStreams;
 
 		public InitChunk() : base(CType.INIT) { }
 

@@ -923,7 +923,7 @@ namespace pe.pi.sctp4j.sctp {
 
 		abstract internal void sendAndBlock(SCTPMessage m);
 
-		abstract internal SCTPMessage makeMessage(byte[] bytes, BlockingSCTPStream aThis);
+		abstract internal SCTPMessage makeMessage(byte[] bytes, int offset, int length, BlockingSCTPStream aThis);
 
 		abstract internal SCTPMessage makeMessage(string s, BlockingSCTPStream aThis);
 

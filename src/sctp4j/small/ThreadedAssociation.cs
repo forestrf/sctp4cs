@@ -281,12 +281,12 @@ namespace pe.pi.sctp4j.sctp.small {
 			}
 		}
 
-		internal override SCTPMessage makeMessage(byte[] bytes, BlockingSCTPStream s) {
+		internal override SCTPMessage makeMessage(byte[] bytes, int offset, int length, BlockingSCTPStream s) {
 			lock (this) {
 				SCTPMessage m = null;
 				if (base.canSend()) {
 					if (bytes.Length < this.maxMessageSize()) {
-						m = new SCTPMessage(bytes, s);
+						m = new SCTPMessage(bytes, offset, length, s);
 						lock (s) {
 							int mseq = s.getNextMessageSeqOut();
 							s.setNextMessageSeqOut(mseq + 1);
