@@ -391,9 +391,7 @@ namespace pe.pi.sctp4j.sctp.small {
 
 		private void reduceRwnd(int dataSize) {
 			_rwnd -= dataSize;
-			if (_rwnd < 0) {
-				_rwnd = 0;
-			}
+			if (_rwnd < 0) _rwnd = 0;
 		}
 		/*
 		 C) Any time a DATA chunk is marked for retransmission, either via
@@ -431,7 +429,6 @@ namespace pe.pi.sctp4j.sctp.small {
 		 */
 
 		internal override Chunk[] sackDeal(SackChunk sack) {
-			Chunk[] ret = { };
 			/*
 			 i) If Cumulative TSN Ack is less than the Cumulative TSN Ack
 			 Point, then drop the SACK.  Since Cumulative TSN Ack is
@@ -523,11 +520,10 @@ namespace pe.pi.sctp4j.sctp.small {
 				bool advanced = (_lastCumuTSNAck < ackedTo);
 				adjustCwind(advanced, totalDataInFlight, totalAcked);
 				_lastCumuTSNAck = ackedTo;
-
 			} else {
 				Logger.Debug("Dumping Sack - already seen later sack.");
 			}
-			return ret;
+			return null;
 		}
 
 		/* 

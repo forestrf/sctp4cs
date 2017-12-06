@@ -98,10 +98,6 @@ namespace pe.pi.sctp4j.sctp {
 					// if we are behind, we are supposed to wait untill we catch up.
 					if (oreset.getLastAssignedTSN() > assoc.getCumAckPt()) {
 						Logger.Debug("Last assigned > farTSN " + oreset.getLastAssignedTSN() + " v " + assoc.getCumAckPt());
-						foreach (int s in streams) {
-							SCTPStream defstr = assoc.getStream(s);
-							defstr.setDeferred(true);
-						}
 						ReconfigurationResponseParameter rep = new ReconfigurationResponseParameter();
 						rep.setSeq(oreset.getReqSeqNo());
 						rep.setResult(ReconfigurationResponseParameter.IN_PROGRESS);

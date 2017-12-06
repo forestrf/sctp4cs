@@ -34,7 +34,7 @@ namespace pe.pi.sctp4j.sctp {
 		 behave class - which has to be stateless since it can be swapped out - it is ugly 
 		 - and I wonder if closures would do it better.
 		 */
-		private SCTPStreamBehaviour _behave;
+		internal SCTPStreamBehaviour behave;
 		protected Association _ass;
 		private int _sno;
 		private string _label;
@@ -74,7 +74,7 @@ namespace pe.pi.sctp4j.sctp {
 			_ass = a;
 			_sno = id;
 			_stash = new SortedArray<DataChunk>(); // sort bt tsn
-			_behave = new OrderedStreamBehaviour(); // default 'till we know different
+			behave = new OrderedStreamBehaviour(); // default 'till we know different
 		}
 
 		public void setLabel(string l) {
@@ -86,23 +86,13 @@ namespace pe.pi.sctp4j.sctp {
 		}
 
 		public override string ToString() {
-			return "Stream (" + _sno + ") label:" + _label + " state:" + state + " behave:" + _behave.GetType().Name;
+			return "Stream (" + _sno + ") label:" + _label + " state:" + state + " behave:" + behave.GetType().Name;
 		}
 
 		internal Chunk[] append(DataChunk dc) {
 			Logger.Debug("adding data to stash on stream " + _label + "(" + dc + ")");
 			_stash.Add(dc);
-			return _behave.respond(this);
-		}
-
-		/**
-		 * note that behaviours must be stateless - since they can be swapped out
-		 * when we finally get the 'open'
-		 *
-		 * @param behave
-		 */
-		internal void setBehave(SCTPStreamBehaviour behave) {
-			_behave = behave;
+			return behave.respond(this);
 		}
 
 		// seqno management.
@@ -117,8 +107,8 @@ namespace pe.pi.sctp4j.sctp {
 		}
 
 		internal void inbound(DataChunk dc) {
-			if (_behave != null) {
-				_behave.deliver(this, _stash, _sl);
+			if (behave != null) {
+				behave.deliver(this, _stash, _sl);
 			} else {
 				Logger.Warn("No behaviour set");
 			}
@@ -140,7 +130,7 @@ namespace pe.pi.sctp4j.sctp {
 			_sl = sl;
 			Logger.Debug("action a delayed delivery now we have a listener.");
 			//todo think about what reliablility looks like here.
-			_behave.deliver(this, _stash, _sl);
+			behave.deliver(this, _stash, _sl);
 		}
 
 		abstract public void send(string message);
@@ -173,11 +163,7 @@ namespace pe.pi.sctp4j.sctp {
 		}
 
 		abstract internal void deliverMessage(SCTPMessage message);
-
-		public void setDeferred(bool b) {
-			bool deferred = true;
-		}
-
+		
 		public void reset() {
 			Logger.Debug("Resetting stream " + this._sno);
 			if (this._sl != null) {

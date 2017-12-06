@@ -675,9 +675,8 @@ namespace pe.pi.sctp4j.sctp {
 			Logger.Debug("dealing with a decp for stream " + dc.getDataAsString());
 			if (!dcep.isAck()) {
 				Logger.Debug("decp is not an ack... ");
-
-				SCTPStreamBehaviour behave = dcep.mkStreamBehaviour();
-				s.setBehave(behave);
+				
+				s.behave = dcep.mkStreamBehaviour(); ;
 				s.setLabel(dcep.getLabel());
 				lock (s) {
 					int seqIn = s.getNextMessageSeqIn();
@@ -694,8 +693,7 @@ namespace pe.pi.sctp4j.sctp {
 
 			} else {
 				Logger.Debug("got a dcep ack for " + s.getLabel());
-				SCTPStreamBehaviour behave = dcep.mkStreamBehaviour();
-				s.setBehave(behave);
+				s.behave = dcep.mkStreamBehaviour();
 				lock (s) {
 					int seqIn = s.getNextMessageSeqIn();
 					s.setNextMessageSeqIn(seqIn + 1);

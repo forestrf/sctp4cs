@@ -20,7 +20,6 @@ using SCTP4CS;
 using SCTP4CS.Utils;
 using pe.pi.sctp4j.sctp.messages.Params;
 using System.Collections.Generic;
-using System.Text;
 using System;
 
 /**
@@ -64,7 +63,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			ASCONF = 193,
 			ASCONF_ACK = 128,
 		}
-		
+
 
 
 		public const byte TBIT = 1;
