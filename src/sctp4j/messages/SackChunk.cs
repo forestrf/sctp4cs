@@ -119,8 +119,8 @@ namespace pe.pi.sctp4j.sctp.messages {
 		private uint _cumuTSNAck;
 		private uint _arWin;
 
-		public SackChunk(CType type, byte flags, int length, ByteBuffer pkt)
-			: base(type, flags, length, pkt) {
+		public SackChunk(CType type, byte flags, int length, ref ByteBuffer pkt)
+			: base(type, flags, length, ref pkt) {
 			_cumuTSNAck = _body.GetUInt();
 			_arWin = _body.GetUInt();
 			int ngaps = _body.GetUShort();
@@ -183,7 +183,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			}
 		}
 
-		protected override void putFixedParams(ByteBuffer ret) {
+		protected override void putFixedParams(ref ByteBuffer ret) {
 			ret.Put(_cumuTSNAck);
 			ret.Put(_arWin);
 			ret.Put((ushort) _gaps.Length);

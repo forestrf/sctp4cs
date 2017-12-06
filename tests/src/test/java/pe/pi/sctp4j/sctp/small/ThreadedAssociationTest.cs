@@ -255,7 +255,7 @@ namespace pe.pi.sctp4j.sctp.small {
 
 			public override void onRawStream(SCTPStream s) {
 				base.onRawStream(s);
-				s.setBehave(new OrderedStreamBehaviour());
+				s.behave = new OrderedStreamBehaviour();
 				s.setSCTPStreamListener(rsl);
 			}
 		}

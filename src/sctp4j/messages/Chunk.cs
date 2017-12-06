@@ -77,7 +77,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		  field will be set to 4.  The Chunk Length field does not count any
 		  chunk padding.
 		*/
-		public static Chunk mkChunk(ByteBuffer pkt) {
+		public static Chunk mkChunk(ref ByteBuffer pkt) {
 			Chunk ret = null;
 			if (pkt.remaining() >= 4) {
 				CType type = (CType) pkt.GetByte();
@@ -85,35 +85,35 @@ namespace pe.pi.sctp4j.sctp.messages {
 				int length = pkt.GetUShort();
 				switch (type) {
 					case CType.DATA:
-						ret = new DataChunk(type, flags, length, pkt);
+						ret = new DataChunk(type, flags, length, ref pkt);
 						break;
 					case CType.INIT:
-						ret = new InitChunk(type, flags, length, pkt);
+						ret = new InitChunk(type, flags, length, ref pkt);
 						break;
 					case CType.SACK:
-						ret = new SackChunk(type, flags, length, pkt);
+						ret = new SackChunk(type, flags, length, ref pkt);
 						break;
 					case CType.INITACK:
-						ret = new InitAckChunk(type, flags, length, pkt);
+						ret = new InitAckChunk(type, flags, length, ref pkt);
 						break;
 					case CType.COOKIE_ECHO:
-						ret = new CookieEchoChunk(type, flags, length, pkt);
+						ret = new CookieEchoChunk(type, flags, length, ref pkt);
 						break;
 					case CType.COOKIE_ACK:
-						ret = new CookieAckChunk(type, flags, length, pkt);
+						ret = new CookieAckChunk(type, flags, length, ref pkt);
 						break;
 					case CType.ABORT:
-						ret = new AbortChunk(type, flags, length, pkt);
+						ret = new AbortChunk(type, flags, length, ref pkt);
 						break;
 					case CType.HEARTBEAT:
-						ret = new HeartBeatChunk(type, flags, length, pkt);
+						ret = new HeartBeatChunk(type, flags, length, ref pkt);
 						break;
 					case CType.RE_CONFIG:
-						ret = new ReConfigChunk(type, flags, length, pkt);
+						ret = new ReConfigChunk(type, flags, length, ref pkt);
 						break;
 					default:
 						Logger.Warn("Default chunk type " + type + " read in ");
-						ret = new FailChunk(type, flags, length, pkt);
+						ret = new FailChunk(type, flags, length, ref pkt);
 						break;
 				}
 				if (ret != null) {
@@ -185,14 +185,14 @@ namespace pe.pi.sctp4j.sctp.messages {
 		public byte _flags;
 		int _length;
 		protected ByteBuffer _body;
-		public List<VariableParam> _varList = new List<VariableParam>();
+		internal List<Param> _varList = new List<Param>();
 
 
 		protected Chunk(CType type) {
 			_type = type;
 		}
 
-		protected Chunk(CType type, byte flags, int length, ByteBuffer pkt) {
+		protected Chunk(CType type, byte flags, int length, ref ByteBuffer pkt) {
 			_type = type;
 			_flags = flags;
 			_length = length;
@@ -203,25 +203,25 @@ namespace pe.pi.sctp4j.sctp.messages {
 			*/
 			// or use same data but different MemoryStreams wrapping it
 			_body = pkt.slice();
-			_body.Limit = length - 4;
+			_body.Length = length - 4;
 			pkt.Position += (length - 4);
 		}
 		// sad ommission in MemoryStream 
 
-		public void write(ByteBuffer ret) {
+		public void write(ref ByteBuffer ret) {
 			ret.Put((byte) _type);
 			ret.Put((byte) _flags);
 			ret.Put((ushort) 4); // marker for length;
-			putFixedParams(ret);
+			putFixedParams(ref ret);
 			int pad = 0;
 			if (_varList != null) {
-				foreach (VariableParam v in this._varList) {
-					Logger.Debug("var " + v.name + " at " + ret.Position);
+				foreach (Param v in this._varList) {
+					Logger.Debug("var " + Enum.GetName(typeof(VariableParamType), v.type) + " at " + ret.Position);
 
 					ByteBuffer var = ret.slice();
 					var.Put((ushort) v.type);
 					var.Put((ushort) 4); // length holder.
-					v.writeBody(var);
+					v.writeBody(ref var);
 					var.Put(2, (ushort) var.Position);
 					Logger.Trace("setting var length to " + var.Position);
 					pad = var.Position % 4;
@@ -244,137 +244,49 @@ namespace pe.pi.sctp4j.sctp.messages {
 		protected int getLength() {
 			return _length;
 		}
-		/*
-    
-		 1	Heartbeat Info	[RFC4960]
-		 2-4	Unassigned	
-		 5	IPv4 Address	[RFC4960]
-		 6	IPv6 Address	[RFC4960]
-		 7	State Cookie	[RFC4960]
-		 8	Unrecognized Parameters	[RFC4960]
-		 9	Cookie Preservative	[RFC4960]
-		 10	Unassigned	
-		 11	Host Name Address	[RFC4960]
-		 12	Supported Address Types	[RFC4960]
-		 13	Outgoing SSN Reset Request Parameter	[RFC6525]
-		 14	Incoming SSN Reset Request Parameter	[RFC6525]
-		 15	SSN/TSN Reset Request Parameter	[RFC6525]
-		 16	Re-configuration Response Parameter	[RFC6525]
-		 17	Add Outgoing Streams Request Parameter	[RFC6525]
-		 18	Add Incoming Streams Request Parameter	[RFC6525]
-		 19-32767	Unassigned	
-		 32768	Reserved for ECN Capable (0x8000)	
-		 32770	Random (0x8002)	[RFC4805]
-		 32771	Chunk List (0x8003)	[RFC4895]
-		 32772	Requested HMAC Algorithm Parameter (0x8004)	[RFC4895]
-		 32773	Padding (0x8005)	
-		 32776	Supported Extensions (0x8008)	[RFC5061]
-		 32777-49151	Unassigned	
-		 49152	Forward TSN supported (0xC000)	[RFC3758]
-		 49153	Add IP Address (0xC001)	[RFC5061]
-		 49154	Delete IP Address (0xC002)	[RFC5061]
-		 49155	Error Cause Indication (0xC003)	[RFC5061]
-		 49156	Set Primary Address (0xC004)	[RFC5061]
-		 49157	Success Indication (0xC005)	[RFC5061]
-		 49158	Adaptation Layer Indication (0xC006)	[RFC5061]
 
-    
-		 */
-
-		protected VariableParam readVariable() {
-			int type = _body.GetUShort();
+		protected Param readVariable() {
+			VariableParamType type = (VariableParamType) _body.GetUShort();
 			int len = _body.GetUShort();
 			int blen = len - 4;
-			Unknown var;
+			Param var;
 			switch (type) {
-				case 1:
-					var = new HeartbeatInfo(1, "HeartbeatInfo");
-					break;
-				case 5:
-					var = new IPv4Address(5, "IPv4Address");
-					break;
-				case 6:
-					var = new IPv6Address(6, "IPv6Address");
-					break;
-				case 7:
-					var = new StateCookie(7, "StateCookie");
-					break;
-				case 8:
-					var = new UnrecognizedParameters(8, "UnrecognizedParameters");
-					break;
-				case 9:
-					var = new CookiePreservative(9, "CookiePreservative");
-					break;
-				case 11:
-					var = new HostNameAddress(11, "HostNameAddress");
-					break;
-				case 12:
-					var = new SupportedAddressTypes(12, "SupportedAddressTypes");
-					break;
-				case 13:
-					var = new OutgoingSSNResetRequestParameter(13, "OutgoingSSNResetRequestParameter");
-					break;
-				case 14:
-					var = new IncomingSSNResetRequestParameter(14, "IncomingSSNResetRequestParameter");
-					break;
-				case 15:
-					var = new SSNTSNResetRequestParameter(15, "SSNTSNResetRequestParameter");
-					break;
-				case 16:
-					var = new ReconfigurationResponseParameter(16, "ReconfigurationResponseParameter");
-					break;
-				case 17:
-					var = new AddOutgoingStreamsRequestParameter(17, "AddOutgoingStreamsRequestParameter");
-					break;
-				case 18:
-					var = new AddIncomingStreamsRequestParameter(18, "AddIncomingStreamsRequestParameter");
-					break;
-				case 32768:
-					var = new Unknown(32768, "ReservedforECNCapable");
-					break;
-				case 32770:
-					var = new RandomParam(32770, "Random");
-					break;
-				case 32771:
-					var = new ChunkListParam(32771, "ChunkList");
-					break;
-				case 32772:
-					var = new RequestedHMACAlgorithmParameter(32772, "RequestedHMACAlgorithmParameter");
-					break;
-				case 32773:
-					var = new Unknown(32773, "Padding");
-					break;
-				case 32776:
-					var = new SupportedExtensions(32776, "SupportedExtensions");
-					break;
-				case 49152:
-					var = new ForwardTSNsupported(49152, "ForwardTSNsupported");
-					break;
-				case 49153:
-					var = new Unknown(49153, "AddIPAddress");
-					break;
-				case 49154:
-					var = new Unknown(49154, "DeleteIPAddress");
-					break;
-				case 49155:
-					var = new Unknown(49155, "ErrorCauseIndication");
-					break;
-				case 49156:
-					var = new Unknown(49156, "SetPrimaryAddress");
-					break;
-				case 49157:
-					var = new Unknown(49157, "SuccessIndication");
-					break;
-				case 49158:
-					var = new Unknown(49158, "AdaptationLayerIndication");
+				case VariableParamType.RequestedHMACAlgorithmParameter:
+				case VariableParamType.ReconfigurationResponseParameter:
+				case VariableParamType.SupportedAddressTypes:
+				case VariableParamType.CookiePreservative:
+				case VariableParamType.UnrecognizedParameters:
+				case VariableParamType.ChunkList:
+				case VariableParamType.SupportedExtensions:
+				case VariableParamType.IncomingSSNResetRequestParameter:
+				case VariableParamType.IPv4Address:
+				case VariableParamType.IPv6Address:
+				case VariableParamType.StateCookie:
+				case VariableParamType.HostNameAddress:
+				case VariableParamType.SSNTSNResetRequestParameter:
+				case VariableParamType.OutgoingSSNResetRequestParameter:
+				case VariableParamType.Random:
+				case VariableParamType.HeartbeatInfo:
+				case VariableParamType.ForwardTSNsupported:
+				case VariableParamType.AddOutgoingStreamsRequestParameter:
+				case VariableParamType.AddIncomingStreamsRequestParameter:
+				case VariableParamType.ReservedforECNCapable:
+				case VariableParamType.Padding:
+				case VariableParamType.AddIPAddress:
+				case VariableParamType.DeleteIPAddress:
+				case VariableParamType.ErrorCauseIndication:
+				case VariableParamType.SetPrimaryAddress:
+				case VariableParamType.SuccessIndication:
+				case VariableParamType.AdaptationLayerIndication:
+					var = new Param(type);
 					break;
 				default:
-					var = new Unknown(-1, "Unknown");
+					var = new Param(VariableParamType.Unknown);
 					break;
 			}
 			try {
-				var.readBody(_body, blen);
-				Logger.Debug("variable type " + var.type + " name " + var.name);
+				var.readBody(ref _body, blen);
+				Logger.Debug("variable type " + var.type + " name " + Enum.GetName(typeof(VariableParamType), var.type));
 			}
 			catch (SctpPacketFormatException ex) {
 				Logger.Error(ex.ToString());
@@ -390,76 +302,37 @@ namespace pe.pi.sctp4j.sctp.messages {
 			return var;
 		}
 
-		protected VariableParam readErrorParam() {
-			int type = _body.GetUShort();
+		protected Param readErrorParam() {
+			VariableParamType type = (VariableParamType) _body.GetUShort();
 			int len = _body.GetUShort();
 			int blen = len - 4;
-			KnownError var = null;
+			Param var = new Param();
 			switch (type) {
-				case 1:
-					var = new KnownError(1, "InvalidStreamIdentifier");
-					break;//[RFC4960]
-				case 2:
-					var = new KnownError(2, "MissingMandatoryParameter");
-					break;//[RFC4960]
-				case 3:
-					var = new StaleCookieError();
-					break;//[RFC4960]
-				case 4:
-					var = new KnownError(4, "OutofResource");
-					break;//[RFC4960]
-				case 5:
-					var = new KnownError(5, "UnresolvableAddress");
-					break;//[RFC4960]
-				case 6:
-					var = new KnownError(6, "UnrecognizedChunkType");
-					break;//[RFC4960]
-				case 7:
-					var = new KnownError(7, "InvalidMandatoryParameter");
-					break;//[RFC4960]
-				case 8:
-					var = new KnownError(8, "UnrecognizedParameters");
-					break;//[RFC4960]
-				case 9:
-					var = new KnownError(9, "NoUserData");
-					break;//[RFC4960]
-				case 10:
-					var = new KnownError(10, "CookieReceivedWhileShuttingDown");
-					break;//[RFC4960]
-				case 11:
-					var = new KnownError(11, "RestartofanAssociationwithNewAddresses");
-					break;//[RFC4960]
-				case 12:
-					var = new KnownError(12, "UserInitiatedAbort");
-					break;//[RFC4460]
-				case 13:
-					var = new ProtocolViolationError(13, "ProtocolViolation");
-					break;//[RFC4460]
-						  // 14-159,Unassigned,
-				case 160:
-					var = new KnownError(160, "RequesttoDeleteLastRemainingIPAddress");
-					break;//[RFC5061]
-				case 161:
-					var = new KnownError(161, "OperationRefusedDuetoResourceShortage");
-					break;//[RFC5061]
-				case 162:
-					var = new KnownError(162, "RequesttoDeleteSourceIPAddress");
-					break;//[RFC5061]
-				case 163:
-					var = new KnownError(163, "AssociationAbortedduetoillegalASCONF-ACK");
-					break;//[RFC5061]
-				case 164:
-					var = new KnownError(164, "Requestrefused-noauthorization");
-					break;//[RFC5061]
-						  // 165-260,Unassigned,
-				case 261:
-					var = new KnownError(261, "UnsupportedHMACIdentifier");
-					break;//[RFC4895]
-						  // 262-65535,Unassigned,
+				case VariableParamType.InvalidStreamIdentifier:
+				case VariableParamType.MissingMandatoryParameter:
+				case VariableParamType.OutofResource:
+				case VariableParamType.UnresolvableAddress:
+				case VariableParamType.UnrecognizedChunkType:
+				case VariableParamType.InvalidMandatoryParameter:
+				case VariableParamType.UnrecognizedParameters:
+				case VariableParamType.NoUserData:
+				case VariableParamType.CookieReceivedWhileShuttingDown:
+				case VariableParamType.RestartofanAssociationwithNewAddresses:
+				case VariableParamType.UserInitiatedAbort:
+				case VariableParamType.ProtocolViolation:
+				case VariableParamType.RequesttoDeleteLastRemainingIPAddress:
+				case VariableParamType.OperationRefusedDuetoResourceShortage:
+				case VariableParamType.RequesttoDeleteSourceIPAddress:
+				case VariableParamType.AssociationAbortedduetoillegalASCONF_ACK:
+				case VariableParamType.Requestrefused_noauthorization:
+				case VariableParamType.UnsupportedHMACIdentifier:
+				case VariableParamType.StaleCookieError:
+					var = new Param(type);
+					break;
 			}
 			try {
-				var.readBody(_body, blen);
-				Logger.Trace("variable type " + var.type + " name " + var.name);
+				var.readBody(ref _body, blen);
+				Logger.Trace("variable type " + var.type + " name " + Enum.GetName(typeof(VariableParamType), var.type));
 				Logger.Trace("additional info " + var.ToString());
 			}
 			catch (SctpPacketFormatException ex) {
@@ -476,56 +349,10 @@ namespace pe.pi.sctp4j.sctp.messages {
 			return var;
 		}
 
-		protected abstract void putFixedParams(ByteBuffer ret);
+		protected abstract void putFixedParams(ref ByteBuffer ret);
 
 		public virtual void validate() { // todo be more specific in the Exception tree
 										 // throw new Exception("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		}
-
-		protected class HeartbeatInfo : KnownParam {
-			public HeartbeatInfo(int t, string n) : base(t, n) { }
-		}
-
-		protected class ForwardTSNsupported : KnownParam {
-			public ForwardTSNsupported(int t, string n) : base(t, n) { }
-		}
-
-		protected class RandomParam : KnownParam {
-			public RandomParam(int t, string n) : base(t, n) { }
-
-			public override string ToString() {
-				string ret = " random value ";
-				ret += this.getData().GetHex();
-				return base.ToString() + ret;
-			}
-		}
-
-		protected class ChunkListParam : KnownParam {
-			public ChunkListParam(int t, string n) : base(t, n) { }
-
-			public override string ToString() {
-				string ret = " ChunksTypes ";
-				byte[] data = this.getData();
-				for (int i = 0; i < data.Length; i++) {
-					ret += " " + Enum.GetName(typeof(CType), data[i]);
-				}
-				return base.ToString() + ret;
-			}
-		}
-
-		protected class SupportedExtensions : KnownParam {
-			public SupportedExtensions() : base(32776, "SupportedExtensions") { }
-
-			public SupportedExtensions(int t, string n) : base(t, n) { }
-
-			public override string ToString() {
-				string ret = " ChunksTypes ";
-				byte[] data = this.getData();
-				for (int i = 0; i < data.Length; i++) {
-					ret += " " + Enum.GetName(typeof(CType), data[i]);
-				}
-				return base.ToString() + ret;
-			}
 		}
 	}
 }

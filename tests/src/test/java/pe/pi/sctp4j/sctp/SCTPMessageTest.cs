@@ -244,11 +244,11 @@ namespace pe.pi.sctp4j.sctp {
 				instance.fill(dc);
 				chunks.Add(dc);
 			}
-			Assert.AreEqual(chunks.Count, 1);
+			Assert.AreEqual(1, chunks.Count);
 			int pktsz = chunks.First.getDataSize();
-			Assert.AreEqual(pktsz, 1);
+			Assert.AreEqual(1, pktsz);
 			var ppid = ((DataChunk) chunks.First).ppid;
-			Assert.AreEqual(ppid, SCTP_PPID.WEBRTCBINARYEMPTY);
+			Assert.AreEqual(SCTP_PPID.WEBRTCBINARYEMPTY, ppid);
 		}
 
 		/**

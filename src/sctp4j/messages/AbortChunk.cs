@@ -43,17 +43,16 @@ namespace pe.pi.sctp4j.sctp.messages {
 	internal class AbortChunk : Chunk {
 		public AbortChunk() : base(CType.ABORT) { }
 
-		public AbortChunk(CType type, byte flags, int length, ByteBuffer pkt)
-			: base(type, flags, length, pkt) {
+		public AbortChunk(CType type, byte flags, int length, ref ByteBuffer pkt)
+			: base(type, flags, length, ref pkt) {
 			if (_body.remaining() >= 4) {
 				Logger.Trace("Abort" + this.ToString());
 				while (_body.hasRemaining()) {
-					VariableParam v = readErrorParam();
-					_varList.Add(v);
+					_varList.Add(readErrorParam());
 				}
 			}
 		}
 
-		protected override void putFixedParams(ByteBuffer ret) { }
+		protected override void putFixedParams(ref ByteBuffer ret) { }
 	}
 }

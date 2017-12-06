@@ -28,7 +28,7 @@ namespace SCTP4CS.Utils {
 		/// <summary>
 		/// Relative
 		/// </summary>
-		public int Limit {
+		public int Length {
 			get { return limitAbsolute - offset; }
 			set {
 				limitAbsolute = value + offset;
@@ -41,14 +41,14 @@ namespace SCTP4CS.Utils {
 		public ByteBuffer(byte[] buffer) {
 			_data = buffer;
 			positionAbsolute = 0;
-			Limit = buffer.Length;
+			Length = buffer.Length;
 			offset = 0;
 		}
 
 		public ByteBuffer(byte[] buffer, int offset, int length) {
 			_data = buffer;
 			positionAbsolute = offset;
-			Limit = offset + length;
+			Length = offset + length;
 			this.offset = offset;
 		}
 
@@ -64,13 +64,6 @@ namespace SCTP4CS.Utils {
 
 		public byte[] Data {
 			get { return _data; }
-		}
-
-		/// <summary>
-		/// Relative
-		/// </summary>
-		public int Length {
-			get { return Limit; }
 		}
 
 		public int AvailableBytes {
@@ -96,13 +89,14 @@ namespace SCTP4CS.Utils {
 			return this;
 		}
 
-		public void rewind() {
-			positionAbsolute = 0;
+		public ByteBuffer rewind() {
+			Position = 0;
+			return this;
 		}
 
 		#region PutMethods
 		void UpdateDataSize(int position) {
-			if (position > Limit) Limit = position;
+			if (position > Length) Length = position;
 		}
 
 		public void Put(float value) {

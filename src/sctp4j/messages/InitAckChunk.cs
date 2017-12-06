@@ -20,6 +20,7 @@
 using SCTP4CS;
 using SCTP4CS.Utils;
 using pe.pi.sctp4j.sctp.messages.Params;
+using System;
 
 /**
  *
@@ -55,8 +56,8 @@ namespace pe.pi.sctp4j.sctp.messages {
 		int _numOutStreams;
 		int _numInStreams;
 		uint _initialTSN;
-		private byte[] _cookie;
-		private byte[] _supportedExtensions;
+		public ByteBuffer cookie;
+		public ByteBuffer supportedExtensions;
 
 		public InitAckChunk() : base(CType.INITACK) { }
 
@@ -99,17 +100,9 @@ namespace pe.pi.sctp4j.sctp.messages {
 		public void setInitialTSN(uint v) {
 			_initialTSN = v;
 		}
-
-		public byte[] getCookie() {
-			return _cookie;
-		}
-
-		public void setCookie(byte[] v) {
-			_cookie = v;
-		}
-
-		public InitAckChunk(CType type, byte flags, int length, ByteBuffer pkt)
-			: base(type, flags, length, pkt) {
+		
+		public InitAckChunk(CType type, byte flags, int length, ref ByteBuffer pkt)
+			: base(type, flags, length, ref pkt) {
 			if (_body.remaining() >= 16) {
 				_initiateTag = _body.GetInt();
 				_adRecWinCredit = _body.GetUInt(); ;
@@ -118,47 +111,38 @@ namespace pe.pi.sctp4j.sctp.messages {
 				_initialTSN = _body.GetUInt();
 				Logger.Trace("Init Ack" + this.ToString());
 				while (_body.hasRemaining()) {
-					VariableParam v = readVariable();
-					_varList.Add(v);
+					_varList.Add(readVariable());
 				}
 
-				foreach (VariableParam v in _varList) {
+				foreach (Param v in _varList) {
 					// now look for variables we are expecting...
-					Logger.Trace("variable of type: " + v.name + " " + v.ToString());
-					if (typeof(StateCookie).IsAssignableFrom(v.GetType())) {
-						_cookie = ((StateCookie) v).getData();
+					Logger.Trace("variable of type: " + Enum.GetName(typeof(VariableParamType), v.type) + " " + v.ToString());
+					if (v.type == VariableParamType.StateCookie) {
+						cookie = v.data;
 					} else {
-						Logger.Trace("ignored variable of type: " + v.name);
+						Logger.Trace("ignored variable of type: " + Enum.GetName(typeof(VariableParamType), v.type));
 					}
 				}
 
 			}
 		}
 
-		protected override void putFixedParams(ByteBuffer ret) {
+		protected override void putFixedParams(ref ByteBuffer ret) {
 			ret.Put(_initiateTag);
 			ret.Put(_adRecWinCredit);
 			ret.Put((ushort) _numOutStreams);
 			ret.Put((ushort) _numInStreams);
 			ret.Put(_initialTSN);
-			if (_cookie != null) {
-				StateCookie sc = new StateCookie();
-				sc.setData(_cookie);
+			if (cookie != null) {
+				Param sc = new Param(VariableParamType.StateCookie);
+				sc.data = cookie;
 				_varList.Add(sc);
 			}
-			if (_supportedExtensions != null) {
-				SupportedExtensions se = new SupportedExtensions();
-				se.setData(_supportedExtensions);
+			if (supportedExtensions != null) {
+				Param se = new Param(VariableParamType.SupportedExtensions);
+				se.data = supportedExtensions;
 				_varList.Add(se);
 			}
-		}
-
-		public byte[] getSupportedExtensions(byte[] v) {
-			return _supportedExtensions;
-		}
-
-		public void setSupportedExtensions(byte[] v) {
-			_supportedExtensions = v;
 		}
 	}
 }

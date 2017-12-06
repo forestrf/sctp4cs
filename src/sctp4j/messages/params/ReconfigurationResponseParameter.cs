@@ -16,16 +16,23 @@
  */
 // Modified by Andrés Leone Gámez
 
-
 using SCTP4CS.Utils;
-using System.Text;
 
 /**
  *
  * @author tim
  */
 namespace pe.pi.sctp4j.sctp.messages.Params {
-	public class ReconfigurationResponseParameter : KnownParam {
+	public struct ReconfigurationResponseParameter {
+		public enum STATUS : uint {
+			SUCCESS_NOTHING_TO_DO = 0,
+			SUCCESS_PERFORMED = 1,
+			DENIED = 2,
+			ERROR_WRONG_SSN = 3,
+			ERROR_REQUEST_ALREADY_IN_PROGESS = 4,
+			ERROR_BAD_SEQUENCE_NUMBER = 5,
+			IN_PROGRESS = 6
+		}
 
 		/*
 		 0                   1                   2                   3
@@ -42,88 +49,40 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 		 |                  Receiver's Next TSN (optional)               |
 		 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 		 */
-		uint seqNo;
-		uint result;
-		uint senderNextTSN;
-		uint receiverNextTSN;
-		bool hasTSNs;
-		public const int SUCCESS_NOTHING_TO_DO = 0;
-		public const int SUCCESS_PERFORMED = 1;
-		public const int DENIED = 2;
-		public const int ERROR_WRONG_SSN = 3;
-		public const int ERROR_REQUEST_ALREADY_IN_PROGESS = 4;
-		public const int ERROR_BAD_SEQUENCE_NUMBER = 5;
-		public const int IN_PROGRESS = 6;
-		static readonly string[] valuenames = new string[] {
-			"Success - Nothing to do",
-			"Success - Performed",
-			"Denied",
-			"Error - Wrong SSN",
-			"Error - Request already in progress",
-			"Error - Bad Sequence Number",
-			"In progress"
-		};
+		public readonly uint seqNo;
+		public readonly STATUS result;
+		public readonly uint senderNextTSN;
+		public readonly uint receiverNextTSN;
+		public readonly bool hasTSNs;
 
-		/*
-				 +--------+-------------------------------------+
-				 | Result | Description                         |
-				 +--------+-------------------------------------+
-				 | 0      | Success - Nothing to do             |
-				 | 1      | Success - Performed                 |
-				 | 2      | Denied                              |
-				 | 3      | Error - Wrong SSN                   |
-				 | 4      | Error - Request already in progress |
-				 | 5      | Error - Bad Sequence Number         |
-				 | 6      | In progress                         |
-				 +--------+-------------------------------------+
-		 */
-		public ReconfigurationResponseParameter(int t, string n) : base(t, n) { }
-
-		public ReconfigurationResponseParameter() : this(16, "ReconfigurationResponseParameter") { }
-
-		public override void readBody(ByteBuffer body, int blen) {
-			this.seqNo = body.GetUInt();
-			this.result = body.GetUInt();
+		public ReconfigurationResponseParameter(ref ByteBuffer body, int blen) {
+			seqNo = body.GetUInt();
+			result = (STATUS) body.GetUInt();
 			if (blen == 16) {
-				this.senderNextTSN = body.GetUInt();
-				this.receiverNextTSN = body.GetUInt();
+				senderNextTSN = body.GetUInt();
+				receiverNextTSN = body.GetUInt();
 				hasTSNs = true;
+			} else {
+				senderNextTSN = 0;
+				receiverNextTSN = 0;
+				hasTSNs = false;
 			}
 		}
+		public ReconfigurationResponseParameter(uint seqNo, STATUS result, bool hasTSNs, uint senderNextTSN, uint receiverNextTSN) {
+			this.seqNo = seqNo;
+			this.result = result;
+			this.hasTSNs = hasTSNs;
+			this.senderNextTSN = senderNextTSN;
+			this.receiverNextTSN = receiverNextTSN;
+		}
 
-		public override void writeBody(ByteBuffer body) {
+		public void writeBody(ref ByteBuffer body) {
 			body.Put(seqNo);
-			body.Put(result);
+			body.Put((uint) result);
 			if (hasTSNs) {
 				body.Put(senderNextTSN);
 				body.Put(receiverNextTSN);
 			}
 		}
-
-		private string resultToName() {
-			return ((result >= 0) && (result < valuenames.Length))
-					? valuenames[(int) result] : "invalid value";
-		}
-
-		public override string ToString() {
-			StringBuilder ret = new StringBuilder();
-			ret.Append(this.GetType().Name).Append(" ");
-			ret.Append("seqNo:").Append(this.seqNo).Append(" ");
-			ret.Append("result:").Append(resultToName()).Append(" ");
-			if (hasTSNs) {
-				ret.Append("senderNextTSN:").Append(this.senderNextTSN).Append(" ");
-				ret.Append("receiverNextTSN:").Append(this.receiverNextTSN).Append(" ");
-			}
-			return ret.ToString();
-		}
-
-		public void setResult(uint res) {
-			result = res;
-		}
-
-		public void setSeq(uint reqSeqNo) {
-			seqNo = reqSeqNo;
-		}
-
 	}
 }

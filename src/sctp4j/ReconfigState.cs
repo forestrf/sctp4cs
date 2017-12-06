@@ -86,9 +86,10 @@ namespace pe.pi.sctp4j.sctp {
 			if (reply == null) {
 				// not a repeat then
 				reply = new ReConfigChunk(); // create a new thing
-				if (rconf.hasOutgoingReset()) {
-					OutgoingSSNResetRequestParameter oreset = rconf.getOutgoingReset();
-					int[] streams = oreset.getStreams();
+				Param oresetParam;
+				if (rconf.GetVar(VariableParamType.OutgoingSSNResetRequestParameter, out oresetParam)) {
+					var oreset = new OutgoingSSNResetRequestParameter(ref oresetParam);
+					int[] streams = oreset.streams;
 					if (streams.Length == 0) {
 						streams = assoc.allStreams();
 					}
@@ -96,43 +97,46 @@ namespace pe.pi.sctp4j.sctp {
 						markAsAcked(rconf);
 					}
 					// if we are behind, we are supposed to wait untill we catch up.
-					if (oreset.getLastAssignedTSN() > assoc.getCumAckPt()) {
-						Logger.Debug("Last assigned > farTSN " + oreset.getLastAssignedTSN() + " v " + assoc.getCumAckPt());
-						ReconfigurationResponseParameter rep = new ReconfigurationResponseParameter();
-						rep.setSeq(oreset.getReqSeqNo());
-						rep.setResult(ReconfigurationResponseParameter.IN_PROGRESS);
-						reply.addParam(rep);
+					Param p = new Param(VariableParamType.ReconfigurationResponseParameter);
+					if (oreset.lastTsn > assoc.getCumAckPt()) {
+						Logger.Debug("Last assigned > farTSN " + oreset.lastTsn + " v " + assoc.getCumAckPt());
+						ReconfigurationResponseParameter rep = new ReconfigurationResponseParameter(
+							oreset.reqSeqNo, ReconfigurationResponseParameter.STATUS.IN_PROGRESS,
+							false, 0, 0);
+						rep.writeBody(ref p.data);
+						reply.addParam(ref p);
 					} else {
 						// somehow invoke this when TSN catches up ?!?! ToDo
 						Logger.Debug("we are up-to-date ");
-						ReconfigurationResponseParameter rep = new ReconfigurationResponseParameter();
-						rep.setSeq(oreset.getReqSeqNo());
-						int result = streams.Length > 0 ? ReconfigurationResponseParameter.SUCCESS_PERFORMED : ReconfigurationResponseParameter.SUCCESS_NOTHING_TO_DO;
-						rep.setResult((uint) result); // assume all good
+						ReconfigurationResponseParameter.STATUS result = streams.Length > 0 ? ReconfigurationResponseParameter.STATUS.SUCCESS_PERFORMED : ReconfigurationResponseParameter.STATUS.SUCCESS_NOTHING_TO_DO;
 						foreach (int s in streams) {
 							SCTPStream cstrm = assoc.delStream(s);
 							if (cstrm == null) {
 								Logger.Error("Close a non existant stream");
-								rep.setResult(ReconfigurationResponseParameter.ERROR_WRONG_SSN);
+								result = ReconfigurationResponseParameter.STATUS.ERROR_WRONG_SSN;
 								break;
 								// bidriectional might be a problem here...
 							} else {
 								cstrm.reset();
 							}
 						}
-						reply.addParam(rep);
+
+						ReconfigurationResponseParameter rep = new ReconfigurationResponseParameter(
+							oreset.reqSeqNo, result, false, 0, 0);
+						rep.writeBody(ref p.data);
+						reply.addParam(ref p);
 					}
 				}
 				// ponder putting this in a second chunk ?
-				if (rconf.hasIncomingReset()) {
-					IncomingSSNResetRequestParameter ireset = rconf.getIncomingReset();
+				Param iresetParam;
+				if (rconf.GetVar(VariableParamType.IncomingSSNResetRequestParameter, out iresetParam)) {
+					var ireset = new IncomingSSNResetRequestParameter(ref iresetParam);
 					/*The Re-configuration
 					Response Sequence Number of the Outgoing SSN Reset Request
 					Parameter MUST be the Re-configuration Request Sequence Number
 					of the Incoming SSN Reset Request Parameter. */
-					OutgoingSSNResetRequestParameter rep = new OutgoingSSNResetRequestParameter(nextNearNo(), ireset.getReqNo(), assoc.getNearTSN());
-					int[] streams = ireset.getStreams();
-					rep.setStreams(streams);
+					int[] streams = ireset.streams;
+					OutgoingSSNResetRequestParameter rep = new OutgoingSSNResetRequestParameter(nextNearNo(), ireset.reqSeqNo, assoc.getNearTSN(), streams);
 					if (streams.Length == 0) {
 						streams = assoc.allStreams();
 					}
@@ -142,7 +146,8 @@ namespace pe.pi.sctp4j.sctp {
 							st.setClosing(true);
 						}
 					}
-					reply.addParam(rep);
+					Param param = rep.ToParam();
+					reply.addParam(ref param);
 					// set outbound timer running here ???
 					Logger.Debug("Ireset " + ireset);
 				}
@@ -184,9 +189,9 @@ namespace pe.pi.sctp4j.sctp {
 			}
 			int[] streams = streamsL.ToArray();
 			if (streams.Length > 0) {
-				OutgoingSSNResetRequestParameter rep = new OutgoingSSNResetRequestParameter(nextNearNo(), farSeqno - 1, assoc.getNearTSN());
-				rep.setStreams(streams);
-				reply.addParam(rep);
+				OutgoingSSNResetRequestParameter rep = new OutgoingSSNResetRequestParameter(nextNearNo(), farSeqno - 1, assoc.getNearTSN(), streams);
+				Param param = rep.ToParam();
+				reply.addParam(ref param);
 			}
 			streamsL.Clear();
 			lock (listOfStreamsToReset) {
@@ -194,9 +199,9 @@ namespace pe.pi.sctp4j.sctp {
 			}
 			streams = streamsL.ToArray();
 			if (streams.Length > 0) {
-				IncomingSSNResetRequestParameter rep = new IncomingSSNResetRequestParameter(nextNearNo());
-				rep.setStreams(streams);
-				reply.addParam(rep);
+				IncomingSSNResetRequestParameter rep = new IncomingSSNResetRequestParameter(nextNearNo(), streams);
+				var param = rep.ToParam();
+				reply.addParam(ref param);
 			}
 			Logger.Debug("reconfig chunk is " + reply.ToString());
 			return reply;

@@ -44,10 +44,10 @@ namespace pe.pi.sctp4j.sctp {
 		 * @param s
 		 */
 		public SCTPMessage(byte[] data, int offset, int length, SCTPStream s) {
-			_data = new byte[length];
+			_data = new byte[Math.Max(1, length)];
 			Buffer.BlockCopy(data, offset, _data, 0, length);
 			_stream = s;
-			_pPid = (data.Length > 0) ? SCTP_PPID.WEBRTCBINARY : SCTP_PPID.WEBRTCBINARYEMPTY;
+			_pPid = (length > 0) ? SCTP_PPID.WEBRTCBINARY : SCTP_PPID.WEBRTCBINARYEMPTY;
 		}
 
 		public SCTPMessage(string data, SCTPStream s) {

@@ -73,7 +73,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		private int _retryCount;
 		private long _sentTime;
 
-		public DataChunk(CType type, byte flags, int length, ByteBuffer pkt) : base(type, flags, length, pkt) {
+		public DataChunk(CType type, byte flags, int length, ref ByteBuffer pkt) : base(type, flags, length, ref pkt) {
 			Logger.Debug("read in chunk header " + length);
 			Logger.Debug("body remaining " + _body.remaining());
 
@@ -205,7 +205,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			return len;
 		}
 
-		protected override void putFixedParams(ByteBuffer ret) {
+		protected override void putFixedParams(ref ByteBuffer ret) {
 			ret.Put(tsn);// = _body.getInt();
 			ret.Put((ushort) _streamId);// = _body.getushort();
 			ret.Put((ushort) sSeqNo);// = _body.getushort();

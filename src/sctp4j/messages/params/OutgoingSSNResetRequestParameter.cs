@@ -24,7 +24,7 @@ using System.Text;
 * @author tim
 */
 namespace pe.pi.sctp4j.sctp.messages.Params {
-	public class OutgoingSSNResetRequestParameter : KnownParam {
+	public struct OutgoingSSNResetRequestParameter {
 		/*
 		 0                   1                   2                   3
 		 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -44,38 +44,35 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 		 |  Stream Number N-1 (optional) |    Stream Number N (optional) |
 		 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 		 */
-		uint reqSeqNo;
-		uint respSeqNo;
-		uint lastTsn;
-		int[] streams;
+		public readonly uint reqSeqNo;
+		public readonly uint respSeqNo;
+		public readonly uint lastTsn;
+		public readonly int[] streams;
 
-		public OutgoingSSNResetRequestParameter(int t, string n) : base(t, n) { }
-		public OutgoingSSNResetRequestParameter() : base(13, "OutgoingSSNResetRequestParameter") { }
-		public OutgoingSSNResetRequestParameter(uint reqNo, uint respNo, uint lastTsn) : this() {
+		private ByteBuffer b;
+
+		public OutgoingSSNResetRequestParameter(ref Param param) {
+			b = param.data;
+			param.data.Position = 0;
+			reqSeqNo = param.data.GetUInt();
+			respSeqNo = param.data.GetUInt();
+			lastTsn = param.data.GetUInt();
+			streams = new int[(param.data.Length - 12) / 2];
+			for (int i = 0; i < streams.Length; i++) {
+				streams[i] = param.data.GetUShort();
+			}
+		}
+		
+		public OutgoingSSNResetRequestParameter(uint reqNo, uint respNo, uint lastTsn, int[] streams) {
 			this.respSeqNo = respNo;
 			this.lastTsn = lastTsn;
 			this.reqSeqNo = reqNo;
+			this.streams = streams;
+			b = new ByteBuffer(new byte[1500]);
+			writeBody(ref b);
 		}
 
-		public uint getRespSeqNo() {
-			return respSeqNo;
-		}
-
-		public uint getReqSeqNo() {
-			return reqSeqNo;
-		}
-
-		public override void readBody(ByteBuffer body, int blen) {
-			reqSeqNo = body.GetUInt();
-			respSeqNo = body.GetUInt();
-			lastTsn = body.GetUInt();
-			streams = new int[(blen - 12) / 2];
-			for (int i = 0; i < streams.Length; i++) {
-				streams[i] = body.GetUShort();
-			}
-		}
-
-		public override void writeBody(ByteBuffer body) {
+		public void writeBody(ref ByteBuffer body) {
 			body.Put(reqSeqNo);
 			body.Put(respSeqNo);
 			body.Put(lastTsn);
@@ -105,19 +102,18 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 			return ret.ToString();
 		}
 
-		public long getLastAssignedTSN() {
-			return lastTsn;
+
+
+		public static bool Compare(ref Param a, ref Param b) {
+			return a.type == VariableParamType.IncomingSSNResetRequestParameter
+				&& b.type == VariableParamType.IncomingSSNResetRequestParameter
+				&& a.data.rewind().GetUInt() == b.data.rewind().GetUInt();
 		}
 
-		public int[] getStreams() {
-			return streams;
-		}
-		public void setStreams(int[] ss) {
-			this.streams = ss;
-		}
-
-		public bool sameAs(OutgoingSSNResetRequestParameter other) {
-			return this.reqSeqNo == other.reqSeqNo;
+		public Param ToParam() {
+			Param p = new Param(VariableParamType.OutgoingSSNResetRequestParameter);
+			p.data = b;
+			return p;
 		}
 	}
 }

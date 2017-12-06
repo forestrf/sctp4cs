@@ -26,6 +26,6 @@ namespace pe.pi.sctp4j.sctp.messages {
 	internal class HeartBeatAckChunk : Chunk {
 		public HeartBeatAckChunk() : base(CType.HEARTBEAT_ACK) { }
 
-		protected override void putFixedParams(ByteBuffer ret) { }
+		protected override void putFixedParams(ref ByteBuffer ret) { }
 	}
 }

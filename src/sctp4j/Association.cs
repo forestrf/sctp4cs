@@ -152,19 +152,17 @@ namespace pe.pi.sctp4j.sctp {
 		internal uint getNearTSN() {
 			return _nearTSN;
 		}
-		byte[] getUnionSupportedExtensions(byte[] far) {
+		ByteBuffer getUnionSupportedExtensions(ref ByteBuffer far) {
 			ByteBuffer unionbb = new ByteBuffer(new byte[far.Length]);
 			for (int f = 0; f < far.Length; f++) {
 				for (int n = 0; n < _supportedExtensions.Length; n++) {
-					if (_supportedExtensions[n] == far[f]) {
-						unionbb.Put(far[f]);
+					if (_supportedExtensions[n] == far.Data[far.offset + f]) {
+						unionbb.Put(_supportedExtensions[n]);
 					}
 				}
 			}
-			byte[] res = new byte[unionbb.Position];
 			unionbb.Position = 0;
-			unionbb.GetBytes(res, res.Length);
-			return res;
+			return unionbb;
 		}
 
 		internal void deal(Packet rec) {
@@ -224,7 +222,7 @@ namespace pe.pi.sctp4j.sctp {
 							string b = buf.GetHex(0, length);
 							Logger.Trace("DTLS message received\n" + b);
 							ByteBuffer pbb = new ByteBuffer(buf);
-							pbb.Limit = length;
+							pbb.Length = length;
 							Packet rec = new Packet(pbb);
 							Logger.Debug("SCTP message parsed\n" + rec.ToString());
 							deal(rec);
@@ -305,7 +303,7 @@ namespace pe.pi.sctp4j.sctp {
 				ByteBuffer obb = mkPkt(c);
 				Logger.Trace("sending SCTP packet" + obb.GetHex());
 				lock (this) {
-					_transp.Send(obb.Data, obb.offset, obb.Limit);
+					_transp.Send(obb.Data, obb.offset, obb.Length);
 				}
 			} else {
 				Logger.Trace("Blocked empty packet send() - probably no response needed.");
@@ -440,14 +438,14 @@ namespace pe.pi.sctp4j.sctp {
 		 The only downside is that if the far end spams us with a pile of inits at speed, we may erase one that we've
 		 replied to and that was about to be a happy camper. Shrug.
 		 */
-		private CookieHolder checkCookieEcho(byte[] cookieData) {
+		private CookieHolder checkCookieEcho(ref ByteBuffer cookieData) {
 			CookieHolder same = null;
 			foreach (CookieHolder cookie in _cookies) {
 				byte[] cd = cookie.cookieData;
 				if (cd.Length == cookieData.Length) {
 					int i = 0;
 					while (i < cd.Length) {
-						if (cd[i] != cookieData[i]) {
+						if (cd[i] != cookieData.Data[cookieData.offset + i]) {
 							break;
 						}
 						i++;
@@ -508,11 +506,10 @@ namespace pe.pi.sctp4j.sctp {
 			_farTSN = iack.getInitialTSN() - 1;
 			_maxOutStreams = Math.Min(iack.getNumInStreams(), MAXSTREAMS);
 			_maxInStreams = Math.Min(iack.getNumOutStreams(), MAXSTREAMS);
-
-			iack.getSupportedExtensions(_supportedExtensions);
-			byte[] data = iack.getCookie();
+			
+			var data = iack.cookie;
 			CookieEchoChunk ce = new CookieEchoChunk();
-			ce.setCookieData(data);
+			ce.cookieData = data;
 			Chunk[] reply = new Chunk[1] { ce };
 			this._state = State.COOKIEECHOED;
 			return reply;
@@ -576,12 +573,12 @@ namespace pe.pi.sctp4j.sctp {
 			cookie.cookieData = new byte[Association.COOKIESIZE];
 			cookie.cookieTime = Time.CurrentTimeMillis();
 			_random.NextBytes(cookie.cookieData);
-			iac.setCookie(cookie.cookieData);
+			iac.cookie = new ByteBuffer(cookie.cookieData);
 			_cookies.Add(cookie);
 
-			byte[] fse = init.farSupportedExtensions;
+			var fse = init.farSupportedExtensions;
 			if (fse != null) {
-				iac.setSupportedExtensions(this.getUnionSupportedExtensions(fse));
+				iac.supportedExtensions = getUnionSupportedExtensions(ref fse);
 			}
 			reply = new Chunk[1];
 			reply[0] = iac;
@@ -746,7 +743,7 @@ namespace pe.pi.sctp4j.sctp {
 			if (_state == State.CLOSED || _state == State.COOKIEWAIT || _state == State.COOKIEECHOED) {
 				// Authenticate the State Cookie
 				CookieHolder cookie;
-				if (null != (cookie = checkCookieEcho(echo.getCookieData()))) {
+				if (null != (cookie = checkCookieEcho(ref echo.cookieData))) {
 					// Compare the creation timestamp in the State Cookie to the current local time.
 					uint howStale = howStaleIsMyCookie(cookie);
 					if (howStale == 0) {
@@ -767,8 +764,8 @@ namespace pe.pi.sctp4j.sctp {
 						 * COOKIE ECHO and any attached DATA chunks, SHOULD be discarded,
 						 * and the endpoint MUST transmit an ERROR chunk with a "Stale
 						 * Cookie" error cause to the peer endpoint.*/
-						StaleCookieError sce = new StaleCookieError();
-						sce.setMeasure(howStale * 1000);
+						var sce = new Param(VariableParamType.StaleCookieError);
+						StaleCookieError.SetMeasure(ref sce, howStale * 1000);
 						ErrorChunk ec = new ErrorChunk(sce);
 						reply[0] = ec;
 					}

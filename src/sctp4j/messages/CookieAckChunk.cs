@@ -25,12 +25,12 @@ using SCTP4CS.Utils;
  */
 namespace pe.pi.sctp4j.sctp.messages {
 	internal class CookieAckChunk : Chunk {
-		public CookieAckChunk(CType type, byte flags, int length, ByteBuffer pkt)
-			: base(type, flags, length, pkt) { }
+		public CookieAckChunk(CType type, byte flags, int length, ref ByteBuffer pkt)
+			: base(type, flags, length, ref pkt) { }
 
 		public CookieAckChunk() : base(CType.COOKIE_ACK) { }
 
-		protected override void putFixedParams(ByteBuffer ret) {
+		protected override void putFixedParams(ref ByteBuffer ret) {
 		}
 	}
 }

@@ -16,17 +16,12 @@
  */
 // Modified by Andrés Leone Gámez
 
-
-
-
-using SCTP4CS.Utils;
 /**
 *
 * @author Westhawk Ltd<thp@westhawk.co.uk>
 */
 namespace pe.pi.sctp4j.sctp.messages.Params {
-	public class StaleCookieError : KnownError {
-		private uint _measure;
+	public static class StaleCookieError {
 		/*
 		 <code>
 		 Stale Cookie Error (3)
@@ -56,23 +51,11 @@ namespace pe.pi.sctp4j.sctp.messages.Params {
 		 </code>
 		 */
 
-		public StaleCookieError() : base(3, "StaleCookieError") { }
-
-		public override void readBody(ByteBuffer body, int blen) {
-			_measure = body.GetUInt();
+		public static uint GetMeasure(ref Param param) {
+			return param.data.rewind().GetUInt();
 		}
-
-
-		public override void writeBody(ByteBuffer body) {
-			body.Put(_measure);
-		}
-
-		public long getMeasure() {
-			return _measure;
-		}
-
-		public void setMeasure(uint mes) {
-			_measure = mes;
+		public static void SetMeasure(ref Param param, uint measure) {
+			param.data.rewind().Put(measure);
 		}
 	}
 }

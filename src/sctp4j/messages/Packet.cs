@@ -86,7 +86,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 			int pad = 0;
 			foreach (Chunk c in _chunks) {
 				ByteBuffer cs = ret.slice();            // create a zero offset buffer to play in
-				c.write(cs); // ask the chunk to write itself into there.
+				c.write(ref cs); // ask the chunk to write itself into there.
 				pad = cs.Position % 4;
 				pad = (pad != 0) ? 4 - pad : 0;
 				Logger.Trace("padding by " + pad);
@@ -116,7 +116,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		private List<Chunk> mkChunks(ByteBuffer pkt) {
 			List<Chunk> ret = new List<Chunk>();
 			Chunk next = null;
-			while (null != (next = Chunk.mkChunk(pkt))) {
+			while (null != (next = Chunk.mkChunk(ref pkt))) {
 				ret.Add(next);
 			}
 			return ret;
@@ -148,7 +148,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		 */
 		void setChecksum(ByteBuffer pkt) {
 			pkt.Put(SUMOFFSET, 0);
-			var UUint = new FastBit.Uint(Crc32c.Calculate(pkt.Data, pkt.offset, pkt.Limit));
+			var UUint = new FastBit.Uint(Crc32c.Calculate(pkt.Data, pkt.offset, pkt.Length));
 			uint flip = new FastBit.Uint(UUint.b3, UUint.b2, UUint.b1, UUint.b0).Auint;
 			pkt.Put(SUMOFFSET, flip);
 		}

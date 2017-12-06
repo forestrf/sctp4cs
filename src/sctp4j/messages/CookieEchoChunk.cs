@@ -77,32 +77,23 @@ RFC 4960          Stream Control Transmission Protocol    September 2007
  */
 namespace pe.pi.sctp4j.sctp.messages {
 	internal class CookieEchoChunk : Chunk {
-		private byte[] _cookieData;
+		public ByteBuffer cookieData;
 
-		public CookieEchoChunk(CType type, byte flags, int length, ByteBuffer pkt) : base(type, flags, length, pkt) {
-			_cookieData = new byte[_body.remaining()];
-			_body.GetBytes(_cookieData, _cookieData.Length);
+		public CookieEchoChunk(CType type, byte flags, int length, ref ByteBuffer pkt) : base(type, flags, length, ref pkt) {
+			cookieData = _body.slice();
 		}
 
 		public CookieEchoChunk() : base(CType.COOKIE_ECHO) { }
 
 		public override void validate() {
-			if (_cookieData.Length != Association.COOKIESIZE) {
-				throw new SctpPacketFormatException("cookie Echo wrong length for our association " + _cookieData.Length + " != " + Association.COOKIESIZE);
+			if (cookieData.Length != Association.COOKIESIZE) {
+				throw new SctpPacketFormatException("cookie Echo wrong length for our association " + cookieData.Length + " != " + Association.COOKIESIZE);
 			}
 		}
 
-		public void setCookieData(byte[] cd) {
-			_cookieData = cd;
-		}
-
-		public byte[] getCookieData() {
-			return _cookieData;
-		}
-
-		protected override void putFixedParams(ByteBuffer ret) {
-			Logger.Debug("cookie is " + _cookieData + "and buffer is " + ret);
-			ret.Put(_cookieData);
+		protected override void putFixedParams(ref ByteBuffer ret) {
+			Logger.Debug("cookie is " + cookieData + "and buffer is " + ret);
+			ret.Put(cookieData.Data, cookieData.offset, cookieData.Length);
 		}
 	}
 }

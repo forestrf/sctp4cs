@@ -26,23 +26,22 @@ using pe.pi.sctp4j.sctp.messages.Params;
  */
 namespace pe.pi.sctp4j.sctp.messages {
 	internal class HeartBeatChunk : Chunk {
-		public HeartBeatChunk(CType type, byte flags, int length, ByteBuffer pkt)
-			: base(type, flags, length, pkt) {
+		public HeartBeatChunk(CType type, byte flags, int length, ref ByteBuffer pkt)
+			: base(type, flags, length, ref pkt) {
 			if (_body.remaining() >= 4) {
 				while (_body.hasRemaining()) {
-					VariableParam v = readVariable();
-					_varList.Add(v);
+					_varList.Add(readVariable());
 				}
 			}
 		}
 
 		public override void validate() {
-			VariableParam hbd;
+			Param hbd;
 			if ((_varList == null) || (_varList.Count != 1)) {
 				throw new SctpPacketFormatException("No (or too much content in this heartbeat packet");
 			}
 			hbd = _varList[0];
-			if (!typeof(HeartbeatInfo).IsAssignableFrom(hbd.GetType())) {
+			if (hbd.type != VariableParamType.HeartbeatInfo) {
 				throw new SctpPacketFormatException("Expected a heartbeatinfo in this packet");
 			}
 		}
@@ -55,6 +54,6 @@ namespace pe.pi.sctp4j.sctp.messages {
 			return rep;
 		}
 
-		protected override void putFixedParams(ByteBuffer ret) { }
+		protected override void putFixedParams(ref ByteBuffer ret) { }
 	}
 }

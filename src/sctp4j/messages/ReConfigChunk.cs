@@ -31,12 +31,12 @@ namespace pe.pi.sctp4j.sctp.messages {
 		private long sentAt;
 		private int retries;
 
-		public ReConfigChunk(CType type, byte flags, int length, ByteBuffer pkt)
-			: base(type, flags, length, pkt) {
+		public ReConfigChunk(CType type, byte flags, int length, ref ByteBuffer pkt)
+			: base(type, flags, length, ref pkt) {
 			Logger.Debug("ReConfig chunk" + this.ToString());
 			if (_body.remaining() >= 4) {
 				while (_body.hasRemaining()) {
-					VariableParam v = this.readVariable();
+					Param v = readVariable();
 					_varList.Add(v);
 					Logger.Debug("\tParam :" + v.ToString());
 				}
@@ -45,35 +45,25 @@ namespace pe.pi.sctp4j.sctp.messages {
 
 		public ReConfigChunk() : base(CType.RE_CONFIG) { }
 
-		protected override void putFixedParams(ByteBuffer ret) {
+		protected override void putFixedParams(ref ByteBuffer ret) {
 			//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}
 
 		public bool hasIncomingReset() {
 			foreach (var v in _varList)
-				if (typeof(IncomingSSNResetRequestParameter).IsAssignableFrom(v.GetType()))
+				if (v.type == VariableParamType.IncomingSSNResetRequestParameter)
 					return true;
 			return false;
 		}
 
-		public IncomingSSNResetRequestParameter getIncomingReset() {
-			foreach (var v in _varList)
-				if (typeof(IncomingSSNResetRequestParameter).IsAssignableFrom(v.GetType()))
-					return (IncomingSSNResetRequestParameter) v;
-			return null;
-		}
-
-		public bool hasOutgoingReset() {
-			foreach (var v in _varList)
-				if (typeof(OutgoingSSNResetRequestParameter).IsAssignableFrom(v.GetType()))
+		public bool GetVar(VariableParamType type, out Param p) {
+			foreach (var v in _varList) {
+				if (v.type == type) {
+					p = v;
 					return true;
-			return false;
-		}
-
-		private bool hasOutgoingAdd() {
-			foreach (var v in _varList)
-				if (typeof(AddOutgoingStreamsRequestParameter).IsAssignableFrom(v.GetType()))
-					return true;
+				}
+			}
+			p = default(Param);
 			return false;
 		}
 
@@ -82,13 +72,6 @@ namespace pe.pi.sctp4j.sctp.messages {
 				if (typeof(ReconfigurationResponseParameter).IsAssignableFrom(v.GetType()))
 					return true;
 			return false;
-		}
-
-		public OutgoingSSNResetRequestParameter getOutgoingReset() {
-			foreach (var v in _varList)
-				if (typeof(IncomingSSNResetRequestParameter).IsAssignableFrom(v.GetType()))
-					return (OutgoingSSNResetRequestParameter) v;
-			return null;
 		}
 
 		public bool hasParam() {
@@ -121,6 +104,8 @@ namespace pe.pi.sctp4j.sctp.messages {
 			Parameter.
 		 */
 		public override void validate() {
+			Param ignore;
+
 			if (_varList.Count < 1) {
 				throw new Exception("[IllegalArgumentException] Too few params " + _varList.Count);
 			}
@@ -129,79 +114,74 @@ namespace pe.pi.sctp4j.sctp.messages {
 			}
 			// now check for invalid combos
 			if ((_varList.Count == 2)) {
-				if (this.hasOutgoingReset()) {
-					VariableParam remain = null;
+				if (this.GetVar(VariableParamType.OutgoingSSNResetRequestParameter, out ignore)) {
+					bool failed = true;
+
 					foreach (var v in _varList) {
-						if (!typeof(OutgoingSSNResetRequestParameter).IsAssignableFrom(v.GetType())) {
-							remain = v;
+						if (v.type != VariableParamType.OutgoingSSNResetRequestParameter) {
+							if (v.type != VariableParamType.IncomingSSNResetRequestParameter //3
+								&& v.type != VariableParamType.ReconfigurationResponseParameter) { //9
+								throw new Exception("[IllegalArgumentException] OutgoingSSNResetRequestParameter and " + v.type + " in same Chunk not allowed ");
+							}
+							failed = false;
 							break;
 						}
 					}
-					if (remain == null) {
+					if (failed) {
 						throw new Exception("[IllegalArgumentException] 2 OutgoingSSNResetRequestParameter in one Chunk not allowed ");
 					}
-					if (!typeof(IncomingSSNResetRequestParameter).IsAssignableFrom(remain.GetType()) //3
-						&& !typeof(ReconfigurationResponseParameter).IsAssignableFrom(remain.GetType())) //9
-					{
-						throw new Exception("[IllegalArgumentException] OutgoingSSNResetRequestParameter and " + remain.GetType().Name + " in same Chunk not allowed ");
-					}
-				} else if (this.hasOutgoingAdd()) {
-					VariableParam remain = null;
+				} else if (GetVar(VariableParamType.AddOutgoingStreamsRequestParameter, out ignore)) {
+					bool failed = true;
 
 					foreach (var v in _varList) {
-						if (!typeof(AddOutgoingStreamsRequestParameter).IsAssignableFrom(v.GetType())) {
-							remain = v;
+						if (v.type != VariableParamType.AddOutgoingStreamsRequestParameter) {
+							if (v.type != VariableParamType.AddIncomingStreamsRequestParameter) { //7
+								throw new Exception("[IllegalArgumentException] OutgoingSSNResetRequestParameter and " + v.type + " in same Chunk not allowed ");
+							}
+							failed = false;
 							break;
 						}
 					}
-					if (remain == null) {
+					if (failed) {
 						throw new Exception("[IllegalArgumentException] 2 AddOutgoingStreamsRequestParameter in one Chunk not allowed ");
 					}
-					if (!typeof(AddIncomingStreamsRequestParameter).IsAssignableFrom(remain.GetType())) //7
-					{
-						throw new Exception("[IllegalArgumentException] OutgoingSSNResetRequestParameter and " + remain.GetType().Name + " in same Chunk not allowed ");
-					}
 				} else if (this.hasResponse()) {
-					VariableParam remain = null;
-
 					foreach (var v in _varList) {
-						if (!typeof(ReconfigurationResponseParameter).IsAssignableFrom(v.GetType())) {
-							remain = v;
+						if (v.type != VariableParamType.ReconfigurationResponseParameter) { // 10
+							throw new Exception("[IllegalArgumentException] ReconfigurationResponseParameter and " + v.type + " in same Chunk not allowed ");
 							break;
 						}
 					}
 
-					if (remain != null) { // 10
-						throw new Exception("[IllegalArgumentException] ReconfigurationResponseParameter and " + remain.GetType().Name + " in same Chunk not allowed ");
-					}
 				}
 			} // implicitly just one - which is ok 1,2,4,5,6,8
 		}
 
-		public void addParam(VariableParam rep) {
+		public void addParam(ref Param rep) {
 			Logger.Debug("adding " + rep + " to " + this);
 			_varList.Add(rep);
 			validate();
 		}
 
+
+
 		public bool sameAs(ReConfigChunk other) {
 			// we ignore other var types for now....
 			bool ret = false; // assume the negative.
 			if (other != null) {
-				// if there are 2 params and both match
-				if ((this.hasIncomingReset() && other.hasIncomingReset())
-						&& (this.hasOutgoingReset() && other.hasOutgoingReset())) {
-					ret = this.getIncomingReset().sameAs(other.getIncomingReset())
-							&& this.getOutgoingReset().sameAs(other.getOutgoingReset());
-				} else {
-					// there is only one (of these) params
-					// that has to match too
-					if (this.hasIncomingReset() && other.hasIncomingReset()) {
-						ret = this.getIncomingReset().sameAs(other.getIncomingReset());
-					}
-					if (this.hasOutgoingReset() && other.hasOutgoingReset()) {
-						ret = this.getOutgoingReset().sameAs(other.getOutgoingReset());
-					}
+				// if there are 2 params and both match, or if there is only one (of these) params and matches
+				Param thisInc, otherInc;
+				bool incomings = false;
+				if (GetVar(VariableParamType.IncomingSSNResetRequestParameter, out thisInc)
+					&& other.GetVar(VariableParamType.IncomingSSNResetRequestParameter, out otherInc)) {
+					incomings = true;
+					ret = IncomingSSNResetRequestParameter.Compare(ref thisInc, ref otherInc);
+				}
+
+				Param thisOut, otherOut;
+				if (GetVar(VariableParamType.OutgoingSSNResetRequestParameter, out thisOut)
+					&& other.GetVar(VariableParamType.OutgoingSSNResetRequestParameter, out otherOut)) {
+					ret = (incomings ? ret : true) && OutgoingSSNResetRequestParameter.Compare(ref thisOut, ref otherOut);
 				}
 			}
 			return ret;

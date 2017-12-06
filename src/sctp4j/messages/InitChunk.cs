@@ -52,16 +52,16 @@ namespace pe.pi.sctp4j.sctp.messages {
 		public int numOutStreams;
 		public int numInStreams;
 		public uint initialTSN;
-		public readonly byte[] farSupportedExtensions;
-		byte[] _farRandom;
+		public readonly ByteBuffer farSupportedExtensions;
+		ByteBuffer _farRandom;
 		bool _farForwardTSNsupported;
-		byte[] _farHmacs;
-		byte[] _farChunks;
+		ByteBuffer _farHmacs;
+		ByteBuffer _farChunks;
 
 		public InitChunk() : base(CType.INIT) { }
 
-		public InitChunk(CType type, byte flags, int length, ByteBuffer pkt)
-			: base(type, flags, length, pkt) {
+		public InitChunk(CType type, byte flags, int length, ref ByteBuffer pkt)
+			: base(type, flags, length, ref pkt) {
 			if (_body.remaining() >= 16) {
 				initiateTag = _body.GetInt();
 				adRecWinCredit = _body.GetUInt();
@@ -70,30 +70,29 @@ namespace pe.pi.sctp4j.sctp.messages {
 				initialTSN = _body.GetUInt();
 				Logger.Trace("Init " + this.ToString());
 				while (_body.hasRemaining()) {
-					VariableParam v = readVariable();
-					_varList.Add(v);
+					_varList.Add(readVariable());
 				}
-				foreach (VariableParam v in _varList) {
+				foreach (Param v in _varList) {
 					// now look for variables we are expecting...
-					Logger.Trace("variable of type: " + v.name + " " + v.ToString());
-					if (typeof(SupportedExtensions).IsAssignableFrom(v.GetType())) {
-						farSupportedExtensions = ((SupportedExtensions) v).getData();
-					} else if (typeof(RandomParam).IsAssignableFrom(v.GetType())) {
-						_farRandom = ((RandomParam) v).getData();
-					} else if (typeof(ForwardTSNsupported).IsAssignableFrom(v.GetType())) {
+					Logger.Trace("variable of type: " + v.type + " " + v.ToString());
+					if (v.type == VariableParamType.SupportedExtensions) {
+						farSupportedExtensions = v.data;
+					} else if (v.type == VariableParamType.Random) {
+						_farRandom = v.data;
+					} else if (v.type == VariableParamType.ForwardTSNsupported) {
 						_farForwardTSNsupported = true;
-					} else if (typeof(RequestedHMACAlgorithmParameter).IsAssignableFrom(v.GetType())) {
-						_farHmacs = ((RequestedHMACAlgorithmParameter) v).getData();
-					} else if (typeof(ChunkListParam).IsAssignableFrom(v.GetType())) {
-						_farChunks = ((ChunkListParam) v).getData();
+					} else if (v.type == VariableParamType.RequestedHMACAlgorithmParameter) {
+						_farHmacs = v.data;
+					} else if (v.type == VariableParamType.ChunkList) {
+						_farChunks = v.data;
 					} else {
-						Logger.Trace("unexpected variable of type: " + v.name);
+						Logger.Trace("unexpected variable of type: " + v.type);
 					}
 				}
 			}
 		}
 
-		protected override void putFixedParams(ByteBuffer ret) {
+		protected override void putFixedParams(ref ByteBuffer ret) {
 			ret.Put((int) initiateTag);
 			ret.Put(adRecWinCredit);
 			ret.Put((ushort) numOutStreams);

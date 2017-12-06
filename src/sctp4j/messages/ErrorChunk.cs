@@ -58,26 +58,25 @@ namespace pe.pi.sctp4j.sctp.messages {
 
 		public ErrorChunk() : base(CType.ERROR) { }
 
-		public ErrorChunk(KnownError e) : this() {
+		public ErrorChunk(Param e) : this() {
 			_varList.Add(e);
 		}
 
-		public ErrorChunk(KnownError[] el) : this() {
-			foreach (KnownError e in el) {
+		public ErrorChunk(Param[] el) : this() {
+			foreach (Param e in el) {
 				_varList.Add(e);
 			}
 		}
 
-		public ErrorChunk(CType type, byte flags, int length, ByteBuffer pkt) : base(type, flags, length, pkt) {
+		public ErrorChunk(CType type, byte flags, int length, ref ByteBuffer pkt) : base(type, flags, length, ref pkt) {
 			if (_body.remaining() >= 4) {
 				Logger.Trace("Error" + this.ToString());
 				while (_body.hasRemaining()) {
-					VariableParam v = readErrorParam();
-					_varList.Add(v);
+					_varList.Add(readErrorParam());
 				}
 			}
 		}
 
-		protected override void putFixedParams(ByteBuffer ret) { }
+		protected override void putFixedParams(ref ByteBuffer ret) { }
 	}
 }

@@ -127,7 +127,7 @@ namespace com.ipseorama.sctp.messages {
 			Chunk init = chunks[0];
 			Assert.AreEqual(init.getType(), Chunk.CType.INIT, "Expecting an init chunk");
 			ByteBuffer bout = ByteBuffer.allocate(sampleInit.Length - 12);
-			init.write(bout);
+			init.write(ref bout);
 			byte[] sin = new byte[sampleInit.Length - 12];
 			Array.Copy(sampleInit, 12, sin, 0, sin.Length);
 			Assert.AreEqual(sin.GetHex(), bout.GetHex(), "Expected to re-make same packet");
