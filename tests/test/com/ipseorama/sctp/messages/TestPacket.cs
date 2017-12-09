@@ -206,8 +206,6 @@ namespace com.ipseorama.sctp.messages {
 			Assert.AreEqual(dat.getData(), null, "Data should be zero");
 			Assert.AreEqual(dat.getDCEP() != null, true, "Expected  to parse a DCEP packet");
 			Assert.AreEqual(dat.getDCEP().isAck(), false, "Expected an open DCEP packet ");
-
-
 		}
 
 		[TestMethod]

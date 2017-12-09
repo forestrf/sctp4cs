@@ -225,8 +225,7 @@ namespace pe.pi.sctp4j.sctp {
 								Logger.Trace("Probably tick time out");
 								continue;
 							}
-							string b = Packet.getHex(buf, 0, length);
-							Logger.Trace("DTLS message received\n" + b);
+							Logger.Trace("DTLS message received\n" + Packet.getHex(buf, 0, length));
 							ByteBuffer pbb = new ByteBuffer(buf);
 							pbb.Limit = length;
 							Packet rec = new Packet(pbb);
