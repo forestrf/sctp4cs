@@ -45,6 +45,8 @@ namespace pe.pi.sctp4j.sctp {
 		private bool closing;
 		private State state = State.OPEN;
 
+		public Action OnOpen;
+
 		public bool InboundIsOpen() {
 			return ((state == State.OPEN) || (state == State.INBOUNDONLY));
 		}
@@ -136,7 +138,7 @@ namespace pe.pi.sctp4j.sctp {
 			return ret;
 		}
 
-		internal void setSCTPStreamListener(SCTPStreamListener sl) {
+		public void setSCTPStreamListener(SCTPStreamListener sl) {
 			_sl = sl;
 			Logger.Debug("action a delayed delivery now we have a listener.");
 			//todo think about what reliablility looks like here.

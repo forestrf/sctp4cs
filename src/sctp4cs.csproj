@@ -126,7 +126,6 @@
       <Link>NOTICE</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\bc-csharp\crypto\BouncyCastle.csproj">
