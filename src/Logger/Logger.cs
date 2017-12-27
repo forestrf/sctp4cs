@@ -2,7 +2,7 @@
 
 namespace SCTP4CS {
 	public static class Logger {
-		private const string KEYWORD = "SCHEDULER_";
+		private const string KEYWORD = "SCTP_";
 		public static ILogger logger = new InternalLogger();
 
 		[Conditional(KEYWORD + "TRACEVERBOSE"), Conditional(KEYWORD + "TRACE"), Conditional(KEYWORD + "DEBUG"), Conditional(KEYWORD + "INFO"), Conditional(KEYWORD + "WARN"), Conditional(KEYWORD + "ERROR")]

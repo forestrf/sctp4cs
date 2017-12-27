@@ -167,7 +167,7 @@ namespace pe.pi.sctp4j.sctp.messages {
 		 */
 		void setChecksum(ByteBuffer pkt) {
 			pkt.Put(SUMOFFSET, 0);
-			var UUint = new FastBit.Uint(Crc32c.Calculate(pkt.Data, pkt.offset, pkt.Limit));
+			var UUint = new FastBit.Uint(Crc32.CRC32C.Calculate(pkt.Data, pkt.offset, pkt.Limit));
 			uint flip = new FastBit.Uint(UUint.b3, UUint.b2, UUint.b1, UUint.b0).Auint;
 			pkt.Put(SUMOFFSET, flip);
 		}

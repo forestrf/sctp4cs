@@ -68,6 +68,10 @@ namespace SCTP4CS.Utils {
 				this.Adecimal = Adecimal;
 			}
 
+			public decimal GetReversed() {
+				return new Decimal(b15, b14, b13, b12, b11, b10, b9, b8, b7, b6, b5, b4, b3, b2, b1, b0).Adecimal;
+			}
+
 			public void Write(byte[] buffer, int offset, Endianness endianness) {
 				if (Option(endianness)) {
 					buffer[offset + 15] = b0;
@@ -173,6 +177,10 @@ namespace SCTP4CS.Utils {
 				this.Adouble = Adouble;
 			}
 
+			public double GetReversed() {
+				return new Double(b7, b6, b5, b4, b3, b2, b1, b0).Adouble;
+			}
+
 			public void Write(byte[] buffer, int offset, Endianness endianness) {
 				if (Option(endianness)) {
 					buffer[offset + 7] = b0;
@@ -243,6 +251,10 @@ namespace SCTP4CS.Utils {
 			public Long(long Along) {
 				b0 = b1 = b2 = b3 = b4 = b5 = b6 = b7 = 0;
 				this.Along = Along;
+			}
+
+			public long GetReversed() {
+				return new Long(b7, b6, b5, b4, b3, b2, b1, b0).Along;
 			}
 
 			public void Write(byte[] buffer, int offset, Endianness endianness) {
@@ -317,6 +329,10 @@ namespace SCTP4CS.Utils {
 				this.Aulong = Aulong;
 			}
 
+			public ulong GetReversed() {
+				return new Ulong(b7, b6, b5, b4, b3, b2, b1, b0).Aulong;
+			}
+
 			public void Write(byte[] buffer, int offset, Endianness endianness) {
 				if (Option(endianness)) {
 					buffer[offset + 7] = b0;
@@ -382,6 +398,10 @@ namespace SCTP4CS.Utils {
 				this.Afloat = Afloat;
 			}
 
+			public float GetReversed() {
+				return new Float(b3, b2, b1, b0).Afloat;
+			}
+
 			public void Write(byte[] buffer, int offset, Endianness endianness) {
 				if (Option(endianness)) {
 					buffer[offset + 3] = b0;
@@ -428,6 +448,10 @@ namespace SCTP4CS.Utils {
 			public Int(int Aint) {
 				b0 = b1 = b2 = b3 = 0;
 				this.Aint = Aint;
+			}
+
+			public int GetReversed() {
+				return new Int(b3, b2, b1, b0).Aint;
 			}
 
 			public void Write(byte[] buffer, int offset, Endianness endianness) {
@@ -478,6 +502,10 @@ namespace SCTP4CS.Utils {
 				this.Auint = Auint;
 			}
 
+			public uint GetReversed() {
+				return new Uint(b3, b2, b1, b0).Auint;
+			}
+
 			public void Write(byte[] buffer, int offset, Endianness endianness) {
 				if (Option(endianness)) {
 					buffer[offset + 3] = b0;
@@ -523,6 +551,10 @@ namespace SCTP4CS.Utils {
 				this.Achar = Achar;
 			}
 
+			public char GetReversed() {
+				return new Char(b1, b0).Achar;
+			}
+
 			public void Write(byte[] buffer, int offset, Endianness endianness) {
 				if (Option(endianness)) {
 					buffer[offset + 1] = b0;
@@ -559,6 +591,10 @@ namespace SCTP4CS.Utils {
 				this.Ashort = Ashort;
 			}
 
+			public short GetReversed() {
+				return new Short(b1, b0).Ashort;
+			}
+
 			public void Write(byte[] buffer, int offset, Endianness endianness) {
 				if (Option(endianness)) {
 					buffer[offset + 1] = b0;
@@ -593,6 +629,10 @@ namespace SCTP4CS.Utils {
 			public Ushort(ushort Aushort) {
 				b0 = b1 = 0;
 				this.Aushort = Aushort;
+			}
+
+			public ushort GetReversed() {
+				return new Ushort(b1, b0).Aushort;
 			}
 
 			public void Write(byte[] buffer, int offset, Endianness endianness) {
