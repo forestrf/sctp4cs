@@ -1,8 +1,6 @@
 SCTP4CS
-
-Ported by ASH KATCHAP from [SCTP4J by |pipe|](https://github.com/pipe/sctp4j)
-
----
+====
+Ported by ASH KATCHAP from [pipe/sctp4j](https://github.com/pipe/sctp4j)
 
 This is a pure C# implementation of the SCTP protocol.
 The target usecase is small devices that want to run the webRTC datachannel.
